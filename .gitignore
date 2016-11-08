@@ -1,0 +1,12 @@
+Debug/
+Release/
+*.opensdf
+*.sdf
+*.suo
+*.user
+ipch/
+Doxygen/
+Base/Image/
+Base/OBJ/
+Base/Sound/
+Base/irrKlang-1.5.0/
