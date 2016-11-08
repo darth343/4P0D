@@ -17,6 +17,11 @@ public:
 
     void AddScene(std::string sceneName, Scene* scene);
     void ChangeScene(std::string scene);
+
+    void Update(double dt);
+    void Render();
+    void Exit();
+    void TrueExit();
 };
 
 #endif

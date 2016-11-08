@@ -5,6 +5,8 @@
 #include "Scene.h"
 #include <irrKlang.h>
 
+#include "SceneManager.h"
+
 using namespace irrklang;
 
 class Application
@@ -36,9 +38,7 @@ public:
 	static int GetWindowHeight();
 
     // Game Scenes
-    Scene *scene;
-    GAME_MODE mode;
-    bool b_modeChange;
+    SceneManager sceneManager;
 
     // Sound
     ISoundEngine* m_soundEngine;

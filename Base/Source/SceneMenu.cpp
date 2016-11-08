@@ -1,17 +1,17 @@
-#include "SceneAss1Menu.h"
+#include "SceneMenu.h"
 #include "GL\glew.h"
 #include "Application.h"
 #include <sstream>
 
-SceneAss1Menu::SceneAss1Menu()
+SceneMenu::SceneMenu()
 {
 }
 
-SceneAss1Menu::~SceneAss1Menu()
+SceneMenu::~SceneMenu()
 {
 }
 
-void SceneAss1Menu::Init()
+void SceneMenu::Init()
 {
     SceneBase::Init();
 
@@ -25,7 +25,7 @@ void SceneAss1Menu::Init()
     bLButtonState = false;
 }
 
-void SceneAss1Menu::Update(double dt)
+void SceneMenu::Update(double dt)
 {
     SceneBase::Update(dt);
 
@@ -53,26 +53,26 @@ void SceneAss1Menu::Update(double dt)
         else if (bLButtonState && !Application::IsMousePressed(0))
         {
             bLButtonState = false;
-            for (MENU_MODE i = MENU_MAIN; i < MENU_TOTAL; i = static_cast<MENU_MODE>(i + 1)) {
-                if (button_highlighted[i]) {    //being selected
-                    Application::GetInstance().PlayButtonPressSE();
-
-                    if (i == MENU_MAIN) {   //PLAY
-                        Application::GetInstance().b_modeChange = true;
-                        Application::GetInstance().mode = Application::GAMEMODE_PLAY;
-                    }
-
-                    else if (i >= MENU_INSTRUCTIONS && i <= MENU_OPTIONS) {
-                        mode = i;
-                    }
-
-                    else {
-                        Application::GetInstance().b_modeChange = true;
-                        Application::GetInstance().mode = Application::GAMEMODE_EXIT;
-                    }
-                    break;
-                }
-            }
+            //for (MENU_MODE i = MENU_MAIN; i < MENU_TOTAL; i = static_cast<MENU_MODE>(i + 1)) {
+            //    if (button_highlighted[i]) {    //being selected
+            //        Application::GetInstance().PlayButtonPressSE();
+            //
+            //        if (i == MENU_MAIN) {   //PLAY
+            //            Application::GetInstance().b_modeChange = true;
+            //            Application::GetInstance().mode = Application::GAMEMODE_PLAY;
+            //        }
+            //
+            //        else if (i >= MENU_INSTRUCTIONS && i <= MENU_OPTIONS) {
+            //            mode = i;
+            //        }
+            //
+            //        else {
+            //            Application::GetInstance().b_modeChange = true;
+            //            Application::GetInstance().mode = Application::GAMEMODE_EXIT;
+            //        }
+            //        break;
+            //    }
+            //}
         }
         break;
 
@@ -134,7 +134,7 @@ void SceneAss1Menu::Update(double dt)
 
 }
 
-void SceneAss1Menu::Render()
+void SceneMenu::Render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -173,12 +173,12 @@ void SceneAss1Menu::Render()
     }
 }
 
-void SceneAss1Menu::Exit()
+void SceneMenu::Exit()
 {
     SceneBase::Exit();
 }
 
-void SceneAss1Menu::RenderMainMenu()
+void SceneMenu::RenderMainMenu()
 {
     // Logo
     modelStack.PushMatrix();
@@ -239,7 +239,7 @@ void SceneAss1Menu::RenderMainMenu()
 
 }
 
-void SceneAss1Menu::RenderInstructions()
+void SceneMenu::RenderInstructions()
 {
     //RenderTextOnScreen(meshList[GEO_MENUTEXT], "INSTRUCTIONS", Color(1, 1, 0), 5, 10, 52);
     switch (help_mode) {
@@ -294,114 +294,48 @@ void SceneAss1Menu::RenderInstructions()
     }
 }
 
-void SceneAss1Menu::RenderStory()
+void SceneMenu::RenderStory()
 {
     RenderTextOnScreen(meshList[GEO_MENUTEXT], "STORY", Color(1, 1, 0), 5, 30, 52);
 
-    // convo character profiles
-    // C3PO
-    modelStack.PushMatrix();
-    modelStack.Translate(m_worldWidth * 0.2f, m_worldHeight * 0.75f, 0);
-    modelStack.Scale(m_worldWidth * 0.0375f, m_worldHeight * 0.075f, 0);
-    RenderMesh(meshList[GEO_C3PO], false);
-    modelStack.PopMatrix();
 
-    modelStack.PushMatrix();
-    modelStack.Translate(m_worldWidth * 0.2f, m_worldHeight * 0.45f, 0);
-    modelStack.Scale(m_worldWidth * 0.0375f, m_worldHeight * 0.075f, 0);
-    RenderMesh(meshList[GEO_C3PO], false);
-    modelStack.PopMatrix();
-
-    // BOBA FETT
-    modelStack.PushMatrix();
-    modelStack.Translate(m_worldWidth * 0.8f, m_worldHeight * 0.6f, 0);
-    modelStack.Scale(m_worldWidth * 0.0375f, m_worldHeight * 0.075f, 0);
-    RenderMesh(meshList[GEO_BOBAFETT], false);
-    modelStack.PopMatrix();
-
-    modelStack.PushMatrix();
-    modelStack.Translate(m_worldWidth * 0.8f, m_worldHeight * 0.3f, 0);
-    modelStack.Scale(m_worldWidth * 0.0375f, m_worldHeight * 0.075f, 0);
-    RenderMesh(meshList[GEO_BOBAFETT], false);
-    modelStack.PopMatrix();
-
-    RenderTextOnScreen(meshList[GEO_TEXT], "Sir! Sir! This is terrible!", Color(0, 1, 1), 2, 20, 45);
-    RenderTextOnScreen(meshList[GEO_TEXT], "What's the matter, 3-CPU?", Color(1, 0, 1), 2, 11, 36.25f);
-    RenderTextOnScreen(meshList[GEO_TEXT], "We're under attack!", Color(0, 1, 1), 2, 20, 27.5f);
-    RenderTextOnScreen(meshList[GEO_TEXT], "Not to worry. I will", Color(1, 0, 1), 2, 20, 18.75f);
-    RenderTextOnScreen(meshList[GEO_TEXT], "get us out of here.", Color(1, 0, 1), 2, 20, 16.75f);
 }
 
-void SceneAss1Menu::RenderControls()
+void SceneMenu::RenderControls()
 {
     RenderTextOnScreen(meshList[GEO_MENUTEXT], "CONTROLS", Color(1, 1, 0), 5, 22.5f, 52);
 
-    // Render GameObjects
-    //player ship
-    modelStack.PushMatrix();
-    modelStack.Translate(m_worldWidth * 0.2f, m_worldHeight * 0.75f, 0);
-    modelStack.Scale(m_worldWidth * 0.025f, m_worldHeight * 0.025f, 0);
-    RenderMesh(meshList[GEO_SHIP], false);
-    modelStack.PopMatrix();
 
-    //bullet
-    modelStack.PushMatrix();
-    modelStack.Translate(m_worldWidth * 0.2f, m_worldHeight * 0.6f, 0);
-    modelStack.Scale(m_worldWidth * 0.025f, m_worldHeight * 0.025f, 0);
-    RenderMesh(meshList[GEO_BULLET], false);
-    modelStack.PopMatrix();
-
-    //missile
-    modelStack.PushMatrix();
-    modelStack.Translate(m_worldWidth * 0.2f, m_worldHeight * 0.45f, 0);
-    modelStack.Scale(m_worldWidth * 0.025f, m_worldHeight * 0.025f, 0);
-    RenderMesh(meshList[GEO_MISSILE], false);
-    modelStack.PopMatrix();
-
-    //black hole
-    modelStack.PushMatrix();
-    modelStack.Translate(m_worldWidth * 0.2f, m_worldHeight * 0.3f, 0);
-    modelStack.Scale(m_worldWidth * 0.025f, m_worldHeight * 0.025f, 0);
-    RenderMesh(meshList[GEO_BLACKHOLE], false);
-    modelStack.PopMatrix();
-
-    // Text
-    RenderTextOnScreen(meshList[GEO_TEXT], "WASD to move", Color(1, 1, 1), 2, 20, 44);
-    RenderTextOnScreen(meshList[GEO_TEXT], "Spacebar to shoot bullet", Color(1, 1, 1), 2, 20, 35);
-    RenderTextOnScreen(meshList[GEO_TEXT], "R to shoot missile", Color(1, 1, 1), 2, 20, 26);
-    RenderTextOnScreen(meshList[GEO_TEXT], "E to activate black hole", Color(1, 1, 1), 2, 20, 17);
-    RenderTextOnScreen(meshList[GEO_TEXT], "Left click to place", Color(1, 1, 1), 2, 18, 14);
-    RenderTextOnScreen(meshList[GEO_TEXT], "Right click to cancel", Color(1, 1, 1), 2, 18, 12);
 }
 
-void SceneAss1Menu::RenderOptions()
+void SceneMenu::RenderOptions()
 {
     RenderTextOnScreen(meshList[GEO_MENUTEXT], "OPTIONS", Color(1, 1, 0), 5, 25, 52);
 
-    RenderTextOnScreen(meshList[GEO_TEXT], "Music", Color(0.5f, 0.5f, 1), 3, 6, 35);
+    RenderTextOnScreen(meshList[GEO_CALIBRITEXT], "Music", Color(0.5f, 0.5f, 1), 3, 6, 35);
     if (Application::GetInstance().playMusic) {
-        RenderTextOnScreen(meshList[GEO_TEXT], "On", Color(1, 1, 1), 3, 25, 35);
-        RenderTextOnScreen(meshList[GEO_TEXT], "Off", Color(0.5f, 0.5f, 1), 3, 33, 35);
+        RenderTextOnScreen(meshList[GEO_CALIBRITEXT], "On", Color(1, 1, 1), 3, 25, 35);
+        RenderTextOnScreen(meshList[GEO_CALIBRITEXT], "Off", Color(0.5f, 0.5f, 1), 3, 33, 35);
     }
     else {
-        RenderTextOnScreen(meshList[GEO_TEXT], "On", Color(0.5f, 0.5f, 1), 3, 25, 35);
-        RenderTextOnScreen(meshList[GEO_TEXT], "Off", Color(1, 1, 1), 3, 33, 35);
+        RenderTextOnScreen(meshList[GEO_CALIBRITEXT], "On", Color(0.5f, 0.5f, 1), 3, 25, 35);
+        RenderTextOnScreen(meshList[GEO_CALIBRITEXT], "Off", Color(1, 1, 1), 3, 33, 35);
     }
 
-    RenderTextOnScreen(meshList[GEO_TEXT], "Sound", Color(0.5f, 0.5f, 1), 3, 6, 30);
+    RenderTextOnScreen(meshList[GEO_CALIBRITEXT], "Sound", Color(0.5f, 0.5f, 1), 3, 6, 30);
     if (Application::GetInstance().playSound) {
-        RenderTextOnScreen(meshList[GEO_TEXT], "On", Color(1, 1, 1), 3, 25, 30);
-        RenderTextOnScreen(meshList[GEO_TEXT], "Off", Color(0.5f, 0.5f, 1), 3, 33, 30);
+        RenderTextOnScreen(meshList[GEO_CALIBRITEXT], "On", Color(1, 1, 1), 3, 25, 30);
+        RenderTextOnScreen(meshList[GEO_CALIBRITEXT], "Off", Color(0.5f, 0.5f, 1), 3, 33, 30);
     }
     else {
-        RenderTextOnScreen(meshList[GEO_TEXT], "On", Color(0.5f, 0.5f, 1), 3, 25, 30);
-        RenderTextOnScreen(meshList[GEO_TEXT], "Off", Color(1, 1, 1), 3, 33, 30);
+        RenderTextOnScreen(meshList[GEO_CALIBRITEXT], "On", Color(0.5f, 0.5f, 1), 3, 25, 30);
+        RenderTextOnScreen(meshList[GEO_CALIBRITEXT], "Off", Color(1, 1, 1), 3, 33, 30);
     }
 
     RenderBackButton();
 }
 
-void SceneAss1Menu::CheckBackButton()
+void SceneMenu::CheckBackButton()
 {
     double x, y;
     Application::GetCursorPos(&x, &y);
@@ -432,7 +366,7 @@ void SceneAss1Menu::CheckBackButton()
     }
 }
 
-void SceneAss1Menu::CheckHelpToggleButton()
+void SceneMenu::CheckHelpToggleButton()
 {
     double x, y;
     Application::GetCursorPos(&x, &y);
@@ -468,7 +402,7 @@ void SceneAss1Menu::CheckHelpToggleButton()
     }
 }
 
-void SceneAss1Menu::RenderBackButton()
+void SceneMenu::RenderBackButton()
 {
     // Button
     modelStack.PushMatrix();

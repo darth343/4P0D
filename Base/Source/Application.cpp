@@ -11,8 +11,8 @@
 #include <stdlib.h>
 
 #include "SceneBase.h"
-#include "SceneAss1.h"
-#include "SceneAss1Menu.h"
+#include "SceneGame.h"
+#include "SceneMenu.h"
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -75,11 +75,6 @@ Application::Application()
 {
     // Initialise variables
 
-    // Game scenes
-    scene = 0;
-    mode = GAMEMODE_MENU;
-    b_modeChange = false;
-
     // Sound
     m_soundEngine = createIrrKlangDevice();
     playSound = true;
@@ -113,7 +108,7 @@ void Application::Init()
 	//m_width = 1920;
 	//m_height = 1080;
     GetMonitorResolution();
-	m_window = glfwCreateWindow(m_width, m_height, "Physics", NULL, NULL);
+	m_window = glfwCreateWindow(m_width, m_height, "PLACEHOLDER NAME", NULL, NULL);
 
 	//If the window couldn't be created
 	if (!m_window)
@@ -144,62 +139,26 @@ void Application::Init()
 
 void Application::Run()
 {
-    switch (mode)
-    {
-    case GAMEMODE_MENU:
-        scene = new SceneAss1Menu();
-        PlayMenuBGM();
-        break;
-        
-    case GAMEMODE_PLAY:
-        scene = new SceneAss1();
-        PlayGameBGM();
-        break;
-    }
-	
-    //scene = new SceneCollision();
-	scene->Init();
+    sceneManager.AddScene("Menu", new SceneMenu());
+    sceneManager.AddScene("Game", new SceneGame());
+	sceneManager.ChangeScene("Game");
 
     //Main Loop
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
-	while (mode != GAMEMODE_EXIT && !glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
+	
+    while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
 	{
-		scene->Update(m_timer.getElapsedTime());
-		scene->Render();
+		sceneManager.Update(m_timer.getElapsedTime());
+		sceneManager.Render();
 		//Swap buffers
 		glfwSwapBuffers(m_window);
 		//Get and organize events, like keyboard and mouse input, window resizing, etc...
 		glfwPollEvents();
         m_timer.waitUntil(frameTime);       // Frame rate limiter. Limits each frame to a specified time in ms.
-
-        if (b_modeChange) {
-        
-            if (mode != GAMEMODE_EXIT) {
-                scene->Exit();
-                delete scene;
-                b_modeChange = false;
-                m_soundEngine->stopAllSounds();
-        
-                switch (mode)
-                {
-                case GAMEMODE_MENU:
-                    scene = new SceneAss1Menu();
-                    PlayMenuBGM();
-                    break;
-        
-                case GAMEMODE_PLAY:
-                    scene = new SceneAss1();
-                    PlayGameBGM();
-                    break;
-                }
-                scene->Init();
-            }
-        }
-
 	} //Check if the game has been exited the window had been closed
-    scene->Exit();
-    scene->TrueExit();
-	delete scene;
+
+    sceneManager.Exit();
+    sceneManager.TrueExit();
 }
 
 void Application::Exit()

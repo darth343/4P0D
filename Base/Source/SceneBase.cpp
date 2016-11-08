@@ -110,14 +110,6 @@ void SceneBase::Init()
     meshList[GEO_BUTTON_HIGHLIGHTED] = MeshBuilder::GenerateQuad("button highlighted", Color(0, 0, 1), 1.f);
     meshList[GEO_BUTTON_HIGHLIGHTED]->textureID = LoadTGA("Image//button_highlighted.tga");
 
-	meshList[GEO_AXES] = MeshBuilder::GenerateAxes("reference", 1000, 1000, 1000);
-	meshList[GEO_BALL] = MeshBuilder::GenerateSphere("ball", Color(1, 1, 1), 10, 10, 1.f);
-	meshList[GEO_CUBE] = MeshBuilder::GenerateCube("cube", Color(1, 1, 1), 2.f);
-	
-    meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
-	meshList[GEO_TEXT]->textureID = LoadTGA("Image//Fonts/broadway.tga");
-	meshList[GEO_TEXT]->material.kAmbient.Set(1, 0, 0);
-
     meshList[GEO_MENUTEXT] = MeshBuilder::GenerateText("text", 16, 16);
     meshList[GEO_MENUTEXT]->textureID = LoadTGA("Image//Fonts/playbill.tga");
     meshList[GEO_MENUTEXT]->material.kAmbient.Set(1, 0, 0);
@@ -126,60 +118,11 @@ void SceneBase::Init()
     meshList[GEO_CALIBRITEXT]->textureID = LoadTGA("Image//Fonts/calibri.tga");
     meshList[GEO_CALIBRITEXT]->material.kAmbient.Set(1, 0, 0);
 
-    meshList[GEO_C3PO] = MeshBuilder::GenerateQuad("C3PO", Color(1, 1, 1), 2.f);
-    meshList[GEO_C3PO]->textureID = LoadTGA("Image//convo_C3PO.tga");
-
-    meshList[GEO_BOBAFETT] = MeshBuilder::GenerateQuad("Boba Fett", Color(1, 1, 1), 2.f);
-    meshList[GEO_BOBAFETT]->textureID = LoadTGA("Image//convo_BobaFett.tga");
-
-    meshList[GEO_PAUSEBOX] = MeshBuilder::GenerateQuad("pause", Color(0, 0, 0), 1.f);
-    
     meshList[GEO_BACKGROUND] = MeshBuilder::GenerateQuad("background", Color(0, 0, 0), 1.f);
     meshList[GEO_BACKGROUND]->textureID = LoadTGA("Image//background.tga");
 
-    meshList[GEO_SHIP] = MeshBuilder::GenerateQuad("ship", Color(1, 1, 1), 2.f);
-    meshList[GEO_SHIP]->textureID = LoadTGA("Image//ship.tga");
-
-    meshList[GEO_ASTEROID] = MeshBuilder::GenerateQuad("asteroid", Color(1, 1, 1), 2.f);
-    meshList[GEO_ASTEROID]->textureID = LoadTGA("Image//asteroid.tga");
-
-    meshList[GEO_METEOR] = MeshBuilder::GenerateQuad("meteor", Color(1, 1, 1), 2.f);
-    meshList[GEO_METEOR]->textureID = LoadTGA("Image//meteor.tga");
-    
-    meshList[GEO_BLACKHOLE] = MeshBuilder::GenerateQuad("black hole", Color(1, 1, 1), 2.f);
-    meshList[GEO_BLACKHOLE]->textureID = LoadTGA("Image//black hole.tga");
-
-    meshList[GEO_BLACKHOLE_RANGE] = MeshBuilder::GenerateRing("black hole range", Color(1, 1, 1), 36, 1.f, 0.95f);
-
-    meshList[GEO_BULLET] = MeshBuilder::GenerateQuad("bullet", Color(1, 0, 1), 2.f);
-    meshList[GEO_BULLET]->textureID = LoadTGA("Image//bullet.tga");
-
-    meshList[GEO_MISSILE] = MeshBuilder::GenerateQuad("missile", Color(1, 1, 1), 2.f);
-    meshList[GEO_MISSILE]->textureID = LoadTGA("Image//missile.tga");
-
-    meshList[GEO_TARGETLOCK] = MeshBuilder::GenerateQuad("target lock", Color(1, 1, 1), 2.f);
-    meshList[GEO_TARGETLOCK]->textureID = LoadTGA("Image//targetlock.tga");
-
-    meshList[GEO_ENEMY_SHIP_1] = MeshBuilder::GenerateQuad("enemy ship", Color(1, 1, 1), 2.f);
-    meshList[GEO_ENEMY_SHIP_1]->textureID = LoadTGA("Image//e_ship1.tga");
-
-    meshList[GEO_ENEMY_SHIP_2] = MeshBuilder::GenerateQuad("enemy ship", Color(1, 1, 1), 2.f);
-    meshList[GEO_ENEMY_SHIP_2]->textureID = LoadTGA("Image//e_ship2.tga");
-
-    meshList[GEO_ENEMY_BULLET] = MeshBuilder::GenerateQuad("enemy bullet", Color(1, 1, 1), 2.f);
-    meshList[GEO_ENEMY_BULLET]->textureID = LoadTGA("Image//e_bullet.tga");
-
-    meshList[GEO_DROP_ADDLIFE] = MeshBuilder::GenerateQuad("drop - add life", Color(1, 1, 0), 2.f);
-    meshList[GEO_DROP_ADDLIFE]->textureID = LoadTGA("Image//drop_heart.tga");
-
-    meshList[GEO_DROP_ADDBULLET] = MeshBuilder::GenerateQuad("drop - add bullet", Color(1, 0, 0), 2.f);
-    meshList[GEO_DROP_ADDBULLET]->textureID = LoadTGA("Image//drop_bullet.tga");
-
-    meshList[GEO_DROP_BLACKHOLE] = MeshBuilder::GenerateQuad("drop - black hole", Color(0, 1, 0), 2.f);
-    meshList[GEO_DROP_BLACKHOLE]->textureID = LoadTGA("Image//drop_black hole.tga");
-
-    meshList[GEO_HEART] = MeshBuilder::GenerateQuad("heart", Color(1, 0, 0), 2.f);
-    meshList[GEO_HEART]->textureID = LoadTGA("Image//heart.tga");
+    meshList[GEO_PLAYER] = MeshBuilder::GenerateQuad("player", Color(0, 0, 0), 1.f);
+    meshList[GEO_PLAYER]->textureID = LoadTGA("Image//character.tga");
 
     bLightEnabled = false;
 }

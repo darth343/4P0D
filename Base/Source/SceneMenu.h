@@ -1,10 +1,10 @@
-#ifndef ASSIGNMENT1_MENU_H
-#define ASSIGNMENT1_MENU_H
+#ifndef SCENE_MENU_H
+#define SCENE_MENU_H
 
 #include "GameObject.h"
 #include "SceneBase.h"
 
-class SceneAss1Menu : public SceneBase
+class SceneMenu : public SceneBase
 {
     enum MENU_MODE
     {
@@ -23,8 +23,8 @@ class SceneAss1Menu : public SceneBase
     };
 
 public:
-    SceneAss1Menu();
-    ~SceneAss1Menu();
+    SceneMenu();
+    ~SceneMenu();
 
     virtual void Init();
     virtual void Update(double dt);

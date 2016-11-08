@@ -51,34 +51,9 @@ public:
 
         GEO_CALIBRITEXT,
 
-        // instructions page
-        GEO_C3PO,
-        GEO_BOBAFETT,
-
-        // pause
-        GEO_PAUSEBOX,
-
         // gameplay
-        GEO_AXES,
-        GEO_TEXT,
-        GEO_BALL,
-        GEO_CUBE,
         GEO_BACKGROUND,
-        GEO_SHIP,
-        GEO_BULLET,
-        GEO_ASTEROID,
-        GEO_METEOR,
-        GEO_BLACKHOLE,
-        GEO_BLACKHOLE_RANGE,
-        GEO_MISSILE,
-        GEO_TARGETLOCK,
-        GEO_ENEMY_SHIP_1,
-        GEO_ENEMY_SHIP_2,
-        GEO_ENEMY_BULLET,
-        GEO_DROP_ADDLIFE,
-        GEO_DROP_ADDBULLET,
-        GEO_DROP_BLACKHOLE,
-        GEO_HEART,
+        GEO_PLAYER,
 		NUM_GEOMETRY,
 	};
 public:
