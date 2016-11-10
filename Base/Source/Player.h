@@ -11,15 +11,15 @@ private:
     Vector3 m_pos;
     Vector3 m_scale;
 
-    double m_cursorPosX;
-    double m_cursorPosY;
+    Vector3 m_cursorPos;
+    double x, y;
 
 public:
     Player();
     ~Player();
 
     void Init();
-    void Update();
+    void Update(float worldWidth, float worldHeight);
 
     void SetMesh(Mesh* mesh);
     Mesh* GetMesh();
@@ -30,8 +30,7 @@ public:
     void SetScale(const Vector3& scale);
     Vector3 GetScale();
 
-    double GetCursorPosX();
-    double GetCursorPosY();
+    Vector3 GetCursorPos();
 };
 
 #endif

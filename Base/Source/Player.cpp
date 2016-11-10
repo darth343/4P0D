@@ -13,10 +13,12 @@ void Player::Init()
 {
 }
 
-void Player::Update()
+void Player::Update(float worldWidth, float worldHeight)
 {
     // Get the updated cursor positions from Application
-    Application::GetCursorPos(&m_cursorPosX, &m_cursorPosY);
+    Application::GetCursorPos(&x, &y);
+
+    m_cursorPos.Set(x / Application::GetWindowWidth() * worldWidth, 100.f - (y / Application::GetWindowHeight() * worldHeight), 1.f);
 }
 
 void Player::SetMesh(Mesh* mesh)
@@ -49,12 +51,7 @@ Vector3 Player::GetScale()
     return m_scale;
 }
 
-double Player::GetCursorPosX()
+Vector3 Player::GetCursorPos()
 {
-    return m_cursorPosX;
-}
-
-double Player::GetCursorPosY()
-{
-    return m_cursorPosY;
+    return m_cursorPos;
 }
