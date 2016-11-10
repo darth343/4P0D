@@ -3,7 +3,7 @@
 #include "Application.h"
 #include <sstream>
 
-SceneGame::SceneGame() : MAX_SPEED(1), BULLET_SPEED(100), MISSILE_SPEED(20), E_BULLET_SPEED(50)
+SceneGame::SceneGame()
 {
 }
 
@@ -27,6 +27,17 @@ void SceneGame::Init()
     }
     m_itFetchGO = m_goList.begin();
     m_renderCount = 0.f;
+
+    // Init Player
+    m_player = new Player();
+    m_player->Init();
+    m_player->SetMesh(meshList[GEO_PLAYER]);
+    m_player->SetScale(Vector3(10, 10, 10));
+
+
+
+
+    // OLD STUFF FROM PPHY TO CLEAR UP
 
     // Initialize game variables
     m_lives = 3;
@@ -98,6 +109,9 @@ GameObject* SceneGame::FetchGO()
 void SceneGame::Update(const double dt)
 {
     SceneBase::Update(dt);
+
+    m_player->SetPos(Vector3(m_worldWidth * 0.5f, m_worldHeight * 0.3f, 1.f));
+    m_player->Update();
 
     if (state == GAMEPLAY_PLAY && Application::IsKeyPressed(VK_ESCAPE))
     {
@@ -218,10 +232,38 @@ void SceneGame::RenderBackground()
 void SceneGame::RenderPlayer()
 {
     modelStack.PushMatrix();
-    modelStack.Translate(m_worldWidth * 0.5f, m_worldHeight * 0.5f, 1.f);
-    modelStack.Scale(10.f, 10.f, 10.f);
+    modelStack.Translate(m_player->GetPos().x, m_player->GetPos().y, m_player->GetPos().z);
+    modelStack.Scale(m_player->GetScale().x, m_player->GetScale().y, m_player->GetScale().z);
+    RenderMesh(m_player->GetMesh(), false);
+    modelStack.PopMatrix();
+}
+
+void SceneGame::RenderRayTracing()
+{
+    Vector3 cursorPos;
+    cursorPos.Set(m_player->GetCursorPosX() / Application::GetWindowWidth() * m_worldWidth, 100.f - (m_player->GetCursorPosY() / Application::GetWindowHeight() * m_worldHeight), 1.f);
+
+    Vector3 dir = cursorPos - m_player->GetPos();
+    float angle = Math::RadianToDegree(acos(dir.x / dir.Length()));
+
+    // Render cursor
+    modelStack.PushMatrix();
+    modelStack.Translate(cursorPos.x, cursorPos.y, cursorPos.z);
+    modelStack.Scale(5, 5, 1);
     RenderMesh(meshList[GEO_PLAYER], false);
     modelStack.PopMatrix();
+
+    // Render ray
+    glLineWidth(5.f);
+
+    modelStack.PushMatrix();
+    modelStack.Translate(m_player->GetPos().x, m_player->GetPos().y, m_player->GetPos().z);
+    modelStack.Rotate(angle, 0, 0, 1);
+    modelStack.Scale(dir.LengthSquared(), 1, 1);
+    RenderMesh(meshList[GEO_RAY], false);
+    modelStack.PopMatrix();
+
+    glLineWidth(1.f);
 }
 
 void SceneGame::RenderInfoOnScreen()
@@ -396,6 +438,8 @@ void SceneGame::Render()
         }
     }
 
+    RenderRayTracing();
+
     //On screen information
     RenderInfoOnScreen();
 
@@ -418,6 +462,12 @@ void SceneGame::Exit()
         delete go;
         m_goList.pop_back();
     }
+    if (m_player)
+    {
+        delete m_player;
+        m_player = NULL;
+    }
+
 
     if (m_ship)
     {

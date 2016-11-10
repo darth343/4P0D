@@ -54,6 +54,7 @@ public:
         // gameplay
         GEO_BACKGROUND,
         GEO_PLAYER,
+        GEO_RAY,
 		NUM_GEOMETRY,
 	};
 public:

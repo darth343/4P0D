@@ -3,6 +3,7 @@
 
 #include "GameObject.h"
 #include "SceneBase.h"
+#include "Player.h"
 #include <vector>
 #include <irrKlang.h>
 
@@ -18,10 +19,7 @@ class SceneGame : public SceneBase
         STATE_TOTAL
     };
 
-    const int MAX_SPEED;
-    const int BULLET_SPEED;
-    const int MISSILE_SPEED;
-    const int E_BULLET_SPEED;
+    Player* m_player;
 
 public:
     SceneGame();
@@ -48,6 +46,7 @@ public:
     void RenderGO(GameObject *go);
     void RenderBackground();
     void RenderPlayer();
+    void RenderRayTracing();
     void RenderInfoOnScreen();
 
     GameObject* FetchGO();
