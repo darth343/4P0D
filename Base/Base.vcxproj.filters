@@ -54,5 +54,6 @@
     <ClInclude Include="Source\Vertex.h" />
     <ClInclude Include="Source\WaveData.h" />
     <ClInclude Include="Source\Map.h" />
+    <ClInclude Include="Source\Level.h" />
   </ItemGroup>
 </Project>

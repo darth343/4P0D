@@ -8,12 +8,14 @@ CMap::CMap(void)
 , theNumOfTiles_Width(0)
 , theTileSize(0)
 {
-	theMap.clear();
+	//theMap.clear();
+    //theNodeMap.clear();
 }
 
 CMap::~CMap(void)
 {
 	theMap.clear();
+    theNodeMap.clear();
 }
 
 

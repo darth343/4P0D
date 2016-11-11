@@ -15,17 +15,22 @@ void SceneGame::Init()
 {
     SceneBase::Init();
 
-	m_cmap = new CMap();
-	m_cmap->Init(Application::GetWindowHeight(), Application::GetWindowWidth(), 32);
-	m_cmap->LoadFile("Level//testMap.csv");
+	//m_cmap = new CMap();
+	//m_cmap->Init(Application::GetWindowHeight(), Application::GetWindowWidth(), 32);
+	//m_cmap->LoadFile("Level//testMap.csv");
 
-    m_spawnmap = new CMap();
-    m_spawnmap->Init(Application::GetWindowHeight(), Application::GetWindowWidth(), 32);
-    m_spawnmap->LoadFile("Level//spawnMap.csv");
+ //   m_spawnmap = new CMap();
+ //   m_spawnmap->Init(Application::GetWindowHeight(), Application::GetWindowWidth(), 32);
+ //   m_spawnmap->LoadFile("Level//spawnMap.csv");
+
+
+    m_currLevel = new Level();
+    m_currLevel->Init(Application::GetWindowHeight(), Application::GetWindowWidth(), 32, Level::LEVEL1);
+    
 
     Math::InitRNG();
 
-
+    NEXTLEVELONCE = false;
 
     // World Coordinates
     m_worldHeight = 100.f;
@@ -59,7 +64,7 @@ void SceneGame::Init()
     enemy->SetType(GameObject::ENEMY);
     m_goList.push_back(enemy);
 
-    SpawnObjects(m_spawnmap);
+    SpawnObjects(m_currLevel->m_SpawnMap);
 
     bLButtonState = false;
 }
@@ -90,8 +95,8 @@ GameObject* SceneGame::FetchGO()
 void SceneGame::Update(const double dt)
 {
     SceneBase::Update(dt);
-    m_player1->Update(dt, m_cmap, m_spawnmap);
-	m_player2->Update(dt, m_cmap, m_spawnmap);
+    m_player1->Update(dt, m_currLevel->m_TerrainMap, m_currLevel->m_SpawnMap);
+    m_player2->Update(dt, m_currLevel->m_TerrainMap, m_currLevel->m_SpawnMap);
 
     for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
     {
@@ -105,7 +110,7 @@ void SceneGame::Update(const double dt)
             }
             else if (go->GetType() == GameObject::DOOR)
             {
-                dynamic_cast<Door*>(go)->Update(dt, m_spawnmap);
+                dynamic_cast<Door*>(go)->Update(dt, m_currLevel->m_SpawnMap);
             }
         }
     }
@@ -136,6 +141,12 @@ void SceneGame::Update(const double dt)
                 Interactions(go, go2);
             }
         }
+    }
+
+    if (Application::IsButtonPressed(0, Application::CIRCLE) && !NEXTLEVELONCE)
+    {
+        GoNextLevel();
+        NEXTLEVELONCE = true;
     }
 
     if (state == GAMEPLAY_PLAY && Application::IsKeyPressed(VK_ESCAPE))
@@ -196,6 +207,8 @@ void SceneGame::PauseUpdate(double dt)
             }
         }
     }
+
+ 
 }
 
 void SceneGame::GameUpdate(double dt)
@@ -339,13 +352,13 @@ void SceneGame::RenderPlayer()
 {
     modelStack.PushMatrix();
     modelStack.Translate(m_player1->GetPos().x, m_player1->GetPos().y, m_player1->GetPos().z);
-	modelStack.Scale(m_cmap->GetTileSize(), m_cmap->GetTileSize(), m_cmap->GetTileSize());
+    modelStack.Scale(m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize());
     RenderMesh(meshList[GEO_PLAYER], false);
     modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
     modelStack.Translate(m_player2->GetPos().x, m_player2->GetPos().y, m_player2->GetPos().z);
-	modelStack.Scale(m_cmap->GetTileSize(), m_cmap->GetTileSize(), m_cmap->GetTileSize());
+    modelStack.Scale(m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize());
 	RenderMesh(meshList[GEO_PLAYER], false);
 	modelStack.PopMatrix();
 }
@@ -541,7 +554,7 @@ void SceneGame::Render()
     // Render game background
     RenderBackground();
 	glDisable(GL_DEPTH_TEST);
-	RenderTileMap(m_cmap, m_player1);
+    RenderTileMap(m_currLevel->m_TerrainMap, m_player1);
 
     // Render Player
     RenderPlayer();
@@ -703,4 +716,15 @@ void SceneGame::SpawnObjects(CMap *map)
             }
         }
     }
+}
+
+void SceneGame::GoNextLevel()
+{
+    Level::LEVELS temp = static_cast<Level::LEVELS>(m_currLevel->m_LevelNum + 1);
+
+    if (m_currLevel)
+        delete m_currLevel;
+    
+    m_currLevel = new Level();
+    m_currLevel->Init(Application::GetWindowHeight(), Application::GetWindowWidth(), 32, temp);
 }
