@@ -2,6 +2,7 @@
 #define _LOCKED_DOOR_H
 
 #include "Switch.h"
+#include "Map.h"
 
 class Door : public GameObject
 {
@@ -12,7 +13,7 @@ public:
     Switch* m_switch;
 
     void Init();
-    void Update(double dt);
+    void Update(double dt, CMap* spawnMap);
 };
 
 #endif

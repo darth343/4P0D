@@ -21,7 +21,7 @@ public:
     ~Player();
 
     void Init();
-	void Update(double dt, CMap* m_cMap);
+    void Update(double dt, CMap* m_cMap, CMap* spawnMap);
 
     void SetMesh(Mesh* mesh);
     Mesh* GetMesh();
@@ -37,7 +37,7 @@ public:
 
     Vector3 GetCursorPos();
 
-    void MovePlayer(double dt, CMap* m_cMap);
+    void MovePlayer(double dt, CMap* m_cMap, CMap* spawnMap);
 
     void Attack();
 

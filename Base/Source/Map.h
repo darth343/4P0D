@@ -7,6 +7,7 @@
 #include "Tile.h"
 #include "Node.h"
 #include "Vector3.h"
+#include <map>
 using namespace std;
 
 class CMap
@@ -35,4 +36,6 @@ public:
 	int theTileSize;
 
 	bool LoadFile(const string mapName);
+
+    std::map<int, Vector3> m_SpawnLocations;
 };

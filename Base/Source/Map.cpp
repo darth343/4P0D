@@ -96,8 +96,36 @@ bool CMap::LoadFile(const string mapName)
 					else
 						getline(ss, tempString, ',');
 					int ID = std::stoi(tempString);
+ 
 					Tile tempTile(Vector3(x, y), ID);
 					theMap[y][x] = tempTile;
+
+                    // Save pos of monsters, doors, switches etc
+
+                    Vector3 tempSpawn;
+                    tempSpawn.Set(x * theTileSize, y * theTileSize, 1);
+
+                    // 5 == Melee Monster
+                    // 6 == Ranged Monster
+                    // > 100 == Door/Switch pair
+
+                    if (ID >= 5)
+                    {
+                        m_SpawnLocations.insert(std::pair<int, Vector3>(ID, tempSpawn));
+                        if (ID > 1000)
+                        {
+                            int pairNum = ID / 1000 % 10; // Pair Number
+                            int objectType = ID / 100 % 10; // Object: 1 == Door, 2 == Switch
+                            int doorNum = ID / 10 % 10; // If applicable, 1 == first door, 2 == second door else 0
+                            int weaknessType = ID % 10;  // Weakness: 1 == BOTH, 2 == MELEE, 3 == RANGED
+
+                            if (objectType == 1)
+                            {
+                                theMap[y][x].active = true;
+                                theMap[y][x].shouldCollide = true;
+                            }
+                        }
+                    }
 				}
 			}
 		}
