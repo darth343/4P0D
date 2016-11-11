@@ -56,15 +56,15 @@ void SceneGame::Init()
 	m_player2->SetScale(Vector3(32, 32, 1));
 
     // Enemy
-    Enemy* enemy = new Enemy();
-    enemy->SetActive(true);
-    enemy->SetPos(Vector3(64, 64, 1));
-    enemy->SetScale(Vector3(32, 32, 5));   
-    enemy->SetTarget(m_player1->GetPos());
-    enemy->SetEnemyType(Enemy::RANGED);
-    enemy->SetMesh(meshList[GEO_PLAYER1]);
-    enemy->SetType(GameObject::ENEMY);
-    m_goList.push_back(enemy);
+    //Enemy* enemy = new Enemy();
+    //enemy->SetActive(true);
+    //enemy->SetPos(Vector3(64, 64, 1));
+    //enemy->SetScale(Vector3(32, 32, 5));   
+    //enemy->SetTarget(m_player1->GetPos());
+    //enemy->SetEnemyType(Enemy::RANGED);
+    //enemy->SetMesh(meshList[GEO_PLAYER1]);
+    //enemy->SetType(GameObject::ENEMY);
+    //m_goList.push_back(enemy);
 
     SpawnObjects(m_currLevel->m_SpawnMap);
 
@@ -108,7 +108,7 @@ void SceneGame::Update(const double dt)
             go->Update(dt);
             if (go->GetType() == GameObject::ENEMY)
             {
-                dynamic_cast<Enemy*>(go)->Update(dt, m_player1, m_cmap);
+                dynamic_cast<Enemy*>(go)->Update(dt, m_player1, m_currLevel->m_TerrainMap);
             }
             else if (go->GetType() == GameObject::DOOR)
             {
@@ -355,13 +355,13 @@ void SceneGame::RenderPlayer()
     modelStack.PushMatrix();
     modelStack.Translate(m_player1->GetPos().x, m_player1->GetPos().y, m_player1->GetPos().z);
     modelStack.Scale(m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize());
-    RenderMesh(meshList[GEO_PLAYER], false);
+    RenderMesh(meshList[GEO_PLAYER1], false);
     modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
     modelStack.Translate(m_player2->GetPos().x, m_player2->GetPos().y, m_player2->GetPos().z);
     modelStack.Scale(m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize());
-	RenderMesh(meshList[GEO_PLAYER], false);
+    RenderMesh(meshList[GEO_PLAYER2], false);
 	modelStack.PopMatrix();
 }
 
@@ -556,7 +556,7 @@ void SceneGame::Render()
     // Render game background
     RenderBackground();
 	glDisable(GL_DEPTH_TEST);
-    RenderTileMap(m_currLevel->m_TerrainMap, m_player1);
+    RenderTileMap(m_currLevel->m_TerrainMap);
 
     // Render Player
     RenderPlayer();
