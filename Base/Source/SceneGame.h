@@ -9,6 +9,7 @@
 #include "Enemy.h"
 #include "Projectile.h"
 #include "Door.h"
+#include "Level.h"
 
 using namespace irrklang;
 
@@ -60,6 +61,8 @@ public:
     void RenderInfoOnScreen();
 
     GameObject* FetchGO();
+
+    void GoNextLevel();
 protected:
 	CMap* m_cmap;
     CMap* m_spawnmap;
@@ -101,6 +104,10 @@ protected:
     // Pause screen
     bool button_highlighted[2];
     bool bLButtonState;
+
+    // Level
+    Level* m_currLevel;
+    bool NEXTLEVELONCE;
 };
 
 #endif
