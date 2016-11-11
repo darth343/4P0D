@@ -121,7 +121,13 @@ void SceneBase::Init()
     meshList[GEO_BACKGROUND] = MeshBuilder::GenerateQuad("background", Color(0, 0, 0), 1.f);
     meshList[GEO_BACKGROUND]->textureID = LoadTGA("Image//background.tga");
 
-    meshList[GEO_PLAYER] = MeshBuilder::GenerateQuad("player", Color(0, 1, 0), 1.f);
+	meshList[GEO_FLOOR] = MeshBuilder::GenerateTile("floor", Color(0, 0, 0), 1.f);
+	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//Ground.tga");
+
+	meshList[GEO_WALL] = MeshBuilder::GenerateTile("wall", Color(0, 0, 0), 1.f);
+	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall.tga");
+
+	meshList[GEO_PLAYER] = MeshBuilder::GenerateTile("player", Color(0, 1, 0), 1.f);
     //meshList[GEO_PLAYER]->textureID = LoadTGA("Image//character.tga");
 
     meshList[GEO_RAY] = MeshBuilder::GenerateLine("line", Color(1, 0, 0), 1.f);
@@ -209,6 +215,57 @@ void SceneBase::RenderTextOnScreen(Mesh* mesh, std::string text, Color color, fl
 	viewStack.PopMatrix();
 	projectionStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST);
+}
+
+void SceneBase::RenderTile(Mesh* mesh, float size, float x, float y)
+{
+	if (!mesh || mesh->textureID <= 0)
+		return;
+	Mtx44 ortho;
+	ortho.SetToOrtho(0, 800, 0, 600, -10, 10);
+	projectionStack.PushMatrix();
+	projectionStack.LoadMatrix(ortho);
+	viewStack.PushMatrix();
+	viewStack.LoadIdentity();
+	modelStack.PushMatrix();
+	modelStack.LoadIdentity();
+	modelStack.Translate(x, y, 0);
+	modelStack.Scale(size, size, 1);
+	glUniform1i(m_parameters[U_LIGHTENABLED], 0);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE_ENABLED], 1);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, mesh->textureID);
+	glUniform1i(m_parameters[U_COLOR_TEXTURE], 0);
+	Mtx44 MVP = projectionStack.Top() * viewStack.Top() * modelStack.Top();
+	glUniformMatrix4fv(m_parameters[U_MVP], 1, GL_FALSE, &MVP.a[0]);
+	mesh->Render();
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glUniform1i(m_parameters[U_TEXT_ENABLED], 0);
+	modelStack.PopMatrix();
+	viewStack.PopMatrix();
+	projectionStack.PopMatrix();
+}
+
+void SceneBase::RenderTileMap(CMap* map, Player* player)
+{
+	for (int y = 0; y < map->theNumOfTiles_Height; ++y)
+	{
+		for (int x = 0; x < map->theNumOfTiles_Width; ++x)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(x * map->GetTileSize() - player->GetMapOffset().x, y * map->GetTileSize() - player->GetMapOffset().y, 0);
+			modelStack.Scale(map->theTileSize, map->theTileSize, map->theTileSize);
+			if (map->theMap[y][x].BlockID == 0)
+			{
+				RenderMesh(meshList[GEO_FLOOR], false);
+			}
+			if (map->theMap[y][x].BlockID == 1)
+			{
+				RenderMesh(meshList[GEO_WALL], false);
+			}
+			modelStack.PopMatrix();
+		}
+	}
 }
 
 void SceneBase::RenderMesh(Mesh *mesh, bool enableLight)

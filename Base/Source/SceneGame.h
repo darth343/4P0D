@@ -22,7 +22,8 @@ class SceneGame : public SceneBase
         STATE_TOTAL
     };
 
-    Player* m_player;
+	Player* m_player1;
+	Player* m_player2;
 
 public:
     SceneGame();
@@ -57,6 +58,7 @@ public:
 
     GameObject* FetchGO();
 protected:
+	CMap* m_cmap;
     float backgroundOffset;   //for background
 
     //Level Data

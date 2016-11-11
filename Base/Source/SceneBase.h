@@ -9,6 +9,8 @@
 #include "Light.h"
 #include "GameObject.h"
 #include <vector>
+#include "Map.h"
+#include "Player.h"
 
 class SceneBase : public Scene
 {
@@ -53,6 +55,8 @@ public:
 
         // gameplay
         GEO_BACKGROUND,
+		GEO_FLOOR,
+		GEO_WALL,
         GEO_PLAYER,
         GEO_RAY,
 		NUM_GEOMETRY,
@@ -67,7 +71,8 @@ public:
 	virtual void Exit();
 
     virtual void TrueExit();
-
+	void RenderTile(Mesh* mesh, float size, float x, float y);
+	void RenderTileMap(CMap* map, Player* player);
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
 	void RenderMesh(Mesh *mesh, bool enableLight);
