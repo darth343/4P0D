@@ -85,6 +85,50 @@ Application::~Application()
 {
 }
 
+const Vector3 Application::GetLeftStickPos(int controllerIndex)
+{
+	if (!glfwJoystickPresent(controllerIndex))
+		return Vector3();
+	int AxesCount;
+	const float* Axes = glfwGetJoystickAxes(controllerIndex, &AxesCount);
+	Vector3 LeftStick(Axes[0], Axes[1]);
+	if (abs(LeftStick.x) < 0.08 && abs(LeftStick.y) < 0.08)
+		return Vector3();
+	else
+		return LeftStick;
+}
+
+const Vector3 Application::GetRightStickPos(int controllerIndex)
+{
+	if (!glfwJoystickPresent(controllerIndex))
+		return Vector3();
+	int AxesCount;
+	const float* Axes = glfwGetJoystickAxes(controllerIndex, &AxesCount);
+	Vector3 RightStick(Axes[2], Axes[3]);
+	if (abs(RightStick.x) < 0.08 && abs(RightStick.y) < 0.08)
+		return Vector3();
+	else
+		return RightStick;
+}
+
+bool Application::IsButtonPressed(int gamepad, GAMEPAD_CONTROLS button)
+{
+	int buttonCount;
+	const unsigned char *buttons = glfwGetJoystickButtons(gamepad, &buttonCount);
+
+	return buttons[button];
+}
+int Application::NumOfGamepadsPresent()
+{
+	int count = 0;
+	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
+		count++;
+	if (glfwJoystickPresent(GLFW_JOYSTICK_2))
+		count++;
+	return count;
+}
+
+
 void Application::Init()
 {
 	//Set the error callback

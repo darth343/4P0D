@@ -121,8 +121,8 @@ void SceneBase::Init()
     meshList[GEO_BACKGROUND] = MeshBuilder::GenerateQuad("background", Color(0, 0, 0), 1.f);
     meshList[GEO_BACKGROUND]->textureID = LoadTGA("Image//background.tga");
 
-    meshList[GEO_PLAYER] = MeshBuilder::GenerateQuad("player", Color(0, 0, 0), 1.f);
-    meshList[GEO_PLAYER]->textureID = LoadTGA("Image//character.tga");
+    meshList[GEO_PLAYER] = MeshBuilder::GenerateQuad("player", Color(0, 1, 0), 1.f);
+    //meshList[GEO_PLAYER]->textureID = LoadTGA("Image//character.tga");
 
     meshList[GEO_RAY] = MeshBuilder::GenerateLine("line", Color(1, 0, 0), 1.f);
 

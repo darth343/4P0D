@@ -235,25 +235,21 @@ void SceneGame::RenderPlayer()
 
 void SceneGame::RenderRayTracing()
 {
-    Vector3 dir = m_player->GetCursorPos() - m_player->GetPos();
-    float angle = Math::RadianToDegree(acos(dir.x / dir.Length()));
-
-    // Render cursor
-    modelStack.PushMatrix();
-    modelStack.Translate(m_player->GetCursorPos().x, m_player->GetCursorPos().y, m_player->GetCursorPos().z);
-    modelStack.Scale(5, 5, 1);
-    RenderMesh(meshList[GEO_PLAYER], false);
-    modelStack.PopMatrix();
+	Vector3 dir = Application::GetRightStickPos(0);
+    float angle = Math::RadianToDegree(atan2(dir.y, dir.x));
 
     // Render ray
     glLineWidth(3.f);
 
-    modelStack.PushMatrix();
-    modelStack.Translate(m_player->GetPos().x, m_player->GetPos().y, m_player->GetPos().z);
-    modelStack.Rotate(angle, 0, 0, 1);
-    modelStack.Scale(dir.LengthSquared(), 1, 1);
-    RenderMesh(meshList[GEO_RAY], false);
-    modelStack.PopMatrix();
+	if (!dir.IsZero())
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(m_player->GetPos().x, m_player->GetPos().y, m_player->GetPos().z);
+		modelStack.Rotate(-angle, 0, 0, 1);
+		modelStack.Scale(500, 1, 1);
+		RenderMesh(meshList[GEO_RAY], false);
+		modelStack.PopMatrix();
+	}
 
     glLineWidth(1.f);
 }
@@ -466,14 +462,4 @@ void SceneGame::Exit()
     //    delete m_ship;
     //    m_ship = NULL;
     //}
-
-    if (m_blackhole)
-    {
-        delete m_blackhole;
-        m_blackhole = NULL;
-    }
-
-    if (SE_blackhole) {
-        SE_blackhole->drop();
-    }
 }
