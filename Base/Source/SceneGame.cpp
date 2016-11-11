@@ -49,11 +49,13 @@ void SceneGame::Init()
 	m_player1->controllerID = 0;
 	m_player1->SetPos(Vector3(32, 32, 0));
 	m_player1->SetScale(Vector3(32, 32, 1));
+    m_player1->m_attackType = Player::MELEE;
 	m_player2 = new Player();
 	m_player2->Init();
 	m_player2->controllerID = 1;
 	m_player2->SetPos(Vector3(32, 32, 0));
 	m_player2->SetScale(Vector3(32, 32, 1));
+    m_player2->m_attackType = Player::RANGED;
 
     // Enemy
     //Enemy* enemy = new Enemy();
@@ -303,6 +305,8 @@ void SceneGame::RenderGO(GameObject *go)
     {
                                           modelStack.PushMatrix();
                                           modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+                                          float angle = Math::RadianToDegree(atan2(go->GetVelocity().y, go->GetVelocity().x));
+                                          modelStack.Rotate(angle, 0, 0, 1);
                                           modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
                                           RenderMesh(meshList[GEO_PLAYER1], false);
                                           modelStack.PopMatrix();
@@ -346,7 +350,7 @@ void SceneGame::RenderBackground()
     modelStack.PushMatrix();
     modelStack.Translate(m_worldWidth * 0.5f, m_worldHeight * 0.5f, 0);
     modelStack.Scale(m_worldWidth, m_worldHeight, 1.f);
-    RenderMesh(meshList[GEO_BACKGROUND], false);
+    //RenderMesh(meshList[GEO_BACKGROUND], false);
     modelStack.PopMatrix();
 }
 
@@ -646,7 +650,7 @@ void SceneGame::SpawnObjects(CMap *map)
                     Enemy* enemy = new Enemy();
                     enemy->SetActive(true);
                     enemy->SetPos(it->second);
-                    enemy->SetScale(Vector3(5, 5, 5));
+                    enemy->SetScale(Vector3(15, 15, 5));
                     enemy->SetTarget(m_player1->GetPos());
                     enemy->SetEnemyType(Enemy::MELEE);
                     enemy->SetMesh(meshList[GEO_PLAYER1]);
@@ -660,7 +664,7 @@ void SceneGame::SpawnObjects(CMap *map)
                     Enemy* enemy = new Enemy();
                     enemy->SetActive(true);
                     enemy->SetPos(it->second);
-                    enemy->SetScale(Vector3(5, 5, 5));
+                    enemy->SetScale(Vector3(15, 15, 5));
                     enemy->SetTarget(m_player1->GetPos());
                     enemy->SetEnemyType(Enemy::RANGED);
                     enemy->SetMesh(meshList[GEO_PLAYER1]);

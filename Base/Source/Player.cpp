@@ -179,9 +179,9 @@ void Player::Attack()
 				  Projectile* temp = new Projectile();
 				  temp->SetActive(true);
 				  temp->SetDmg(1);
-				  temp->SetLifetime(0.1);
-				  temp->SetPos(this->m_pos);
-				  temp->SetScale(Vector3(5, 5, 1));
+				  temp->SetLifetime(1);
+				  temp->SetScale(Vector3(15, 50, 1));
+                  temp->SetPos(this->m_pos + m_scale * 0.5);
 				  temp->SetType(GameObject::PROJECTILE_MELEE);
 
 				  Vector3 dir = Application::GetRightStickPos(controllerID);
@@ -190,7 +190,6 @@ void Player::Attack()
 
 				  m_ProjectileList.push_back(temp);
 				  break;
-				  break;
 	}
 
 	case RANGED:
@@ -198,9 +197,9 @@ void Player::Attack()
 				   Projectile* temp = new Projectile();
 				   temp->SetActive(true);
 				   temp->SetDmg(1);
-				   temp->SetLifetime(0.5);
-				   temp->SetPos(this->m_pos + m_scale * 0.5);
-				   temp->SetScale(Vector3(5, 5, 1));
+				   temp->SetLifetime(2);
+                   temp->SetScale(Vector3(30, 30, 1));
+                   temp->SetPos(this->m_pos + m_scale * 0.5);
 				   temp->SetType(GameObject::PROJECTILE_RANGED);
 
 				   Vector3 dir = Application::GetRightStickPos(controllerID);

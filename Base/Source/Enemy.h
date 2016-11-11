@@ -37,7 +37,7 @@ public:
     void Attack();
     void TakeDamage(int dmg);
 
-    static std::vector<Projectile*> m_ProjectileList;
+    std::vector<Projectile*> m_ProjectileList;
 
 private:
 	static Vector3 prevPlayerTile;

@@ -1,5 +1,5 @@
 #include "Enemy.h"
-std::vector<Projectile*> Enemy::m_ProjectileList;
+//std::vector<Projectile*> Enemy::m_ProjectileList;
 Vector3 Enemy::prevPlayerTile;
 Enemy::Enemy()
 : m_attackDelay(0)
@@ -148,7 +148,7 @@ void Enemy::Attack()
                   Projectile* temp = new Projectile();
                   temp->SetActive(true);
                   temp->SetDmg(1);
-                  temp->SetLifetime(0.1);
+                  temp->SetLifetime(0.3);
                   temp->SetPos(this->m_pos);
                   temp->SetScale(Vector3(5, 5, 1));
                   temp->SetType(GameObject::PROJECTILE_MELEE);
@@ -166,7 +166,7 @@ void Enemy::Attack()
                    Projectile* temp = new Projectile();
                    temp->SetActive(true);
                    temp->SetDmg(1);
-                   temp->SetLifetime(0.5);
+                   temp->SetLifetime(1);
                    temp->SetPos(this->m_pos);
                    temp->SetScale(Vector3(5, 5, 1));
                    temp->SetType(GameObject::PROJECTILE_RANGED);
