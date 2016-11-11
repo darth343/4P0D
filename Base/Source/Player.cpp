@@ -87,3 +87,21 @@ void Player::MovePlayer(int movedir, double dt)
     }
     }
 }
+
+void Player::Attack()
+{
+    switch (m_attackType)
+    {
+    case MELEE:
+    {
+
+                  break;
+    }
+
+    case RANGED:
+    {
+
+                   break;
+    }
+    }
+}

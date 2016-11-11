@@ -8,18 +8,15 @@
 
 class Player
 {
-private:
-	int controllerID;
-	float playerSpeed;
-    Mesh* m_mesh;
-    Vector3 m_pos;
-    Vector3 m_scale;
-
-    Vector3 m_cursorPos;
-    double x, y;
 
 
 public:
+
+    enum ATTACK_TYPE
+    {
+        MELEE,
+        RANGED,
+    };
 
     Player();
     ~Player();
@@ -39,6 +36,22 @@ public:
     Vector3 GetCursorPos();
 
     void MovePlayer(int movedir, double dt);
+
+    void Attack();
+
+private:
+    Mesh* m_mesh;
+    Vector3 m_pos;
+    Vector3 m_scale;
+
+    Vector3 m_cursorPos;
+    double x, y;
+    int controllerID;
+
+    float playerSpeed;
+
+    ATTACK_TYPE m_attackType;
+
 };
 
 #endif
