@@ -8,6 +8,7 @@
 #include <irrKlang.h>
 #include "Enemy.h"
 #include "Projectile.h"
+#include "Door.h"
 
 using namespace irrklang;
 
@@ -36,6 +37,9 @@ public:
     bool CheckCollision(GameObject *go, GameObject *go2);
     void PlayerGetHit();
     void ResetPlayer();
+
+    // Interactions
+    void Interactions(GameObject* go1, GameObject* go2);
 
     // Update
     void PauseUpdate(double dt);

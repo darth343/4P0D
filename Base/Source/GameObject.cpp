@@ -1,7 +1,10 @@
 
 #include "GameObject.h"
 
-GameObject::GameObject() 
+GameObject::GameObject()
+: m_pos(Vector3(0, 0, 0))
+, m_scale(Vector3(1, 1, 1))
+, m_active(false)
 {
 }
 
@@ -83,6 +86,16 @@ void GameObject::SetActive(bool status)
 bool GameObject::GetActive()
 {
     return m_active;
+}
+
+void GameObject::SetType(GAMEOBJECT_TYPE type)
+{
+    m_type = type;
+}
+
+GameObject::GAMEOBJECT_TYPE GameObject::GetType()
+{
+    return m_type;
 }
 
 void GameObject::Init()

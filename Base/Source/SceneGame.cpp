@@ -22,9 +22,9 @@ void SceneGame::Init()
     m_worldWidth = m_worldHeight * (float)Application::GetWindowWidth() / Application::GetWindowHeight();
 
     // Construct 10 GameObject with type GO_ASTEROID and add into m_goList
-    //for (unsigned i = 0; i < 10; ++i) {
-    //    m_goList.push_back(new GameObject(GameObject::GO_ASTEROID));
-    //}
+    for (unsigned i = 0; i < 10; ++i) {
+        m_goList.push_back(new Projectile());
+    }
     m_itFetchGO = m_goList.begin();
     m_renderCount = 0.f;
 
@@ -35,45 +35,19 @@ void SceneGame::Init()
     m_player->SetScale(Vector3(10, 10, 10));
     m_player->SetPos(Vector3(m_worldWidth * 0.5f, m_worldHeight * 0.3f, 1.f));
 
+    // Enemy
+    Enemy* enemy = new Enemy();
+    enemy->SetActive(true);
+    enemy->SetPos(Vector3(10, 10, 1));
+    enemy->SetScale(Vector3(5, 5, 5));   
+    enemy->SetTarget(m_player->GetPos());
+    enemy->SetEnemyType(Enemy::RANGED);
+    enemy->SetMesh(meshList[GEO_PLAYER]);
+    enemy->SetType(GameObject::ENEMY);
+    m_goList.push_back(enemy);
 
 
-    // OLD STUFF FROM PPHY TO CLEAR UP
 
-    // Initialize game variables
-    m_lives = 3;
-    m_score = 0;
-    m_bullets = 1;
-    missile_count = 10;
-    blackhole_count = 3;
-
-    m_gravity.Set(0, -4.9f, 0);
-
-    // Black hole skill
-    //m_blackhole = new GameObject(GameObject::GO_BLACKHOLE);
-    //m_blackhole->active = false;
-    //m_blackhole->scale.Set(15.f, 15.f, 15.f);
-    //m_blackhole->angle = 0.f;
-    //m_blackhole->rotSpeed = 20.f;
-    //m_blackhole->vel.Set(-10.f, 0, 0);   //to move it across the screen
-    //
-    //b_blackhole_activated = false;
-    //blackhole_timeElapsed = 0.0;
-    //blackhole_lifetime = 5.0;
-    //SE_blackhole = 0;
-
-    //// Construct m_ship, set active, type, scale and pos
-    //m_ship = new GameObject(GameObject::GO_SHIP);
-    //m_ship->active = true;
-    //m_ship->scale.Set(4.f, 4.f, 4.f);
-    //m_ship->force.SetZero();
-    //m_ship->mass = 10.f;
-    //ResetPlayer();
-
-    b_spawnSmallAsteroids = false;
-
-    // Pause screen
-    button_highlighted[0] = false;
-    button_highlighted[1] = false;
     bLButtonState = false;
 }
 
@@ -105,6 +79,46 @@ void SceneGame::Update(const double dt)
     SceneBase::Update(dt);
 
     m_player->Update(m_worldWidth, m_worldHeight, dt);
+
+    for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+    {
+        GameObject *go = (GameObject *)*it;
+        if (go->GetActive())
+        {
+            if (go->GetType() == GameObject::ENEMY)
+            {
+                dynamic_cast<Enemy*>(go)->Update(dt, m_player->GetPos());
+            }
+        }
+    }
+
+    // Loop thru objects
+    for (std::vector<GameObject*>::size_type i = 0; i < m_goList.size(); ++i)
+    {
+        GameObject* go = m_goList[i];
+        for (std::vector<GameObject*>::size_type i2 = 0; i2 < m_goList.size(); ++i2)
+        {
+            GameObject *go2 = m_goList[i2];
+            if (go->CheckCollisionWith(go2))
+            {
+                Interactions(go, go2);
+            }
+        }
+    }
+
+    // Loop for player projectiles
+    for (std::vector<Projectile*>::size_type i = 0; i < m_player->m_ProjectileList.size(); ++i)
+    {
+        Projectile* go = m_player->m_ProjectileList[i];
+        for (std::vector<GameObject*>::size_type i2 = 0; i2 < m_goList.size(); ++i2)
+        {
+            GameObject *go2 = m_goList[i2];
+            if (go->CheckCollisionWith(go2))
+            {
+                Interactions(go, go2);
+            }
+        }
+    }
 
     if (state == GAMEPLAY_PLAY && Application::IsKeyPressed(VK_ESCAPE))
     {
@@ -171,6 +185,37 @@ void SceneGame::GameUpdate(double dt)
 
 }
 
+void SceneGame::Interactions(GameObject* go1, GameObject* go2)
+{
+    switch (go1->GetType())
+    {
+    case GameObject::PROJECTILE_MELEE:
+    {
+        if (go2->GetType() == GameObject::SWITCH)
+            dynamic_cast<Switch*>(go2)->InteractionResponse(go1);
+
+        if (go2->GetType() == GameObject::ENEMY)
+        {
+            dynamic_cast<Enemy*>(go2)->TakeDamage(dynamic_cast<Projectile*>(go1)->GetDmg());
+            go1->SetActive(false);
+        }
+        break;
+    }
+
+    case GameObject::PROJECTILE_RANGED:
+    {
+        if (go2->GetType() == GameObject::SWITCH)
+            dynamic_cast<Switch*>(go2)->InteractionResponse(go1);
+        if (go2->GetType() == GameObject::ENEMY)
+        {
+            dynamic_cast<Enemy*>(go2)->TakeDamage(dynamic_cast<Projectile*>(go1)->GetDmg());
+            go1->SetActive(false);
+        }
+        break;
+    }
+    }
+}
+
 void SceneGame::PlayerGetHit()
 {
     //if (m_ship->active) {
@@ -209,9 +254,38 @@ bool SceneGame::CheckCollision(GameObject *go, GameObject *go2)
 
 void SceneGame::RenderGO(GameObject *go)
 {
-    //switch (go->type)
-    //{
-    //}
+    switch (go->GetType())
+    {
+    case GameObject::PROJECTILE_RANGED:
+    {
+        modelStack.PushMatrix();
+        modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+        modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
+        RenderMesh(meshList[GEO_PLAYER], false);
+        modelStack.PopMatrix();
+        break;
+    }
+
+    case GameObject::PROJECTILE_MELEE:
+    {
+                                          modelStack.PushMatrix();
+                                          modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+                                          modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
+                                          RenderMesh(meshList[GEO_PLAYER], false);
+                                          modelStack.PopMatrix();
+                                          break;
+    }
+
+    case GameObject::ENEMY:
+    {
+                                          modelStack.PushMatrix();
+                                          modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+                                          modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
+                                          RenderMesh(go->GetMesh(), false);
+                                          modelStack.PopMatrix();
+                                          break;
+    }
+    }
 }
 
 void SceneGame::RenderBackground()
@@ -418,6 +492,30 @@ void SceneGame::Render()
     for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
     {
         GameObject *go = (GameObject *)*it;
+        if (go->GetActive())
+        {
+            RenderGO(go);
+            m_renderCount += 0.1f;
+
+            if (go->GetType() == GameObject::ENEMY)
+            {
+                for (std::vector<Projectile*>::iterator it = dynamic_cast<Enemy*>(go)->m_ProjectileList.begin(); it != dynamic_cast<Enemy*>(go)->m_ProjectileList.end(); ++it)
+                {
+                    Projectile *go = (Projectile *)*it;
+                    if (go->GetActive())
+                    {
+                        RenderGO(go);
+                        m_renderCount += 0.1f;
+                    }
+                }
+            }
+        }
+    }
+
+    // Render Projectiles
+    for (std::vector<Projectile*>::iterator it = m_player->m_ProjectileList.begin(); it != m_player->m_ProjectileList.end(); ++it)
+    {
+        Projectile *go = (Projectile *)*it;
         if (go->GetActive())
         {
             RenderGO(go);

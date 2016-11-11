@@ -9,6 +9,16 @@ class GameObject
 {
 
 public:
+    enum GAMEOBJECT_TYPE
+    {
+        PROJECTILE_MELEE,
+        PROJECTILE_RANGED,
+        PLAYER,
+        ENEMY,
+        SWITCH,
+        DOOR,
+    };
+
     ~GameObject();
     enum OBJECT_COLOUR
     {
@@ -35,6 +45,9 @@ public:
     void SetColour(OBJECT_COLOUR colour);
     OBJECT_COLOUR GetColour();
 
+    void SetType(GAMEOBJECT_TYPE type);
+    GAMEOBJECT_TYPE GetType();
+
     void SetActive(bool status);
     bool GetActive();
 
@@ -53,6 +66,8 @@ protected:
     Vector3 m_scale;
     Vector3 m_velocity;
     bool m_active;
+
+    GAMEOBJECT_TYPE m_type;
 
 };
 
