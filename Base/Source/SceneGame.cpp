@@ -44,7 +44,7 @@ void SceneGame::Init()
     enemy->SetActive(true);
     enemy->SetPos(Vector3(10, 10, 1));
     enemy->SetScale(Vector3(5, 5, 5));   
-    enemy->SetTarget(m_player->GetPos());
+    enemy->SetTarget(m_player1->GetPos());
     enemy->SetEnemyType(Enemy::RANGED);
     enemy->SetMesh(meshList[GEO_PLAYER]);
     enemy->SetType(GameObject::ENEMY);
@@ -91,7 +91,7 @@ void SceneGame::Update(const double dt)
         {
             if (go->GetType() == GameObject::ENEMY)
             {
-                dynamic_cast<Enemy*>(go)->Update(dt, m_player->GetPos());
+                dynamic_cast<Enemy*>(go)->Update(dt, m_player1->GetPos());
             }
         }
     }
@@ -111,9 +111,9 @@ void SceneGame::Update(const double dt)
     }
 
     // Loop for player projectiles
-    for (std::vector<Projectile*>::size_type i = 0; i < m_player->m_ProjectileList.size(); ++i)
+    for (std::vector<Projectile*>::size_type i = 0; i < m_player1->m_ProjectileList.size(); ++i)
     {
-        Projectile* go = m_player->m_ProjectileList[i];
+        Projectile* go = m_player1->m_ProjectileList[i];
         for (std::vector<GameObject*>::size_type i2 = 0; i2 < m_goList.size(); ++i2)
         {
             GameObject *go2 = m_goList[i2];
@@ -304,13 +304,13 @@ void SceneGame::RenderBackground()
 void SceneGame::RenderPlayer()
 {
     modelStack.PushMatrix();
-	modelStack.Translate(m_player1->GetPosition().x, m_player1->GetPosition().y, m_player1->GetPosition().z);
+    modelStack.Translate(m_player1->GetPos().x, m_player1->GetPos().y, m_player1->GetPos().z);
 	modelStack.Scale(m_cmap->GetTileSize(), m_cmap->GetTileSize(), m_cmap->GetTileSize());
     RenderMesh(meshList[GEO_PLAYER], false);
     modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(m_player2->GetPosition().x, m_player2->GetPosition().y, m_player2->GetPosition().z);
+    modelStack.Translate(m_player2->GetPos().x, m_player2->GetPos().y, m_player2->GetPos().z);
 	modelStack.Scale(m_cmap->GetTileSize(), m_cmap->GetTileSize(), m_cmap->GetTileSize());
 	RenderMesh(meshList[GEO_PLAYER], false);
 	modelStack.PopMatrix();
@@ -327,7 +327,7 @@ void SceneGame::RenderRayTracing()
 	if (!dir.IsZero())
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(m_player1->GetPosition().x, m_player1->GetPosition().y, m_player1->GetPosition().z);
+        modelStack.Translate(m_player1->GetPos().x, m_player1->GetPos().y, m_player1->GetPos().z);
 		modelStack.Rotate(-angle, 0, 0, 1);
 		modelStack.Scale(500, 1, 1);
 		RenderMesh(meshList[GEO_RAY], false);
@@ -340,7 +340,7 @@ void SceneGame::RenderRayTracing()
 	if (!dir.IsZero())
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(m_player2->GetPosition().x, m_player2->GetPosition().y, m_player2->GetPosition().z);
+        modelStack.Translate(m_player2->GetPos().x, m_player2->GetPos().y, m_player2->GetPos().z);
 		modelStack.Rotate(-angle, 0, 0, 1);
 		modelStack.Scale(500, 1, 1);
 		RenderMesh(meshList[GEO_RAY], false);
@@ -537,7 +537,7 @@ void SceneGame::Render()
     }
 
     // Render Projectiles
-    for (std::vector<Projectile*>::iterator it = m_player->m_ProjectileList.begin(); it != m_player->m_ProjectileList.end(); ++it)
+    for (std::vector<Projectile*>::iterator it = m_player1->m_ProjectileList.begin(); it != m_player1->m_ProjectileList.end(); ++it)
     {
         Projectile *go = (Projectile *)*it;
         if (go->GetActive())

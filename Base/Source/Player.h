@@ -41,7 +41,7 @@ public:
     void Attack();
 
     std::vector<Projectile*> m_ProjectileList;
-
+    int controllerID;
 private:
     Mesh* m_mesh;
     Vector3 m_pos;
@@ -49,7 +49,7 @@ private:
 
     Vector3 m_cursorPos;
     double x, y;
-    int controllerID;
+
 
     float playerSpeed;
 
@@ -60,4 +60,4 @@ private:
     float m_hp; 
 
 };
-};
+#endif
