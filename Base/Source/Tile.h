@@ -7,7 +7,8 @@ class Tile
 public:
 	Tile(Vector3 pos, int ID):
 		Pos(pos),
-		BlockID(ID)
+		BlockID(ID),
+		OpacityLevel(5)
 	{};
 	Tile(){};
 	~Tile(){};
@@ -15,6 +16,7 @@ public:
 	{
 		shouldCollide = collide;
 	}
+	int OpacityLevel;
 	int BlockID;
 	Vector3 Pos;
 	bool shouldCollide;

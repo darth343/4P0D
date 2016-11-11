@@ -6,7 +6,7 @@ std::vector<Projectile*> Player::m_ProjectileList;
 
 Player::Player()
 : controllerID(0)
-, playerSpeed(2)
+, playerSpeed(120)
 , m_attackType(RANGED)
 , m_attackDelay(0)
 {
@@ -87,7 +87,7 @@ Vector3 Player::GetCursorPos()
 void Player::MovePlayer(double dt, CMap* m_cMap)
 {
 	Vector3 leftstick = Application::GetLeftStickPos(controllerID);
-	Vector3 nextPosition = m_pos + leftstick * playerSpeed;
+	Vector3 nextPosition = m_pos + leftstick * playerSpeed * dt;
 	Vector3 nextTile = nextPosition * (1.f / m_cMap->GetTileSize());
 	if (!leftstick.IsZero())
 	{
@@ -124,8 +124,42 @@ void Player::MovePlayer(double dt, CMap* m_cMap)
 				m_pos.x = nextPosition.x;
 			}
 		}
-
 	}
+	Vector3 currTile = m_pos * (1.f / m_cMap->GetTileSize());
+	currTile.x = (int)currTile.x;
+	currTile.y = (int)currTile.y;
+
+	if (prevHeroTile != currTile)
+	{
+		// Fog Stuff
+		int BlockXStart = -5;
+		int BlockYStart = -5;
+
+		while (BlockXStart + currTile.x < 0)
+		{
+			BlockXStart++;
+		}
+		while (BlockYStart + currTile.y < 0)
+		{
+			BlockYStart++;
+		}
+
+		for (int ystart = BlockYStart; ystart < 5;)
+		{
+			for (int xstart = BlockXStart; xstart < 5;)
+			{
+				if(m_cMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel > 0)
+					m_cMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel--;
+				++xstart;
+				if (xstart + currTile.x > m_cMap->GetNumOfTiles_Width() - 1)
+					break;
+			}
+			++ystart;
+			if (ystart + currTile.y> m_cMap->GetNumOfTiles_Height() - 1)
+				break;
+		}
+	}
+	prevHeroTile = currTile;
 
 }
 

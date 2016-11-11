@@ -35,17 +35,19 @@ void SceneGame::Init()
     m_player1 = new Player();
     m_player1->Init();
 	m_player1->controllerID = 0;
+	m_player1->SetPos(Vector3(32, 32, 0));
 	m_player1->SetScale(Vector3(32, 32, 1));
 	m_player2 = new Player();
 	m_player2->Init();
 	m_player2->controllerID = 1;
+	m_player2->SetPos(Vector3(32, 32, 0));
 	m_player2->SetScale(Vector3(32, 32, 1));
 
     // Enemy
     Enemy* enemy = new Enemy();
     enemy->SetActive(true);
-    enemy->SetPos(Vector3(10, 10, 1));
-    enemy->SetScale(Vector3(5, 5, 5));   
+    enemy->SetPos(Vector3(64, 64, 1));
+    enemy->SetScale(Vector3(32, 32, 5));   
     enemy->SetTarget(m_player1->GetPos());
     enemy->SetEnemyType(Enemy::RANGED);
     enemy->SetMesh(meshList[GEO_PLAYER]);
@@ -93,7 +95,7 @@ void SceneGame::Update(const double dt)
         {
             if (go->GetType() == GameObject::ENEMY)
             {
-                dynamic_cast<Enemy*>(go)->Update(dt, m_player1->GetPos());
+                dynamic_cast<Enemy*>(go)->Update(dt, m_player1, m_cmap);
             }
         }
     }
@@ -509,7 +511,7 @@ void SceneGame::Render()
     // Render game background
     RenderBackground();
 	glDisable(GL_DEPTH_TEST);
-	RenderTileMap(m_cmap, m_player1);
+	RenderTileMap(m_cmap);
 
     // Render Player
     RenderPlayer();
