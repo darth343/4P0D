@@ -33,7 +33,7 @@ void SceneGame::Init()
     m_player->Init();
     m_player->SetMesh(meshList[GEO_PLAYER]);
     m_player->SetScale(Vector3(10, 10, 10));
-
+    m_player->SetPos(Vector3(m_worldWidth * 0.5f, m_worldHeight * 0.3f, 1.f));
 
 
 
@@ -104,8 +104,7 @@ void SceneGame::Update(const double dt)
 {
     SceneBase::Update(dt);
 
-    m_player->SetPos(Vector3(m_worldWidth * 0.5f, m_worldHeight * 0.3f, 1.f));
-    m_player->Update(m_worldWidth, m_worldHeight);
+    m_player->Update(m_worldWidth, m_worldHeight, dt);
 
     if (state == GAMEPLAY_PLAY && Application::IsKeyPressed(VK_ESCAPE))
     {
@@ -429,15 +428,15 @@ void SceneGame::Render()
     RenderRayTracing();
 
     //On screen information
-    RenderInfoOnScreen();
+    //RenderInfoOnScreen();
 
-    if (state == GAMEPLAY_PAUSE) {
-        RenderPause();
-    }
+    //if (state == GAMEPLAY_PAUSE) {
+    //    RenderPause();
+    //}
 
-    if (state == GAMEPLAY_WINLOSE) {
-        RenderLevelTransition();
-    }
+    //if (state == GAMEPLAY_WINLOSE) {
+    //    RenderLevelTransition();
+    //}
 }
 
 void SceneGame::Exit()

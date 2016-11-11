@@ -87,6 +87,7 @@ bool GameObject::GetActive()
 
 void GameObject::Init()
 {
+
 }
 
 void GameObject::Update(double dt)
