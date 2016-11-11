@@ -5,10 +5,7 @@
 
 enum ParticleObject_TYPE
 {
-	P_WATER = 0,
-    P_LILY,
-    P_SPARK,
-	P_PORTAL,
+	P_SMOKE,
 	P_TOTAL
 };
 

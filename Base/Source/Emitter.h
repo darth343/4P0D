@@ -43,32 +43,11 @@ public:
 
 				switch (particle->type)
 				{
-				case ParticleObject_TYPE::P_WATER:
+				case ParticleObject_TYPE::P_SMOKE:
 				{
-					particle->scale.Set(90, 90, 90);
+													 particle->scale.Set(20, 20, 20);
 					particle->vel.Set(0, 0, 0);
 					particle->bounce = true;
-					break;
-				}
-
-				case ParticleObject_TYPE::P_LILY:
-				{
-					particle->scale.Set(20, 20, 20);
-					particle->vel.Set(0, 0, 0);
-					break;
-				}
-
-				case ParticleObject_TYPE::P_SPARK:
-				{
-					particle->scale.Set(20, 20, 20);
-					particle->vel.Set(Math::RandFloatMinMax(-1, 1), Math::RandFloatMinMax(-2, 2), Math::RandFloatMinMax(-1, 1));
-					break;
-				}
-
-				case ParticleObject_TYPE::P_PORTAL:
-				{
-					particle->scale.Set(30, 30, 30);
-					particle->vel.SetZero();
 					break;
 				}
 				}
