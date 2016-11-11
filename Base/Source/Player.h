@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include "Vector3.h"
 #include "Projectile.h"
+#include "Map.h"
 #include <vector>
 
 class Player
@@ -20,7 +21,7 @@ public:
     ~Player();
 
     void Init();
-    void Update(float worldWidth, float worldHeight, double dt);
+	void Update(double dt, CMap* m_cMap);
 
     void SetMesh(Mesh* mesh);
     Mesh* GetMesh();
@@ -36,11 +37,11 @@ public:
 
     Vector3 GetCursorPos();
 
-    void MovePlayer(int movedir, double dt);
+    void MovePlayer(double dt, CMap* m_cMap);
 
     void Attack();
 
-    std::vector<Projectile*> m_ProjectileList;
+    static std::vector<Projectile*> m_ProjectileList;
     int controllerID;
 private:
     Mesh* m_mesh;

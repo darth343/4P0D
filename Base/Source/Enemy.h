@@ -33,7 +33,7 @@ public:
     void Attack();
     void TakeDamage(int dmg);
 
-    std::vector<Projectile*> m_ProjectileList;
+    static std::vector<Projectile*> m_ProjectileList;
 
 private:
     int m_hp;

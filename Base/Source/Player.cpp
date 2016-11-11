@@ -2,9 +2,11 @@
 #include <iostream>
 #include "Application.h"
 
+std::vector<Projectile*> Player::m_ProjectileList;
+
 Player::Player()
 : controllerID(0)
-, playerSpeed(35)
+, playerSpeed(2)
 , m_attackType(RANGED)
 , m_attackDelay(0)
 {
@@ -18,15 +20,10 @@ void Player::Init()
 {
 }
 
-void Player::Update(float worldWidth, float worldHeight, double dt)
+void Player::Update(double dt, CMap* m_cMap)
 {
-    // Get the updated cursor positions from Application
-    Application::GetCursorPos(&x, &y);
-
-    m_cursorPos.Set(x / Application::GetWindowWidth() * worldWidth, 100.f - (y / Application::GetWindowHeight() * worldHeight), 1.f);
-
     // Movement
-	m_pos += Application::GetLeftStickPos(controllerID) * dt * playerSpeed;
+	MovePlayer(dt, m_cMap);
 
     // Update player's projectile
     for (std::vector<Projectile*>::iterator it = m_ProjectileList.begin(); it != m_ProjectileList.end(); ++it)
@@ -87,89 +84,11 @@ Vector3 Player::GetCursorPos()
     return m_cursorPos;
 }
 
-void Player::MovePlayer(int movedir, double dt)
-{
-    switch (movedir)
-    {
-    case 1:
-    {
-              m_pos.y += dt * 20;
-              break;
-    }
-    case 2:
-    {
-              m_pos.y -= dt * 20;
-              break;
-    }
-    case 3:
-    {
-              m_pos.x -= dt * 20;
-              break;
-    }
-    case 4:
-    {
-              m_pos.x += dt * 20;
-              break;
-    }
-    }
-}
-
-	if (theHeroPosition.x < 0)
-	{
-		theHeroPosition.x = 0;
-	}
-	else if (theHeroPosition.x >((m_cMap->GetNumOfTiles_Width() - 1) * m_cMap->GetTileSize() - mapOffset.x) - m_cMap->GetTileSize())
-	{
-		theHeroPosition.x = ((m_cMap->GetNumOfTiles_Width() - 1) * m_cMap->GetTileSize() - mapOffset.x) - m_cMap->GetTileSize();
-	}
-
-void Player::Attack()
-	{
-		if (mapOffset.y < m_cMap->GetNumOfTiles_Height() * m_cMap->GetTileSize() - 600)
-		{
-			if (theHeroPosition.y > topBorder)
-			{
-				float displacement = theHeroPosition.y - topBorder;
-				mapOffset.y += displacement;
-				theHeroPosition.y = topBorder;
-			}
-		}
-		else
-		{
-			mapOffset.y = m_cMap->GetNumOfTiles_Height() * m_cMap->GetTileSize() - 600;
-		}
-
-		if (mapOffset.y > 0)
-		{
-			if (theHeroPosition.y < bottomBorder)
-			{
-				float displacement = bottomBorder - theHeroPosition.y;
-				mapOffset.y -= displacement;
-				theHeroPosition.y = bottomBorder;
-			}
-		}
-		else
-		{
-			mapOffset.y = 0;
-		}
-	}
-	else
-	{
-		if (theHeroPosition.y + m_cMap->GetTileSize() > 600)
-		{
-			theHeroPosition.y = 600 - m_cMap->GetTileSize();
-		}
-	}
-}
-
-/********************************************************************************
- Hero Update
- ********************************************************************************/
-void Player::HeroUpdate(CMap* m_cMap, double dt)
+void Player::MovePlayer(double dt, CMap* m_cMap)
 {
 	Vector3 leftstick = Application::GetLeftStickPos(controllerID);
-	Vector3 nextPosition = theHeroPosition + leftstick * MOVEMENT_SPEED;
-	Vector3 nextTile = (nextPosition + mapOffset) * (1.f / m_cMap->GetTileSize());
+	Vector3 nextPosition = m_pos + leftstick * playerSpeed;
+	Vector3 nextTile = nextPosition * (1.f / m_cMap->GetTileSize());
 	if (!leftstick.IsZero())
 	{
 		if (leftstick.y > 0)
@@ -177,15 +96,15 @@ void Player::HeroUpdate(CMap* m_cMap, double dt)
 			if (!m_cMap->theMap[nextTile.y + 1][nextTile.x].shouldCollide
 				&& !m_cMap->theMap[nextTile.y + 1][nextTile.x + 1].shouldCollide)
 			{
-				theHeroPosition.y = nextPosition.y;
+				m_pos.y = nextPosition.y;
 			}
 		}
 		else if (leftstick.y < 0)
 		{
 			if (!m_cMap->theMap[nextTile.y][nextTile.x].shouldCollide
-			&& !m_cMap->theMap[nextTile.y][nextTile.x + 1].shouldCollide)
+				&& !m_cMap->theMap[nextTile.y][nextTile.x + 1].shouldCollide)
 			{
-				theHeroPosition.y = nextPosition.y;
+				m_pos.y = nextPosition.y;
 			}
 		}
 
@@ -194,7 +113,7 @@ void Player::HeroUpdate(CMap* m_cMap, double dt)
 			if (!m_cMap->theMap[nextTile.y][nextTile.x + 1].shouldCollide
 				&& !m_cMap->theMap[nextTile.y + 1][nextTile.x + 1].shouldCollide)
 			{
-				theHeroPosition.x = nextPosition.x;
+				m_pos.x = nextPosition.x;
 			}
 		}
 		else if (leftstick.x < 0)
@@ -202,92 +121,55 @@ void Player::HeroUpdate(CMap* m_cMap, double dt)
 			if (!m_cMap->theMap[nextTile.y][nextTile.x].shouldCollide
 				&& !m_cMap->theMap[nextTile.y + 1][nextTile.x].shouldCollide)
 			{
-				theHeroPosition.x = nextPosition.x;
+				m_pos.x = nextPosition.x;
 			}
 		}
 
 	}
-	//if (!m_cMap->theMap[nextTile.y][nextTile.x].shouldCollide && !m_cMap->theMap[nextTile.y ][nextTile.x].shouldCollide && !m_cMap->theMap[nextTile.y + 1][nextTile.x + 1].shouldCollide && !m_cMap->theMap[nextTile.y][nextTile.x + 1].shouldCollide)
-	//{
-	//	theHeroPosition.x = nextPosition.x;
-	//}
-	//if (!m_cMap->theMap[nextTile.y][nextTile.x].shouldCollide && !m_cMap->theMap[nextTile.y + 1][nextTile.x + 1].shouldCollide)
-	//{
-	//	theHeroPosition = nextPosition;
-	//}
-	//if (!m_cMap->theMap[nextTile.y][nextTile.x].shouldCollide && !m_cMap->theMap[nextTile.y][nextTile.x + 1].shouldCollide)
-	//{
-	//	theHeroPosition.x = nextPosition.x;
-	//}
-	ConstrainHero(800 * 0.2, 800 * 0.8, 600 * 0.8, 600 * 0.2, dt, m_cMap, false, false);
+
 }
 
-void Player::SetHP(float hp)
+void Player::Attack()
 {
-	playerHP = hp;
-}
+	switch (m_attackType)
+	{
+	case MELEE:
+	{
+				  Projectile* temp = new Projectile();
+				  temp->SetActive(true);
+				  temp->SetDmg(1);
+				  temp->SetLifetime(0.1);
+				  temp->SetPos(this->m_pos);
+				  temp->SetScale(Vector3(5, 5, 1));
+				  temp->SetType(GameObject::PROJECTILE_MELEE);
 
-void Player::SetMP(float mp)
-{
-	playerMP = mp;
-}
+				  Vector3 dir = Application::GetRightStickPos(controllerID);
+				  dir.y *= -1;
+				  temp->SetVelocity(dir);
 
-void Player::SetDMG(float dmg)
-{
-	playerDamage = dmg;
-}
+				  m_ProjectileList.push_back(temp);
+				  break;
+				  break;
+	}
 
-void Player::SetDEF(float def)
-{
-	playerDefense = def;
-}
+	case RANGED:
+	{
+				   Projectile* temp = new Projectile();
+				   temp->SetActive(true);
+				   temp->SetDmg(1);
+				   temp->SetLifetime(0.5);
+				   temp->SetPos(this->m_pos + m_scale * 0.5);
+				   temp->SetScale(Vector3(5, 5, 1));
+				   temp->SetType(GameObject::PROJECTILE_RANGED);
 
-float Player::GetHP()
-{
-	return playerHP;
-}
+				   Vector3 dir = Application::GetRightStickPos(controllerID);
+				   dir.y *= -1;
+				   temp->SetVelocity(dir);
 
-float Player::GetDMG()
-{
-    switch (m_attackType)
-    {
-    case MELEE:
-    {
-                  Projectile* temp = new Projectile();
-                  temp->SetActive(true);
-                  temp->SetDmg(1);
-                  temp->SetLifetime(0.1);
-                  temp->SetPos(this->m_pos);
-                  temp->SetScale(Vector3(5, 5, 1));
-                  temp->SetType(GameObject::PROJECTILE_MELEE);
-
-                  Vector3 dir = Application::GetRightStickPos(controllerID);
-                  dir.y *= -1;
-                  temp->SetVelocity(dir);
-
-                  m_ProjectileList.push_back(temp);
-                  break;
-                  break;
-    }
-
-    case RANGED:
-    {
-                   Projectile* temp = new Projectile();
-                   temp->SetActive(true);
-                   temp->SetDmg(1);
-                   temp->SetLifetime(0.5);
-                   temp->SetPos(this->m_pos);
-                   temp->SetScale(Vector3(5, 5, 1));
-                   temp->SetType(GameObject::PROJECTILE_RANGED);
-
-                   Vector3 dir = Application::GetRightStickPos(controllerID);
-                   dir.y *= -1;
-                   temp->SetVelocity(dir);
-
-                   m_ProjectileList.push_back(temp);
-                   break;
-    }
-    }
+				   m_ProjectileList.push_back(temp);
+				   break;
+	}
+	}
 }
 
 void Player::SetHP(float hp)
@@ -297,4 +179,5 @@ void Player::SetHP(float hp)
 
 float Player::GetHP()
 {
-    return m_hp;
+	return m_hp;
+}

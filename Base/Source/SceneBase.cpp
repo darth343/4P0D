@@ -253,7 +253,7 @@ void SceneBase::RenderTileMap(CMap* map, Player* player)
 		for (int x = 0; x < map->theNumOfTiles_Width; ++x)
 		{
 			modelStack.PushMatrix();
-			modelStack.Translate(x * map->GetTileSize() - player->GetMapOffset().x, y * map->GetTileSize() - player->GetMapOffset().y, 0);
+			modelStack.Translate(x * map->GetTileSize(), y * map->GetTileSize(), 0);
 			modelStack.Scale(map->theTileSize, map->theTileSize, map->theTileSize);
 			if (map->theMap[y][x].BlockID == 0)
 			{

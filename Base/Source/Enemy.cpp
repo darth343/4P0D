@@ -1,5 +1,5 @@
 #include "Enemy.h"
-
+std::vector<Projectile*> Enemy::m_ProjectileList;
 Enemy::Enemy()
 : m_attackDelay(0)
 , m_hp(1)

@@ -35,9 +35,11 @@ void SceneGame::Init()
     m_player1 = new Player();
     m_player1->Init();
 	m_player1->controllerID = 0;
+	m_player1->SetScale(Vector3(32, 32, 1));
 	m_player2 = new Player();
 	m_player2->Init();
 	m_player2->controllerID = 1;
+	m_player2->SetScale(Vector3(32, 32, 1));
 
     // Enemy
     Enemy* enemy = new Enemy();
@@ -81,8 +83,8 @@ GameObject* SceneGame::FetchGO()
 void SceneGame::Update(const double dt)
 {
     SceneBase::Update(dt);
-	m_player1->HeroUpdate(m_cmap, dt);
-	m_player2->HeroUpdate(m_cmap, dt);
+	m_player1->Update(dt, m_cmap);
+	m_player2->Update(dt, m_cmap);
 
     for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
     {
@@ -327,7 +329,7 @@ void SceneGame::RenderRayTracing()
 	if (!dir.IsZero())
 	{
 		modelStack.PushMatrix();
-        modelStack.Translate(m_player1->GetPos().x, m_player1->GetPos().y, m_player1->GetPos().z);
+		modelStack.Translate(m_player1->GetPos().x + m_player1->GetScale().x * 0.5, m_player1->GetPos().y + m_player1->GetScale().y * 0.5, m_player1->GetPos().z);
 		modelStack.Rotate(-angle, 0, 0, 1);
 		modelStack.Scale(500, 1, 1);
 		RenderMesh(meshList[GEO_RAY], false);
@@ -340,7 +342,7 @@ void SceneGame::RenderRayTracing()
 	if (!dir.IsZero())
 	{
 		modelStack.PushMatrix();
-        modelStack.Translate(m_player2->GetPos().x, m_player2->GetPos().y, m_player2->GetPos().z);
+		modelStack.Translate(m_player2->GetPos().x + m_player2->GetScale().x * 0.5, m_player2->GetPos().y + m_player2->GetScale().y * 0.5, m_player2->GetPos().z);
 		modelStack.Rotate(-angle, 0, 0, 1);
 		modelStack.Scale(500, 1, 1);
 		RenderMesh(meshList[GEO_RAY], false);
