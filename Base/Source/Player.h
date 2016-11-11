@@ -1,57 +1,74 @@
-#ifndef _PLAYER_H
-#define _PLAYER_H
-
+#pragma once
+#include "Map.h"
 #include "Mesh.h"
-#include "Vector3.h"
-
-
 
 class Player
 {
-
-
 public:
+	Player(void);
+	~Player(void);
 
-    enum ATTACK_TYPE
-    {
-        MELEE,
-        RANGED,
-    };
+	enum GEOMETRY_TYPE
+	{
+		GEO_TILEHERO_FRAME0,
+		GEO_TILEHERO_FRAME1,
+		GEO_TILEHERO_FRAME2,
+		GEO_TILEHERO_FRAME3,
+		NUM_GEOMETRY,
+	};
 
-    Player();
-    ~Player();
+	// Initialise this class instance
+	void Init(void);
+	// Update Movements
+	void MoveUpDown(const bool mode, CMap* m_cMap, double dt);
+	void MoveLeftRight(const bool mode, CMap* m_cMap, double dt);
+	// Get Position
+	Vector3 GetPosition();
+	// Set Position
+	void SetPosition(Vector3 pos);
+	// Get mapOffset
+	Vector3 GetMapOffset(void);
+	// Set mapOffset
+	void SetMapOffset(Vector3 MapOffset);
+	// Hero Update
+	void HeroUpdate(CMap* m_cMap, double dt);
+	// Get Player Mesh
+	Mesh* GetPlayerMesh();
+	// Add Player HP
+	void AddHealth(int health);
+	// Set Player Mesh
+	void SetPlayerMesh(Mesh* mesh);
+	// Get Flip Status
+	bool GetFlipStatus();
+	// Set Flip Status
+	void SetFlipStatus(bool flip);
+	// Constrain the position of the Hero to within the border
+	void ConstrainHero(const int leftBorder, const int rightBorder, 
+					   const int topBorder, const int bottomBorder, 
+					   double dt, CMap* m_cMap, bool constrainX, bool constrainY);
 
-    void Init();
-    void Update(float worldWidth, float worldHeight, double dt);
+	void SetHP(float hp);	
+	void SetMP(float mp);
+	void SetDMG(float dmg);	
+	void SetDEF(float def);
+	void TakeDMG(float dmg);
+	void UseMP(float mp);
+	void Reset();
 
-    void SetMesh(Mesh* mesh);
-    Mesh* GetMesh();
-
-    void SetPos(const Vector3& pos);
-    Vector3 GetPos();
-
-    void SetScale(const Vector3& scale);
-    Vector3 GetScale();
-
-    Vector3 GetCursorPos();
-
-    void MovePlayer(int movedir, double dt);
-
-    void Attack();
-
+	float GetHP();
+	float GetMP();
+	float GetDMG();
+	float GetDEF();
+	int controllerID;
 private:
-    Mesh* m_mesh;
-    Vector3 m_pos;
-    Vector3 m_scale;
-
-    Vector3 m_cursorPos;
-    double x, y;
-    int controllerID;
-
-    float playerSpeed;
-
-    ATTACK_TYPE m_attackType;
-
+	// Hero's information
+	Vector3 theHeroPosition;
+	bool FlipStatus;
+	Mesh* playerMesh;
+	// For scrolling.
+	static Vector3 mapOffset;
+	float playerHP;
+	float playerMP;
+	float playerDamage;
+	float playerDefense;
 };
-
-#endif

@@ -15,6 +15,9 @@ void SceneGame::Init()
 {
     SceneBase::Init();
 
+	m_cmap = new CMap();
+	m_cmap->Init(Application::GetWindowHeight(), Application::GetWindowWidth(), 32);
+	m_cmap->LoadFile("Level//testMap.csv");
     Math::InitRNG();
 
     // World Coordinates
@@ -29,11 +32,12 @@ void SceneGame::Init()
     m_renderCount = 0.f;
 
     // Init Player
-    m_player = new Player();
-    m_player->Init();
-    m_player->SetMesh(meshList[GEO_PLAYER]);
-    m_player->SetScale(Vector3(10, 10, 10));
-    m_player->SetPos(Vector3(m_worldWidth * 0.5f, m_worldHeight * 0.3f, 1.f));
+    m_player1 = new Player();
+    m_player1->Init();
+	m_player1->controllerID = 0;
+	m_player2 = new Player();
+	m_player2->Init();
+	m_player2->controllerID = 1;
 
 
 
@@ -103,8 +107,8 @@ GameObject* SceneGame::FetchGO()
 void SceneGame::Update(const double dt)
 {
     SceneBase::Update(dt);
-
-    m_player->Update(m_worldWidth, m_worldHeight, dt);
+	m_player1->HeroUpdate(m_cmap, dt);
+	m_player2->HeroUpdate(m_cmap, dt);
 
     if (state == GAMEPLAY_PLAY && Application::IsKeyPressed(VK_ESCAPE))
     {
@@ -226,10 +230,16 @@ void SceneGame::RenderBackground()
 void SceneGame::RenderPlayer()
 {
     modelStack.PushMatrix();
-    modelStack.Translate(m_player->GetPos().x, m_player->GetPos().y, m_player->GetPos().z);
-    modelStack.Scale(m_player->GetScale().x, m_player->GetScale().y, m_player->GetScale().z);
-    RenderMesh(m_player->GetMesh(), false);
+	modelStack.Translate(m_player1->GetPosition().x, m_player1->GetPosition().y, m_player1->GetPosition().z);
+	modelStack.Scale(m_cmap->GetTileSize(), m_cmap->GetTileSize(), m_cmap->GetTileSize());
+    RenderMesh(meshList[GEO_PLAYER], false);
     modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(m_player2->GetPosition().x, m_player2->GetPosition().y, m_player2->GetPosition().z);
+	modelStack.Scale(m_cmap->GetTileSize(), m_cmap->GetTileSize(), m_cmap->GetTileSize());
+	RenderMesh(meshList[GEO_PLAYER], false);
+	modelStack.PopMatrix();
 }
 
 void SceneGame::RenderRayTracing()
@@ -243,13 +253,25 @@ void SceneGame::RenderRayTracing()
 	if (!dir.IsZero())
 	{
 		modelStack.PushMatrix();
-		modelStack.Translate(m_player->GetPos().x, m_player->GetPos().y, m_player->GetPos().z);
+		modelStack.Translate(m_player1->GetPosition().x, m_player1->GetPosition().y, m_player1->GetPosition().z);
 		modelStack.Rotate(-angle, 0, 0, 1);
 		modelStack.Scale(500, 1, 1);
 		RenderMesh(meshList[GEO_RAY], false);
 		modelStack.PopMatrix();
 	}
 
+
+	dir = Application::GetRightStickPos(1);
+	angle = Math::RadianToDegree(atan2(dir.y, dir.x));
+	if (!dir.IsZero())
+	{
+		modelStack.PushMatrix();
+		modelStack.Translate(m_player2->GetPosition().x, m_player2->GetPosition().y, m_player2->GetPosition().z);
+		modelStack.Rotate(-angle, 0, 0, 1);
+		modelStack.Scale(500, 1, 1);
+		RenderMesh(meshList[GEO_RAY], false);
+		modelStack.PopMatrix();
+	}
     glLineWidth(1.f);
 }
 
@@ -395,7 +417,7 @@ void SceneGame::Render()
 
     // Projection matrix : Orthographic Projection
     Mtx44 projection;
-    projection.SetToOrtho(0, m_worldWidth, 0, m_worldHeight, -10, 10);
+    projection.SetToOrtho(0, 800, 0, 600, -10, 10);
     projectionStack.LoadMatrix(projection);
 
     // Camera matrix
@@ -410,6 +432,8 @@ void SceneGame::Render()
 
     // Render game background
     RenderBackground();
+	glDisable(GL_DEPTH_TEST);
+	RenderTileMap(m_cmap, m_player1);
 
     // Render Player
     RenderPlayer();
@@ -426,7 +450,7 @@ void SceneGame::Render()
     }
 
     RenderRayTracing();
-
+	glEnable(GL_DEPTH_TEST);
     //On screen information
     //RenderInfoOnScreen();
 
@@ -449,10 +473,10 @@ void SceneGame::Exit()
         delete go;
         m_goList.pop_back();
     }
-    if (m_player)
+    if (m_player1)
     {
-        delete m_player;
-        m_player = NULL;
+        delete m_player1;
+        m_player1 = NULL;
     }
 
 

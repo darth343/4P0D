@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\Enemy.cpp" />
+    <ClCompile Include="Source\Map.cpp" />
     <ClCompile Include="Source\Particle.cpp" />
     <ClCompile Include="Source\Player.cpp" />
     <ClCompile Include="Source\Projectile.cpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="Source\Application.h" />
     <ClInclude Include="Source\Emitter.h" />
     <ClInclude Include="Source\Enemy.h" />
+    <ClInclude Include="Source\Node.h" />
     <ClInclude Include="Source\Particle.h" />
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Projectile.h" />
@@ -53,6 +55,7 @@
     <ClInclude Include="Source\SceneBase.h" />
     <ClInclude Include="Source\SceneManager.h" />
     <ClInclude Include="Source\shader.hpp" />
+    <ClInclude Include="Source\Tile.h" />
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
     <ClInclude Include="Source\WaveData.h" />
