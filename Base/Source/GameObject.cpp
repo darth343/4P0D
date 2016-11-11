@@ -1,15 +1,7 @@
 
 #include "GameObject.h"
 
-int GameObject::GO_COUNT = 0;
-
-GameObject::GameObject(GAMEOBJECT_TYPE typeValue) 
-	: type(typeValue),
-	scale(1, 1, 1),
-	active(false),
-	mass(1.f),
-    angle(0.f),
-    rotSpeed(0.f)
+GameObject::GameObject() 
 {
 }
 
@@ -19,6 +11,66 @@ GameObject::~GameObject()
 
 void GameObject::SetInactive()
 {
-    active = false;
-    --GameObject::GO_COUNT;
+    m_active = false;
+}
+
+void GameObject::SetMesh(Mesh* mesh)
+{
+    this->m_mesh = mesh;
+}
+
+Mesh* GameObject::GetMesh()
+{
+    return m_mesh;
+}
+
+void GameObject::SetPos(const Vector3& pos)
+{
+    this->m_pos = pos;
+}
+
+Vector3 GameObject::GetPos()
+{
+    return m_pos;
+}
+
+void GameObject::SetScale(const Vector3& scale)
+{
+    this->m_scale = scale;
+}
+
+Vector3 GameObject::GetScale()
+{
+    return m_scale;
+}
+
+void GameObject::SetColour(OBJECT_COLOUR colour)
+{
+    m_colour = colour;
+}
+
+GameObject::OBJECT_COLOUR GameObject::GetColour()
+{
+    return m_colour;
+}
+
+void GameObject::SetVelocity(Vector3 vel)
+{
+    m_velocity = vel;
+}
+
+Vector3 GameObject::GetVelocity()
+{
+    return m_velocity;
+}
+
+bool GameObject::CheckCollisionWith(GameObject* otherGo)
+{
+    float distSquare = (this->m_pos - otherGo->m_pos).LengthSquared();
+    float combinedRadiusSquare = (this->m_scale.x + otherGo->m_scale.x) * (this->m_scale.y + otherGo->m_scale.y);
+
+    if (distSquare <= combinedRadiusSquare) {
+        return true;
+    }
+    return false;
 }

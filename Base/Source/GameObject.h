@@ -2,64 +2,58 @@
 #define GAME_OBJECT_H
 
 #include "Vector3.h"
+#include "Mesh.h"
+#include <string>
 
-struct GameObject
+class GameObject
 {
-	enum GAMEOBJECT_TYPE
-	{
-		GO_NONE = 0,
-		GO_BALL,
-		GO_CUBE,
-        GO_ASTEROID,    //asteroid
-        GO_METEOR,      //meteor
-        GO_SHIP,        //player ship
-        GO_BULLET,      //player bullet
-        GO_BLACKHOLE,   //player black hole skill
-        GO_MISSILE,     //player missile
-        GO_ENEMY_SHIP,  //enemy ship
-        GO_ENEMY_BULLET,    //enemy bullet
-        GO_DROP,    //drops from enemies
-		GO_TOTAL, //must be last
-	};
 
-    enum DROP_TYPE
+public:
+
+    enum OBJECT_COLOUR
     {
-        DROP_ADDLIFE,   //gain 1 life
-        DROP_ADDBULLET, //gain an extra bullet
-        DROP_BLACKHOLE, //gain 1 black hole to use
-        DROP_TOTAL
+        RED,
+        GREEN,
+        BLUE,
     };
 
-    enum ENEMY_TYPE
-    {
-        ENEMY_BOSS1,
-        ENEMY_BOSS2,
-        ENEMY_TOTAL
-    };
+    virtual void Init();
+    virtual void Update(double dt);
 
-	GAMEOBJECT_TYPE type;
-	Vector3 pos;
-	Vector3 vel;
-	Vector3 scale;
-    Vector3 direction;  //direction of movement
-    Vector3 force;  //force for movement
-	bool active;
-	float mass;
-    float angle;    //angle the object is rotated by
-    float rotSpeed; //speed at which the object rotates
-    int hp;     //hp of enemy objects
-    DROP_TYPE droptype;     //type of drop
-    GameObject* target;     //for missiles
-    double shootTimeElapsed;
-    double shootRate;
-    ENEMY_TYPE bosstype;
+    void SetMesh(Mesh* mesh);
+    Mesh* GetMesh();
 
-	GameObject(GAMEOBJECT_TYPE typeValue = GO_BALL);
-	~GameObject();
+    void SetPos(const Vector3& pos);
+    Vector3 GetPos();
+
+    void SetScale(const Vector3& scale);
+    Vector3 GetScale();
+
+    void SetVelocity(Vector3 m_velocity);
+    Vector3 GetVelocity();
+
+    void SetColour(OBJECT_COLOUR colour);
+    OBJECT_COLOUR GetColour();
+
+    void SetVelocity(Vector3 vel);
+    Vector3 GetVelocity();
 
     void SetInactive();
 
-    static int GO_COUNT;    //count of all the GameObjects
+    bool CheckCollisionWith(GameObject* otherGo);
+
+protected:
+    GameObject();
+    ~GameObject();
+
+    std::string m_name;
+    OBJECT_COLOUR m_colour;
+    Mesh* m_mesh;
+    Vector3 m_pos;
+    Vector3 m_scale;
+    Vector3 m_velocity;
+    bool m_active;
+
 };
 
 #endif
