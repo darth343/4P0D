@@ -47,20 +47,22 @@ void SceneGame::Init()
     m_player1 = new Player();
     m_player1->Init();
 	m_player1->controllerID = 0;
+	m_player1->SetPos(Vector3(32, 32, 0));
 	m_player1->SetScale(Vector3(32, 32, 1));
 	m_player2 = new Player();
 	m_player2->Init();
 	m_player2->controllerID = 1;
+	m_player2->SetPos(Vector3(32, 32, 0));
 	m_player2->SetScale(Vector3(32, 32, 1));
 
     // Enemy
     Enemy* enemy = new Enemy();
     enemy->SetActive(true);
-    enemy->SetPos(Vector3(10, 10, 1));
-    enemy->SetScale(Vector3(5, 5, 5));   
+    enemy->SetPos(Vector3(64, 64, 1));
+    enemy->SetScale(Vector3(32, 32, 5));   
     enemy->SetTarget(m_player1->GetPos());
     enemy->SetEnemyType(Enemy::RANGED);
-    enemy->SetMesh(meshList[GEO_PLAYER]);
+    enemy->SetMesh(meshList[GEO_PLAYER1]);
     enemy->SetType(GameObject::ENEMY);
     m_goList.push_back(enemy);
 
@@ -106,7 +108,7 @@ void SceneGame::Update(const double dt)
             go->Update(dt);
             if (go->GetType() == GameObject::ENEMY)
             {
-                dynamic_cast<Enemy*>(go)->Update(dt, m_player1->GetPos());
+                dynamic_cast<Enemy*>(go)->Update(dt, m_player1, m_cmap);
             }
             else if (go->GetType() == GameObject::DOOR)
             {
@@ -292,7 +294,7 @@ void SceneGame::RenderGO(GameObject *go)
         modelStack.PushMatrix();
         modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
         modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-        RenderMesh(meshList[GEO_PLAYER], false);
+        RenderMesh(meshList[GEO_PLAYER1], false);
         modelStack.PopMatrix();
         break;
     }
@@ -302,7 +304,7 @@ void SceneGame::RenderGO(GameObject *go)
                                           modelStack.PushMatrix();
                                           modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
                                           modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-                                          RenderMesh(meshList[GEO_PLAYER], false);
+                                          RenderMesh(meshList[GEO_PLAYER1], false);
                                           modelStack.PopMatrix();
                                           break;
     }
@@ -647,7 +649,7 @@ void SceneGame::SpawnObjects(CMap *map)
                     enemy->SetScale(Vector3(5, 5, 5));
                     enemy->SetTarget(m_player1->GetPos());
                     enemy->SetEnemyType(Enemy::MELEE);
-                    enemy->SetMesh(meshList[GEO_PLAYER]);
+                    enemy->SetMesh(meshList[GEO_PLAYER1]);
                     enemy->SetType(GameObject::ENEMY);
                     m_goList.push_back(enemy);
                     break;
@@ -661,7 +663,7 @@ void SceneGame::SpawnObjects(CMap *map)
                     enemy->SetScale(Vector3(5, 5, 5));
                     enemy->SetTarget(m_player1->GetPos());
                     enemy->SetEnemyType(Enemy::RANGED);
-                    enemy->SetMesh(meshList[GEO_PLAYER]);
+                    enemy->SetMesh(meshList[GEO_PLAYER1]);
                     enemy->SetType(GameObject::ENEMY);
                     m_goList.push_back(enemy);
                     break;
@@ -682,7 +684,7 @@ void SceneGame::SpawnObjects(CMap *map)
                 door->SetActive(true);
                 door->SetPos(it->second);
                 door->SetScale(Vector3(map->GetTileSize(), map->GetTileSize(), 5));
-                door->SetMesh(meshList[GEO_PLAYER]);
+                door->SetMesh(meshList[GEO_PLAYER1]);
                 door->SetType(GameObject::DOOR);
 
                 typedef std::map<int, Vector3>::iterator it_type;
@@ -695,7 +697,7 @@ void SceneGame::SpawnObjects(CMap *map)
                         temp->SetActive(true);
                         temp->SetPos(it2->second);
                         temp->SetScale(Vector3(map->GetTileSize(), map->GetTileSize(), 5));
-                        temp->SetMesh(meshList[GEO_PLAYER]);
+                        temp->SetMesh(meshList[GEO_PLAYER1]);
                         temp->SetType(GameObject::SWITCH);
 
                         if (weaknessType == 1)

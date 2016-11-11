@@ -56,6 +56,7 @@ uniform bool lightEnabled;
 uniform Light lights[MAX_LIGHTS];
 uniform Material material;
 uniform int numLights;
+uniform float transparency;
 uniform bool colorTextureEnabled;
 uniform sampler2D colorTexture;
 uniform bool textEnabled;
@@ -121,9 +122,11 @@ void main(){
 			if(textEnabled == true)
 				color = texture2D( colorTexture, texCoord ) * vec4( textColor, 1 );
 			else
-				color = texture2D( colorTexture, texCoord );
+				color = texture2D( colorTexture, texCoord ) * vec4(1, 1, 1, transparency);
 		}
 		else
 			color = vec4( fragmentColor, 1 );
+		
+
 	}
 }

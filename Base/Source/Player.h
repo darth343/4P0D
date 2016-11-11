@@ -44,6 +44,7 @@ public:
     static std::vector<Projectile*> m_ProjectileList;
     int controllerID;
 private:
+	Vector3 prevHeroTile;
     Mesh* m_mesh;
     Vector3 m_pos;
     Vector3 m_scale;

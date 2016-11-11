@@ -3,6 +3,9 @@
 
 #include "GameObject.h"
 #include "Projectile.h"
+#include "Pathfinder.h"
+#include "Player.h"
+#include "Map.h"
 #include <vector>
 
 class Enemy : public GameObject
@@ -28,17 +31,21 @@ public:
     Vector3 GetTarget();
 
     virtual void Init();
-    virtual void Update(double dt, Vector3 newTarget);
-
+	virtual void Update(double dt, Player* thePlayer, CMap* m_cMap);
+	void MoveToPlayer(double dt, Player* thePlayer, CMap* m_cMap);
+	void MoveTo(double dt, Tile nextTile, int TileSize);
     void Attack();
     void TakeDamage(int dmg);
 
     static std::vector<Projectile*> m_ProjectileList;
 
 private:
+	static Vector3 prevPlayerTile;
+	float speed;
     int m_hp;
     ENEMY_TYPE m_enemyType;
-    Vector3 m_target;
+	Vector3 m_target;
+	Pathfinder pathfinder;
     double m_attackDelay;
 
 };

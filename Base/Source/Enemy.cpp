@@ -1,8 +1,10 @@
 #include "Enemy.h"
 std::vector<Projectile*> Enemy::m_ProjectileList;
+Vector3 Enemy::prevPlayerTile;
 Enemy::Enemy()
 : m_attackDelay(0)
 , m_hp(1)
+, speed(100)
 {}
 
 Enemy::~Enemy()
@@ -10,19 +12,81 @@ Enemy::~Enemy()
 
 void Enemy::Init()
 {
-    
 }
 
-void Enemy::Update(double dt, Vector3 newTarget)
+void Enemy::MoveTo(double dt, Tile nextTile, int TileSize)
+{
+	if (nextTile.Pos.x * TileSize < m_pos.x)
+	{
+		m_pos.x -= dt * speed;
+		if (nextTile.Pos.x * TileSize > m_pos.x)
+		{
+			m_pos.x = nextTile.Pos.x * TileSize;
+		}
+	}
+	else if	(nextTile.Pos.x * TileSize > m_pos.x)
+	{
+		m_pos.x += dt * speed;
+		if (nextTile.Pos.x * TileSize < m_pos.x)
+		{
+			m_pos.x = nextTile.Pos.x * TileSize;
+		}
+	}
+	if (nextTile.Pos.y * TileSize < m_pos.y)
+	{
+		m_pos.y -= dt * speed;
+		if (nextTile.Pos.y * TileSize > m_pos.y)
+		{
+			m_pos.y = nextTile.Pos.y * TileSize;
+		}
+	}
+	else if (nextTile.Pos.y * TileSize > m_pos.y)
+	{
+		m_pos.y += dt * speed;
+		if (nextTile.Pos.y * TileSize < m_pos.y)
+		{
+			m_pos.y = nextTile.Pos.y * TileSize;
+		}
+	}
+	if (nextTile.Pos.x * TileSize == m_pos.x && nextTile.Pos.y * TileSize == m_pos.y)
+		pathfinder.pathToEnd.pop_back();
+}
+
+void Enemy::MoveToPlayer(double dt, Player* thePlayer, CMap* m_cMap)
+{
+	Vector3 currentTile = this->m_pos * (1.f / m_cMap->GetTileSize());
+	Vector3 playerTile = thePlayer->GetPos() * (1.f / m_cMap->GetTileSize());
+	pathfinder.FindPath(m_cMap->theMap[currentTile.y][currentTile.x], m_cMap->theMap[playerTile.y][playerTile.x], m_cMap);
+	if (pathfinder.found)
+	{
+		Tile nextTile = pathfinder.pathToEnd.back();
+		MoveTo(dt, nextTile, m_cMap->GetTileSize());
+		if (pathfinder.pathToEnd.size() > 1)
+		{
+			if (abs((prevPlayerTile - playerTile).Length()) > 1)
+			{
+				pathfinder.initializedStartandEnd = false;
+				pathfinder.found = false;
+			}
+		}
+		else
+		{
+			pathfinder.initializedStartandEnd = false;
+			pathfinder.found = false;
+		}
+		prevPlayerTile = playerTile;
+	}
+}
+
+
+void Enemy::Update(double dt, Player* thePlayer, CMap* m_cMap)
 {
     if (m_hp <= 0)
         m_active = false;
+	MoveToPlayer(dt, thePlayer, m_cMap);
 
-    if (newTarget != m_target)
-        m_target = newTarget;
-
-    Vector3 dir = (m_target - this->m_pos).Normalized();
-    m_pos = m_pos + dir * 0.3;
+    //Vector3 dir = (m_target - this->m_pos).Normalized();
+    //m_pos = m_pos + dir * 0.3;
 
     for (std::vector<Projectile*>::iterator it = m_ProjectileList.begin(); it != m_ProjectileList.end(); ++it)
     {

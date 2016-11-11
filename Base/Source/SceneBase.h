@@ -23,6 +23,7 @@ class SceneBase : public Scene
 		U_MATERIAL_DIFFUSE,
 		U_MATERIAL_SPECULAR,
 		U_MATERIAL_SHININESS,
+		U_TRANSPARENCY,
 		U_LIGHTENABLED,
 		U_NUMLIGHTS,
 		U_LIGHT0_TYPE,
@@ -57,7 +58,8 @@ public:
         GEO_BACKGROUND,
 		GEO_FLOOR,
 		GEO_WALL,
-        GEO_PLAYER,
+		GEO_PLAYER1,
+		GEO_PLAYER2,
         GEO_RAY,
 		NUM_GEOMETRY,
 	};
@@ -72,10 +74,11 @@ public:
 
     virtual void TrueExit();
 	void RenderTile(Mesh* mesh, float size, float x, float y);
-	void RenderTileMap(CMap* map, Player* player);
+	void RenderTileMap(CMap* map);
+	void RenderFogMap(CMap* map);
 	void RenderText(Mesh* mesh, std::string text, Color color);
 	void RenderTextOnScreen(Mesh* mesh, std::string text, Color color, float size, float x, float y);
-	void RenderMesh(Mesh *mesh, bool enableLight);
+	void RenderMesh(Mesh *mesh, bool enableLight, float Opacity = 1.f);
 	void RenderGO(GameObject *go);
 
 	GameObject* FetchGO();

@@ -23,6 +23,7 @@
     <ClCompile Include="Source\Switch.cpp" />
     <ClCompile Include="Source\Utility.cpp" />
     <ClCompile Include="Source\WaveData.cpp" />
+    <ClCompile Include="Source\Pathfinder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h" />
@@ -53,6 +54,7 @@
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
     <ClInclude Include="Source\WaveData.h" />
+    <ClInclude Include="Source\Pathfinder.h" />
     <ClInclude Include="Source\Map.h" />
     <ClInclude Include="Source\Level.h" />
   </ItemGroup>

@@ -47,6 +47,7 @@ void SceneBase::Init()
 	m_parameters[U_MATERIAL_DIFFUSE] = glGetUniformLocation(m_programID, "material.kDiffuse");
 	m_parameters[U_MATERIAL_SPECULAR] = glGetUniformLocation(m_programID, "material.kSpecular");
 	m_parameters[U_MATERIAL_SHININESS] = glGetUniformLocation(m_programID, "material.kShininess");
+	m_parameters[U_TRANSPARENCY] = glGetUniformLocation(m_programID, "transparency");
 	m_parameters[U_LIGHTENABLED] = glGetUniformLocation(m_programID, "lightEnabled");
 	m_parameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
 	m_parameters[U_LIGHT0_TYPE] = glGetUniformLocation(m_programID, "lights[0].type");
@@ -127,8 +128,10 @@ void SceneBase::Init()
 	meshList[GEO_WALL] = MeshBuilder::GenerateTile("wall", Color(0, 0, 0), 1.f);
 	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall.tga");
 
-	meshList[GEO_PLAYER] = MeshBuilder::GenerateTile("player", Color(0, 1, 0), 1.f);
-    //meshList[GEO_PLAYER]->textureID = LoadTGA("Image//character.tga");
+	meshList[GEO_PLAYER1] = MeshBuilder::GenerateTile("player", Color(0, 1, 0), 1.f);
+    meshList[GEO_PLAYER1]->textureID = LoadTGA("Image//Sword.tga");
+	meshList[GEO_PLAYER2] = MeshBuilder::GenerateTile("player 2", Color(0, 1, 0), 1.f);
+	meshList[GEO_PLAYER2]->textureID = LoadTGA("Image//Staff.tga");
 
     meshList[GEO_RAY] = MeshBuilder::GenerateLine("line", Color(1, 0, 0), 1.f);
 
@@ -246,7 +249,29 @@ void SceneBase::RenderTile(Mesh* mesh, float size, float x, float y)
 	projectionStack.PopMatrix();
 }
 
-void SceneBase::RenderTileMap(CMap* map, Player* player)
+void SceneBase::RenderTileMap(CMap* map)
+{
+	for (int y = 0; y < map->theNumOfTiles_Height; ++y)
+	{
+		for (int x = 0; x < map->theNumOfTiles_Width; ++x)
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(x * map->GetTileSize(), y * map->GetTileSize(), 0);
+			modelStack.Scale(map->theTileSize, map->theTileSize, map->theTileSize);
+			float opacity = 1 - (map->theMap[y][x].OpacityLevel * 0.2);
+			if (map->theMap[y][x].BlockID == 0)
+			{
+				RenderMesh(meshList[GEO_FLOOR], false, opacity);
+			}
+			if (map->theMap[y][x].BlockID == 1)
+			{
+				RenderMesh(meshList[GEO_WALL], false, opacity);
+			}
+			modelStack.PopMatrix();
+		}
+	}
+}
+void SceneBase::RenderFogMap(CMap* map)
 {
 	for (int y = 0; y < map->theNumOfTiles_Height; ++y)
 	{
@@ -268,7 +293,7 @@ void SceneBase::RenderTileMap(CMap* map, Player* player)
 	}
 }
 
-void SceneBase::RenderMesh(Mesh *mesh, bool enableLight)
+void SceneBase::RenderMesh(Mesh *mesh, bool enableLight, float opacity)
 {
 	Mtx44 MVP, modelView, modelView_inverse_transpose;
 	
@@ -287,9 +312,11 @@ void SceneBase::RenderMesh(Mesh *mesh, bool enableLight)
 		glUniform3fv(m_parameters[U_MATERIAL_DIFFUSE], 1, &mesh->material.kDiffuse.r);
 		glUniform3fv(m_parameters[U_MATERIAL_SPECULAR], 1, &mesh->material.kSpecular.r);
 		glUniform1f(m_parameters[U_MATERIAL_SHININESS], mesh->material.kShininess);
+		glUniform1f(m_parameters[U_TRANSPARENCY], opacity);
 	}
 	else
 	{	
+		glUniform1f(m_parameters[U_TRANSPARENCY], opacity);
 		glUniform1i(m_parameters[U_LIGHTENABLED], 0);
 	}
 	if(mesh->textureID > 0)
