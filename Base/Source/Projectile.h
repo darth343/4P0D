@@ -9,10 +9,14 @@ public:
     Projectile();
     ~Projectile();
 
+    void SetDmg(int dmg);
+    int GetDmg();
+
     virtual void Init();
     virtual void Update(double dt);
-
 private:
+    int m_dmg;
+
 
 };
 

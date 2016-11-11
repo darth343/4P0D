@@ -12,16 +12,22 @@ public:
     enum ENEMY_TYPE
     {
         NORMAL,
+        MELEE,
+        RANGED,
     };
 
     void SetHP(int hp);
     int GetHp();
+
+    void SetType(ENEMY_TYPE type);
+    ENEMY_TYPE GetType();
 
     virtual void Init();
     virtual void Update(double dt);
 
 private:
     int m_hp;
+    ENEMY_TYPE m_type;
 };
 
 #endif

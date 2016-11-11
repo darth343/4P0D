@@ -74,3 +74,22 @@ bool GameObject::CheckCollisionWith(GameObject* otherGo)
     }
     return false;
 }
+
+void GameObject::SetActive(bool status)
+{
+    m_active = status;
+}
+
+bool GameObject::GetActive()
+{
+    return m_active;
+}
+
+void GameObject::Init()
+{
+}
+
+void GameObject::Update(double dt)
+{
+
+}

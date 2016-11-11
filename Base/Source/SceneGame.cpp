@@ -22,9 +22,9 @@ void SceneGame::Init()
     m_worldWidth = m_worldHeight * (float)Application::GetWindowWidth() / Application::GetWindowHeight();
 
     // Construct 10 GameObject with type GO_ASTEROID and add into m_goList
-    for (unsigned i = 0; i < 10; ++i) {
-        m_goList.push_back(new GameObject(GameObject::GO_ASTEROID));
-    }
+    //for (unsigned i = 0; i < 10; ++i) {
+    //    m_goList.push_back(new GameObject(GameObject::GO_ASTEROID));
+    //}
     m_itFetchGO = m_goList.begin();
     m_renderCount = 0.f;
 
@@ -49,25 +49,25 @@ void SceneGame::Init()
     m_gravity.Set(0, -4.9f, 0);
 
     // Black hole skill
-    m_blackhole = new GameObject(GameObject::GO_BLACKHOLE);
-    m_blackhole->active = false;
-    m_blackhole->scale.Set(15.f, 15.f, 15.f);
-    m_blackhole->angle = 0.f;
-    m_blackhole->rotSpeed = 20.f;
-    m_blackhole->vel.Set(-10.f, 0, 0);   //to move it across the screen
-    
-    b_blackhole_activated = false;
-    blackhole_timeElapsed = 0.0;
-    blackhole_lifetime = 5.0;
-    SE_blackhole = 0;
+    //m_blackhole = new GameObject(GameObject::GO_BLACKHOLE);
+    //m_blackhole->active = false;
+    //m_blackhole->scale.Set(15.f, 15.f, 15.f);
+    //m_blackhole->angle = 0.f;
+    //m_blackhole->rotSpeed = 20.f;
+    //m_blackhole->vel.Set(-10.f, 0, 0);   //to move it across the screen
+    //
+    //b_blackhole_activated = false;
+    //blackhole_timeElapsed = 0.0;
+    //blackhole_lifetime = 5.0;
+    //SE_blackhole = 0;
 
-    // Construct m_ship, set active, type, scale and pos
-    m_ship = new GameObject(GameObject::GO_SHIP);
-    m_ship->active = true;
-    m_ship->scale.Set(4.f, 4.f, 4.f);
-    m_ship->force.SetZero();
-    m_ship->mass = 10.f;
-    ResetPlayer();
+    //// Construct m_ship, set active, type, scale and pos
+    //m_ship = new GameObject(GameObject::GO_SHIP);
+    //m_ship->active = true;
+    //m_ship->scale.Set(4.f, 4.f, 4.f);
+    //m_ship->force.SetZero();
+    //m_ship->mass = 10.f;
+    //ResetPlayer();
 
     b_spawnSmallAsteroids = false;
 
@@ -86,23 +86,17 @@ GameObject* SceneGame::FetchGO()
             continue;
         }
         GameObject *go = (GameObject *)*it;
-        if (!go->active) {      //object is inactive
-            go->active = true;
+        if (!go->GetActive()) {      //object is inactive
+            go->SetActive(true);
             m_itFetchGO = it;
-            ++GameObject::GO_COUNT;
             return go;
         }
 
     }
 
-    //m_goList ran out of objects
-    for (unsigned i = 0; i < 10; ++i) {
-        m_goList.push_back(new GameObject(GameObject::GO_ASTEROID));
-    }
     GameObject *go = (GameObject *)*(m_goList.end() - 1);
-    go->active = true;
+    go->SetActive(true);
     m_itFetchGO = m_goList.begin();
-    ++GameObject::GO_COUNT;
     return go;
 }
 
@@ -180,44 +174,45 @@ void SceneGame::GameUpdate(double dt)
 
 void SceneGame::PlayerGetHit()
 {
-    if (m_ship->active) {
-        m_ship->active = false;     //temporary death
-        ResetPlayer();
-        Application::GetInstance().PlayExplosionSE();
+    //if (m_ship->active) {
+    //    m_ship->active = false;     //temporary death
+    //    ResetPlayer();
+    //    Application::GetInstance().PlayExplosionSE();
 
-        --m_lives;  //deduct 1 life
-        m_bullets = 1;  //reset bullets to 1
+    //    --m_lives;  //deduct 1 life
+    //    m_bullets = 1;  //reset bullets to 1
 
-        if (m_lives == 0) {     //game lost; reset the game
-            state = GAMEPLAY_WINLOSE;
-        }
+    //    if (m_lives == 0) {     //game lost; reset the game
+    //        state = GAMEPLAY_WINLOSE;
+    //    }
 
-    }
+    //}
 }
 
 void SceneGame::ResetPlayer()
 {
-    m_ship->pos.Set(m_worldWidth * 0.1f, m_worldHeight * 0.5f, 0);  //respawn ship at original position
-    m_ship->direction.Set(1, 0, 0);
-    m_ship->vel.SetZero();  //reset velocity
+    //m_ship->pos.Set(m_worldWidth * 0.1f, m_worldHeight * 0.5f, 0);  //respawn ship at original position
+    //m_ship->direction.Set(1, 0, 0);
+    //m_ship->vel.SetZero();  //reset velocity
 }
 
 bool SceneGame::CheckCollision(GameObject *go, GameObject *go2)
 {
-    float distSquare = (go->pos - go2->pos).LengthSquared();
-    float combinedRadiusSquare = (go->scale.x + go2->scale.x) * (go->scale.y + go2->scale.y);
+    //float distSquare = (go->pos - go2->pos).LengthSquared();
+    //float combinedRadiusSquare = (go->scale.x + go2->scale.x) * (go->scale.y + go2->scale.y);
 
-    if (distSquare <= combinedRadiusSquare) {
-        return true;
-    }
+    //if (distSquare <= combinedRadiusSquare) {
+    //    return true;
+    //}
+    //return false;
     return false;
 }
 
 void SceneGame::RenderGO(GameObject *go)
 {
-    switch (go->type)
-    {
-    }
+    //switch (go->type)
+    //{
+    //}
 }
 
 void SceneGame::RenderBackground()
@@ -428,7 +423,7 @@ void SceneGame::Render()
     for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
     {
         GameObject *go = (GameObject *)*it;
-        if (go->active)
+        if (go->GetActive())
         {
             RenderGO(go);
             m_renderCount += 0.1f;
@@ -466,11 +461,11 @@ void SceneGame::Exit()
     }
 
 
-    if (m_ship)
-    {
-        delete m_ship;
-        m_ship = NULL;
-    }
+    //if (m_ship)
+    //{
+    //    delete m_ship;
+    //    m_ship = NULL;
+    //}
 
     if (m_blackhole)
     {

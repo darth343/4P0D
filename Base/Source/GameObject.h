@@ -9,7 +9,7 @@ class GameObject
 {
 
 public:
-
+    ~GameObject();
     enum OBJECT_COLOUR
     {
         RED,
@@ -35,8 +35,8 @@ public:
     void SetColour(OBJECT_COLOUR colour);
     OBJECT_COLOUR GetColour();
 
-    void SetVelocity(Vector3 vel);
-    Vector3 GetVelocity();
+    void SetActive(bool status);
+    bool GetActive();
 
     void SetInactive();
 
@@ -44,7 +44,7 @@ public:
 
 protected:
     GameObject();
-    ~GameObject();
+
 
     std::string m_name;
     OBJECT_COLOUR m_colour;

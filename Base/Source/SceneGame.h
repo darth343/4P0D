@@ -6,6 +6,8 @@
 #include "Player.h"
 #include <vector>
 #include <irrKlang.h>
+#include "Enemy.h"
+#include "Projectile.h"
 
 using namespace irrklang;
 
