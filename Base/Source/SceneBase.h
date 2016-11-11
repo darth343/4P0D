@@ -58,7 +58,8 @@ public:
         GEO_BACKGROUND,
 		GEO_FLOOR,
 		GEO_WALL,
-        GEO_PLAYER,
+		GEO_PLAYER1,
+		GEO_PLAYER2,
         GEO_RAY,
 		NUM_GEOMETRY,
 	};

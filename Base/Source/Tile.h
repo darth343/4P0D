@@ -17,11 +17,19 @@ public:
 		shouldCollide = collide;
 	}
 	int OpacityLevel;
+    bool CheckCollide()
+    {
+        if (active && shouldCollide)
+            return true;
+        else 
+            return false;
+    }
 	int BlockID;
 	Vector3 Pos;
 	bool shouldCollide;
 	void SetPosition();
 	void onTrigger();
+    bool active;
 };
 
 #endif

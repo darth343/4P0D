@@ -54,6 +54,10 @@
     <ClInclude Include="Source\Utility.h" />
     <ClInclude Include="Source\Vertex.h" />
     <ClInclude Include="Source\WaveData.h" />
+<<<<<<< HEAD
     <ClInclude Include="Source\Pathfinder.h" />
+=======
+    <ClInclude Include="Source\Map.h" />
+>>>>>>> origin/master
   </ItemGroup>
 </Project>

@@ -18,7 +18,14 @@ void SceneGame::Init()
 	m_cmap = new CMap();
 	m_cmap->Init(Application::GetWindowHeight(), Application::GetWindowWidth(), 32);
 	m_cmap->LoadFile("Level//testMap.csv");
+
+    m_spawnmap = new CMap();
+    m_spawnmap->Init(Application::GetWindowHeight(), Application::GetWindowWidth(), 32);
+    m_spawnmap->LoadFile("Level//spawnMap.csv");
+
     Math::InitRNG();
+
+
 
     // World Coordinates
     m_worldHeight = 100.f;
@@ -50,11 +57,11 @@ void SceneGame::Init()
     enemy->SetScale(Vector3(32, 32, 5));   
     enemy->SetTarget(m_player1->GetPos());
     enemy->SetEnemyType(Enemy::RANGED);
-    enemy->SetMesh(meshList[GEO_PLAYER]);
+    enemy->SetMesh(meshList[GEO_PLAYER1]);
     enemy->SetType(GameObject::ENEMY);
     m_goList.push_back(enemy);
 
-
+    SpawnObjects(m_spawnmap);
 
     bLButtonState = false;
 }
@@ -85,17 +92,22 @@ GameObject* SceneGame::FetchGO()
 void SceneGame::Update(const double dt)
 {
     SceneBase::Update(dt);
-	m_player1->Update(dt, m_cmap);
-	m_player2->Update(dt, m_cmap);
+    m_player1->Update(dt, m_cmap, m_spawnmap);
+	m_player2->Update(dt, m_cmap, m_spawnmap);
 
     for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
     {
         GameObject *go = (GameObject *)*it;
         if (go->GetActive())
         {
+            go->Update(dt);
             if (go->GetType() == GameObject::ENEMY)
             {
                 dynamic_cast<Enemy*>(go)->Update(dt, m_player1, m_cmap);
+            }
+            else if (go->GetType() == GameObject::DOOR)
+            {
+                dynamic_cast<Door*>(go)->Update(dt, m_spawnmap);
             }
         }
     }
@@ -269,7 +281,7 @@ void SceneGame::RenderGO(GameObject *go)
         modelStack.PushMatrix();
         modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
         modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-        RenderMesh(meshList[GEO_PLAYER], false);
+        RenderMesh(meshList[GEO_PLAYER1], false);
         modelStack.PopMatrix();
         break;
     }
@@ -279,7 +291,7 @@ void SceneGame::RenderGO(GameObject *go)
                                           modelStack.PushMatrix();
                                           modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
                                           modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-                                          RenderMesh(meshList[GEO_PLAYER], false);
+                                          RenderMesh(meshList[GEO_PLAYER1], false);
                                           modelStack.PopMatrix();
                                           break;
     }
@@ -292,6 +304,26 @@ void SceneGame::RenderGO(GameObject *go)
                                           RenderMesh(go->GetMesh(), false);
                                           modelStack.PopMatrix();
                                           break;
+    }
+
+    case GameObject::DOOR:
+    {
+                              modelStack.PushMatrix();
+                              modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+                              modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
+                              RenderMesh(go->GetMesh(), false);
+                              modelStack.PopMatrix();
+                              break;
+    }
+
+    case GameObject::SWITCH:
+    {
+                              modelStack.PushMatrix();
+                              modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+                              modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
+                              RenderMesh(go->GetMesh(), false);
+                              modelStack.PopMatrix();
+                              break;
     }
     }
 }
@@ -310,13 +342,13 @@ void SceneGame::RenderPlayer()
     modelStack.PushMatrix();
     modelStack.Translate(m_player1->GetPos().x, m_player1->GetPos().y, m_player1->GetPos().z);
 	modelStack.Scale(m_cmap->GetTileSize(), m_cmap->GetTileSize(), m_cmap->GetTileSize());
-    RenderMesh(meshList[GEO_PLAYER], false);
+    RenderMesh(meshList[GEO_PLAYER1], false);
     modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
     modelStack.Translate(m_player2->GetPos().x, m_player2->GetPos().y, m_player2->GetPos().z);
 	modelStack.Scale(m_cmap->GetTileSize(), m_cmap->GetTileSize(), m_cmap->GetTileSize());
-	RenderMesh(meshList[GEO_PLAYER], false);
+	RenderMesh(meshList[GEO_PLAYER2], false);
 	modelStack.PopMatrix();
 }
 
@@ -587,4 +619,90 @@ void SceneGame::Exit()
     //    delete m_ship;
     //    m_ship = NULL;
     //}
+}
+
+void SceneGame::SpawnObjects(CMap *map)
+{
+    typedef std::map<int, Vector3>::iterator it_type;
+    for (it_type it = map->m_SpawnLocations.begin(); it != map->m_SpawnLocations.end(); ++it)
+    {
+        switch (it->first)
+        {
+        case 5: // Melee Monster
+        {
+                    Enemy* enemy = new Enemy();
+                    enemy->SetActive(true);
+                    enemy->SetPos(it->second);
+                    enemy->SetScale(Vector3(5, 5, 5));
+                    enemy->SetTarget(m_player1->GetPos());
+                    enemy->SetEnemyType(Enemy::MELEE);
+                    enemy->SetMesh(meshList[GEO_PLAYER1]);
+                    enemy->SetType(GameObject::ENEMY);
+                    m_goList.push_back(enemy);
+                    break;
+        }
+
+        case 6: // Ranged Monster
+        {
+                    Enemy* enemy = new Enemy();
+                    enemy->SetActive(true);
+                    enemy->SetPos(it->second);
+                    enemy->SetScale(Vector3(5, 5, 5));
+                    enemy->SetTarget(m_player1->GetPos());
+                    enemy->SetEnemyType(Enemy::RANGED);
+                    enemy->SetMesh(meshList[GEO_PLAYER1]);
+                    enemy->SetType(GameObject::ENEMY);
+                    m_goList.push_back(enemy);
+                    break;
+        }
+
+        }
+
+        if (it->first > 1000)
+        {
+            int pairNum = it->first / 1000 % 10; // Pair Number
+            int objectType = it->first / 100 % 10; // Object: 1 == Door, 2 == Switch
+            int doorNum = it->first / 10 % 10; // If applicable, 1 == first door, 2 == second door else 0
+            int weaknessType = it->first % 10;  // Weakness: 1 == BOTH, 2 == MELEE, 3 == RANGED
+
+            if (objectType == 1)
+            {
+                Door* door = new Door();
+                door->SetActive(true);
+                door->SetPos(it->second);
+                door->SetScale(Vector3(map->GetTileSize(), map->GetTileSize(), 5));
+                door->SetMesh(meshList[GEO_PLAYER1]);
+                door->SetType(GameObject::DOOR);
+
+                typedef std::map<int, Vector3>::iterator it_type;
+                for (it_type it2 = map->m_SpawnLocations.begin(); it2 != map->m_SpawnLocations.end(); it2++)
+                {
+                    int switchNum = (pairNum * 1000) + 200 + weaknessType;
+                    if (it2->first == switchNum)
+                    {
+                        Switch* temp = new Switch();
+                        temp->SetActive(true);
+                        temp->SetPos(it2->second);
+                        temp->SetScale(Vector3(map->GetTileSize(), map->GetTileSize(), 5));
+                        temp->SetMesh(meshList[GEO_PLAYER1]);
+                        temp->SetType(GameObject::SWITCH);
+
+                        if (weaknessType == 1)
+                            temp->m_SwitchType = Switch::EITHER;
+                        else if (weaknessType == 2)
+                            temp->m_SwitchType = Switch::MELEE_ONLY;
+                        else if (weaknessType == 3)
+                            temp->m_SwitchType = Switch::RANGED_ONLY;
+
+                        m_goList.push_back(temp);
+                        door->m_switch = temp;
+                        break;
+                    }
+
+                }
+                m_goList.push_back(door);
+
+            }
+        }
+    }
 }

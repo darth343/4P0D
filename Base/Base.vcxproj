@@ -40,6 +40,7 @@
     <ClInclude Include="Source\Emitter.h" />
     <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\Door.h" />
+    <ClInclude Include="Source\Map.h" />
     <ClInclude Include="Source\Node.h" />
     <ClInclude Include="Source\Particle.h" />
     <ClInclude Include="Source\Pathfinder.h" />

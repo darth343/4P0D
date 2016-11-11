@@ -42,6 +42,9 @@ public:
     // Interactions
     void Interactions(GameObject* go1, GameObject* go2);
 
+    // Spawn Objects
+    void SpawnObjects(CMap* map);
+
     // Update
     void PauseUpdate(double dt);
     void GameUpdate(double dt);
@@ -59,6 +62,7 @@ public:
     GameObject* FetchGO();
 protected:
 	CMap* m_cmap;
+    CMap* m_spawnmap;
     float backgroundOffset;   //for background
 
     //Level Data

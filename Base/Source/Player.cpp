@@ -20,10 +20,10 @@ void Player::Init()
 {
 }
 
-void Player::Update(double dt, CMap* m_cMap)
+void Player::Update(double dt, CMap* m_cMap, CMap* spawnMap)
 {
     // Movement
-	MovePlayer(dt, m_cMap);
+	MovePlayer(dt, m_cMap, spawnMap);
 
     // Update player's projectile
     for (std::vector<Projectile*>::iterator it = m_ProjectileList.begin(); it != m_ProjectileList.end(); ++it)
@@ -84,7 +84,7 @@ Vector3 Player::GetCursorPos()
     return m_cursorPos;
 }
 
-void Player::MovePlayer(double dt, CMap* m_cMap)
+void Player::MovePlayer(double dt, CMap* m_cMap, CMap* spawnMap)
 {
 	Vector3 leftstick = Application::GetLeftStickPos(controllerID);
 	Vector3 nextPosition = m_pos + leftstick * playerSpeed * dt;
@@ -93,16 +93,20 @@ void Player::MovePlayer(double dt, CMap* m_cMap)
 	{
 		if (leftstick.y > 0)
 		{
-			if (!m_cMap->theMap[nextTile.y + 1][nextTile.x].shouldCollide
-				&& !m_cMap->theMap[nextTile.y + 1][nextTile.x + 1].shouldCollide)
+            if (!m_cMap->theMap[nextTile.y + 1][nextTile.x].CheckCollide()
+                && !m_cMap->theMap[nextTile.y + 1][nextTile.x + 1].CheckCollide()
+                && !spawnMap->theMap[nextTile.y + 1][nextTile.x].CheckCollide()
+                && !spawnMap->theMap[nextTile.y + 1][nextTile.x + 1].CheckCollide())
 			{
 				m_pos.y = nextPosition.y;
 			}
 		}
 		else if (leftstick.y < 0)
 		{
-			if (!m_cMap->theMap[nextTile.y][nextTile.x].shouldCollide
-				&& !m_cMap->theMap[nextTile.y][nextTile.x + 1].shouldCollide)
+            if (!m_cMap->theMap[nextTile.y][nextTile.x].CheckCollide()
+                && !m_cMap->theMap[nextTile.y][nextTile.x + 1].CheckCollide()
+                && !spawnMap->theMap[nextTile.y][nextTile.x].CheckCollide()
+                && !spawnMap->theMap[nextTile.y][nextTile.x + 1].CheckCollide())
 			{
 				m_pos.y = nextPosition.y;
 			}
@@ -110,16 +114,20 @@ void Player::MovePlayer(double dt, CMap* m_cMap)
 
 		if (leftstick.x > 0)
 		{
-			if (!m_cMap->theMap[nextTile.y][nextTile.x + 1].shouldCollide
-				&& !m_cMap->theMap[nextTile.y + 1][nextTile.x + 1].shouldCollide)
+            if (!m_cMap->theMap[nextTile.y][nextTile.x + 1].CheckCollide()
+                && !m_cMap->theMap[nextTile.y + 1][nextTile.x + 1].CheckCollide()
+                && !spawnMap->theMap[nextTile.y][nextTile.x + 1].CheckCollide()
+                && !spawnMap->theMap[nextTile.y + 1][nextTile.x + 1].CheckCollide())
 			{
 				m_pos.x = nextPosition.x;
 			}
 		}
 		else if (leftstick.x < 0)
 		{
-			if (!m_cMap->theMap[nextTile.y][nextTile.x].shouldCollide
-				&& !m_cMap->theMap[nextTile.y + 1][nextTile.x].shouldCollide)
+            if (!m_cMap->theMap[nextTile.y][nextTile.x].CheckCollide()
+                && !m_cMap->theMap[nextTile.y + 1][nextTile.x].CheckCollide()
+                && !spawnMap->theMap[nextTile.y][nextTile.x].CheckCollide()
+                && !spawnMap->theMap[nextTile.y + 1][nextTile.x].CheckCollide())
 			{
 				m_pos.x = nextPosition.x;
 			}
@@ -160,7 +168,6 @@ void Player::MovePlayer(double dt, CMap* m_cMap)
 		}
 	}
 	prevHeroTile = currTile;
-
 }
 
 void Player::Attack()

@@ -113,8 +113,8 @@ const Vector3 Application::GetRightStickPos(int controllerIndex)
 
 bool Application::IsButtonPressed(int gamepad, GAMEPAD_CONTROLS button)
 {
-	if (!glfwJoystickPresent(gamepad))
-		return false;
+    if (!glfwJoystickPresent(gamepad))
+        return false;
 	int buttonCount;
 	const unsigned char *buttons = glfwGetJoystickButtons(gamepad, &buttonCount);
 
