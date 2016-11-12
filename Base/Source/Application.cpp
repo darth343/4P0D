@@ -156,7 +156,7 @@ void Application::Init()
 	//m_width = 1920;
 	//m_height = 1080;
     GetMonitorResolution();
-	m_window = glfwCreateWindow(m_width, m_height, "PLACEHOLDER NAME", NULL, NULL);
+	m_window = glfwCreateWindow(m_width, m_height, "The Weapon Chronicle", NULL, NULL);
 
 	//If the window couldn't be created
 	if (!m_window)

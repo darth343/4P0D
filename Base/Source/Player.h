@@ -17,6 +17,8 @@ public:
         RANGED,
     };
 
+	Vector3 m_dir;
+
     Player();
     ~Player();
 

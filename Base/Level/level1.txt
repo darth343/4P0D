@@ -1,6 +1,0 @@
-#,format is: bufferTime(double),spawnContent(string)
-#,'R' = red enemy;'G' = green enemy; 'B' = blue enemy;'Y' = yellow enemy
-1.0,aaa
-4.3,aAaaa
-6.5,AaAaa
-8.2,aamAa
