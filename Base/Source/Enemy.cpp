@@ -1,10 +1,11 @@
 #include "Enemy.h"
-std::vector<Projectile*> Enemy::m_ProjectileList;
+//std::vector<Projectile*> Enemy::m_ProjectileList;
 Vector3 Enemy::prevPlayerTile;
 Enemy::Enemy()
 : m_attackDelay(0)
 , m_hp(1)
 , speed(100)
+, findTargetDelay(-1)
 {}
 
 Enemy::~Enemy()
@@ -79,11 +80,38 @@ void Enemy::MoveToPlayer(double dt, Player* thePlayer, CMap* m_cMap)
 }
 
 
-void Enemy::Update(double dt, Player* thePlayer, CMap* m_cMap)
+void Enemy::Update(double dt, Player* thePlayer, Player* otherPlay, CMap* m_cMap)
 {
     if (m_hp <= 0)
         m_active = false;
-	MoveToPlayer(dt, thePlayer, m_cMap);
+
+    Player* temp = NULL;
+
+    findTargetDelay -= dt;
+
+    if (((thePlayer->GetPos() - m_pos).Length() < 250) && ((otherPlay->GetPos() - m_pos).Length() > 250))
+    {
+        temp = thePlayer;
+    }
+    else if (((thePlayer->GetPos() - m_pos).Length() > 250) && ((otherPlay->GetPos() - m_pos).Length() < 250))
+    {
+        temp = otherPlay;
+    }
+    else if (((thePlayer->GetPos() - m_pos).Length() < 250) && ((otherPlay->GetPos() - m_pos).Length() < 250))
+    {
+        if ((thePlayer->GetPos() - m_pos).LengthSquared() >= (otherPlay->GetPos() - m_pos).LengthSquared())
+            temp = thePlayer;
+        else
+            temp = otherPlay;
+
+        findTargetDelay = 1;
+    }
+
+    if (temp)
+    {
+        m_target = temp->GetPos();
+        MoveToPlayer(dt, temp, m_cMap);
+    }
 
     //Vector3 dir = (m_target - this->m_pos).Normalized();
     //m_pos = m_pos + dir * 0.3;
@@ -148,12 +176,16 @@ void Enemy::Attack()
                   Projectile* temp = new Projectile();
                   temp->SetActive(true);
                   temp->SetDmg(1);
-                  temp->SetLifetime(0.1);
+                  temp->SetLifetime(0.3);
                   temp->SetPos(this->m_pos);
                   temp->SetScale(Vector3(5, 5, 1));
                   temp->SetType(GameObject::PROJECTILE_MELEE);
 
+                  if (m_target == this->m_pos)
+                      break;
+
                   Vector3 dir = (m_target - this->m_pos).Normalized();
+
                   temp->SetVelocity(dir);
 
                   m_ProjectileList.push_back(temp);
@@ -166,10 +198,13 @@ void Enemy::Attack()
                    Projectile* temp = new Projectile();
                    temp->SetActive(true);
                    temp->SetDmg(1);
-                   temp->SetLifetime(0.5);
+                   temp->SetLifetime(1);
                    temp->SetPos(this->m_pos);
                    temp->SetScale(Vector3(5, 5, 1));
                    temp->SetType(GameObject::PROJECTILE_RANGED);
+
+                   if (m_target == this->m_pos)
+                       break;
 
                    Vector3 dir = (m_target - this->m_pos).Normalized();
                    temp->SetVelocity(dir);

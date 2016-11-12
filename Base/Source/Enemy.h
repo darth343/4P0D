@@ -31,13 +31,13 @@ public:
     Vector3 GetTarget();
 
     virtual void Init();
-	virtual void Update(double dt, Player* thePlayer, CMap* m_cMap);
-	void MoveToPlayer(double dt, Player* thePlayer, CMap* m_cMap);
+    virtual void Update(double dt, Player* thePlayer, Player* otherPlay, CMap* m_cMap);
+    void MoveToPlayer(double dt, Player* thePlayer, CMap* m_cMap);
 	void MoveTo(double dt, Tile nextTile, int TileSize);
     void Attack();
     void TakeDamage(int dmg);
 
-    static std::vector<Projectile*> m_ProjectileList;
+    std::vector<Projectile*> m_ProjectileList;
 
 private:
 	static Vector3 prevPlayerTile;
@@ -47,6 +47,7 @@ private:
 	Vector3 m_target;
 	Pathfinder pathfinder;
     double m_attackDelay;
+    double findTargetDelay;
 
 };
 

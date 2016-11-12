@@ -6,6 +6,7 @@ GameObject::GameObject()
 , m_scale(Vector3(1, 1, 1))
 , m_active(false)
 {
+    m_Collider = new AABB();
 }
 
 GameObject::~GameObject()
@@ -78,6 +79,16 @@ bool GameObject::CheckCollisionWith(GameObject* otherGo)
     return false;
 }
 
+bool GameObject::CheckCollisionWithAABB(GameObject* otherGo)
+{
+    if ((otherGo->m_pos.x < this->m_Collider->m_MaxPoint.x && otherGo->m_pos.x > this->m_Collider->m_MinPoint.x)
+        && (otherGo->m_pos.y < this->m_Collider->m_MaxPoint.y && otherGo->m_pos.y > this->m_Collider->m_MinPoint.y))
+    {
+        return true;
+    }
+    return false;
+}
+
 void GameObject::SetActive(bool status)
 {
     m_active = status;
@@ -106,4 +117,9 @@ void GameObject::Init()
 void GameObject::Update(double dt)
 {
 
+}
+
+void GameObject::UpdateAABB()
+{
+    m_Collider->Update(m_pos, m_scale);
 }

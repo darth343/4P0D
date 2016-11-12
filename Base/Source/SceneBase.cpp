@@ -154,12 +154,20 @@ void SceneBase::Init()
 	meshList[GEO_SWORD_PROJECTILE_LAH] = MeshBuilder::GenerateTile("GEO_SWORD_PROJECTILE_LAH", Color(0, 1, 0), 1.f);
 	meshList[GEO_SWORD_PROJECTILE_LAH]->textureID = LoadTGA("Image//MeleeProjectile.tga");
 
+	meshList[GEO_RANGE_PROJECTILE] = MeshBuilder::GenerateTile("GEO_RANGE_PROJECTILE", Color(0, 1, 0), 1.f);
+	meshList[GEO_RANGE_PROJECTILE]->textureID = LoadTGA("Image//Projectile1.tga");
+
 	meshList[GEO_PLAYER1_WALK] = MeshBuilder::GenerateSpriteAnimation("Player 1 walk", 1, 3);
 	meshList[GEO_PLAYER1_WALK]->textureID = LoadTGA("Image//Sword_Idle.tga");
 
 	meshList[GEO_PLAYER1_ATTACK] = MeshBuilder::GenerateSpriteAnimation("GEO_PLAYER1_ATTACK", 1, 3);
 	meshList[GEO_PLAYER1_ATTACK]->textureID = LoadTGA("Image//Sword_Attacking.tga");
 
+	meshList[GEO_PLAYER2_WALK] = MeshBuilder::GenerateSpriteAnimation("GEO_PLAYER2_WALK", 1, 3);
+	meshList[GEO_PLAYER2_WALK]->textureID = LoadTGA("Image//Staff_Idle.tga");
+					   
+	meshList[GEO_PLAYER2_ATTACK] = MeshBuilder::GenerateSpriteAnimation("GEO_PLAYER2_ATTACK", 1, 3);
+	meshList[GEO_PLAYER2_ATTACK]->textureID = LoadTGA("Image//Staff_Attack.tga");
 
 
 	SpriteAnimation *player1walk = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER1_WALK]);
@@ -173,8 +181,27 @@ void SceneBase::Init()
 	if (player1attack)
 	{
 		player1attack->m_anim = new Animation();
-		player1attack->m_anim->Set(0, 2, 1, 0.8f, true);
+		player1attack->m_anim->Set(0, 2, 1, 0.2f, true);
 	}
+
+	SpriteAnimation *player2walk = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER2_WALK]);
+	if (player2walk)
+	{
+		player2walk->m_anim = new Animation();
+		player2walk->m_anim->Set(0, 2, 1, 0.8f, true);
+	}
+
+	SpriteAnimation *player2attack = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER2_ATTACK]);
+	if (player2attack)
+	{
+		player2attack->m_anim = new Animation();
+		player2attack->m_anim->Set(0, 2, 1, 0.2f, true);
+	}
+
+    meshList[GEO_DOOR] = MeshBuilder::GenerateTile("door", Color(0, 1, 0), 1.f);
+    meshList[GEO_DOOR]->textureID = LoadTGA("Image//Door.tga");
+
+    meshList[GEO_RAY] = MeshBuilder::GenerateLine("line", Color(1, 0, 0), 1.f);
 
     bLightEnabled = false;
 }

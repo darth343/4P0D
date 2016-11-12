@@ -4,6 +4,7 @@
 #include "Vector3.h"
 #include "Mesh.h"
 #include <string>
+#include "AABB.h"
 
 class GameObject
 {
@@ -17,6 +18,7 @@ public:
         ENEMY,
         SWITCH,
         DOOR,
+        SPAWNER,
     };
 
     ~GameObject();
@@ -55,6 +57,9 @@ public:
 
     bool CheckCollisionWith(GameObject* otherGo);
 
+    void UpdateAABB();
+    bool CheckCollisionWithAABB(GameObject* otherGo);
+
 protected:
     GameObject();
 
@@ -68,6 +73,8 @@ protected:
     bool m_active;
 
     GAMEOBJECT_TYPE m_type;
+
+    AABB *m_Collider;
 
 };
 

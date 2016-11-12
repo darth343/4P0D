@@ -43,6 +43,8 @@ public:
 
     static std::vector<Projectile*> m_ProjectileList;
     int controllerID;
+    ATTACK_TYPE m_attackType;
+
 private:
 	Vector3 prevHeroTile;
     Mesh* m_mesh;
@@ -55,7 +57,6 @@ private:
 
     float playerSpeed;
 
-    ATTACK_TYPE m_attackType;
 
     double m_attackDelay;
 

@@ -184,6 +184,7 @@ void Player::Attack()
 				  temp->SetLifetime(0.1);
 				  temp->SetPos(this->m_pos);
 				  temp->SetScale(Vector3(25, 25, 1));
+                  temp->SetPos(this->m_pos + m_scale * 0.5);
 				  temp->SetType(GameObject::PROJECTILE_MELEE);
 
 				  Vector3 dir = Application::GetRightStickPos(controllerID);
@@ -191,7 +192,6 @@ void Player::Attack()
 				  temp->SetVelocity(dir);
 
 				  m_ProjectileList.push_back(temp);
-				  break;
 				  break;
 	}
 
@@ -201,10 +201,9 @@ void Player::Attack()
 				   temp->SetActive(true);
 				   temp->SetDmg(1);
 				   temp->SetLifetime(10.f);
-				   temp->SetPos(this->m_pos);
-				   temp->SetScale(Vector3(25, 25, 1));
+				   temp->SetScale(Vector3(10, 10, 1));
+				   temp->SetPos(this->m_pos + m_scale * 0.5);
 				   temp->SetType(GameObject::PROJECTILE_RANGED);
-
 				   Vector3 dir = Application::GetRightStickPos(controllerID);
 				   dir.y *= -1;
 				   temp->SetVelocity(dir * 5);
