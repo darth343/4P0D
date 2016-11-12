@@ -460,10 +460,10 @@ void SceneGame::RenderPause()
     RenderMesh(meshList[GEO_BUTTON_NORMAL], false);
     modelStack.PopMatrix();
 
-    RenderTextOnScreen(meshList[GEO_MENUTEXT], "PAUSE", Color(1, 0, 1), 3, 34, 50);
+    //RenderTextOnScreen(meshList[GEO_MENUTEXT], "PAUSE", Color(1, 0, 1), 3, 34, 50);
 
-    RenderTextOnScreen(meshList[GEO_MENUTEXT], "RESUME", Color(1, 0, 1), 3, 32, 40.5f);
-    RenderTextOnScreen(meshList[GEO_MENUTEXT], "QUIT", Color(1, 0, 1), 3, 35, 31.5f);
+    //RenderTextOnScreen(meshList[GEO_MENUTEXT], "RESUME", Color(1, 0, 1), 3, 32, 40.5f);
+    //RenderTextOnScreen(meshList[GEO_MENUTEXT], "QUIT", Color(1, 0, 1), 3, 35, 31.5f);
 }
 
 void SceneGame::RenderLevelTransition()
@@ -506,25 +506,25 @@ void SceneGame::RenderLevelTransition()
     RenderMesh(meshList[GEO_BUTTON_NORMAL], false);
     modelStack.PopMatrix();
 
-    if (m_lives == 0) {     //player lost
-        RenderTextOnScreen(meshList[GEO_MENUTEXT], "YOU DIED", Color(1, 0, 1), 3, 31, 50);
-    }
-    else {      //player beat the level
-        if (levelCount == 3) {
-            RenderTextOnScreen(meshList[GEO_MENUTEXT], "YOU WIN!", Color(1, 0, 1), 3, 31, 50);
-        }
-        else {
-            RenderTextOnScreen(meshList[GEO_MENUTEXT], "LEVEL COMPLETE", Color(1, 0, 1), 3, 22, 50);
-        }
-    }
+    //if (m_lives == 0) {     //player lost
+    //    RenderTextOnScreen(meshList[GEO_MENUTEXT], "YOU DIED", Color(1, 0, 1), 3, 31, 50);
+    //}
+    //else {      //player beat the level
+    //    if (levelCount == 3) {
+    //        RenderTextOnScreen(meshList[GEO_MENUTEXT], "YOU WIN!", Color(1, 0, 1), 3, 31, 50);
+    //    }
+    //    else {
+    //        RenderTextOnScreen(meshList[GEO_MENUTEXT], "LEVEL COMPLETE", Color(1, 0, 1), 3, 22, 50);
+    //    }
+    //}
 
-    if (m_lives == 0 || levelCount < 3) {
-        RenderTextOnScreen(meshList[GEO_MENUTEXT], "CONTINUE", Color(1, 0, 1), 3, 29, 40.5f);
-    }
-    else {
-        RenderTextOnScreen(meshList[GEO_MENUTEXT], "MAIN MENU", Color(1, 0, 1), 2, 31.5f, 41.f);
-    }
-    RenderTextOnScreen(meshList[GEO_MENUTEXT], "QUIT", Color(1, 0, 1), 3, 35, 31.5f);
+    //if (m_lives == 0 || levelCount < 3) {
+    //    RenderTextOnScreen(meshList[GEO_MENUTEXT], "CONTINUE", Color(1, 0, 1), 3, 29, 40.5f);
+    //}
+    //else {
+    //    RenderTextOnScreen(meshList[GEO_MENUTEXT], "MAIN MENU", Color(1, 0, 1), 2, 31.5f, 41.f);
+    //}
+    //RenderTextOnScreen(meshList[GEO_MENUTEXT], "QUIT", Color(1, 0, 1), 3, 35, 31.5f);
 
     // Level
     std::stringstream ss;

@@ -64,6 +64,9 @@ public:
 		GEO_PLAYER1,
 		GEO_PLAYER2,
         GEO_RAY,
+        GEO_DOOR,
+        GEO_MELEE_SWITCH,
+        GEO_RANGED_SWITCH,
 		NUM_GEOMETRY,
 	};
 public:
