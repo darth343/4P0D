@@ -955,7 +955,7 @@ void SceneGame::SpawnObjects(CMap *map)
         }
         }
 
-        if (it->first > 50 && it->first < 70)
+        if (it->first > 50 && it->first < 80)
         {
             int spawnType = it->first / 10 % 10; // Spawn type: 5 == Melee, 6 == Ranged
             int spawnerNum = it->first % 10;  // SpawnerNum
@@ -971,11 +971,22 @@ void SceneGame::SpawnObjects(CMap *map)
                 spawner->SetType(GameObject::SPAWNER);
                 m_goList.push_back(spawner);
             }
-            else
+            else if (spawnType = 6)
             {
                 Spawner* spawner = new Spawner();
                 spawner->SetActive(true);
                 spawner->m_TypeToSpawn = Enemy::RANGED;
+                spawner->SetPos(it->second);
+                spawner->SetScale(Vector3(15, 15, 5));
+                spawner->SetMesh(meshList[GEO_PLAYER2]);
+                spawner->SetType(GameObject::SPAWNER);
+                m_goList.push_back(spawner);
+            }
+            else if (spawnType = 7)
+            {
+                Spawner* spawner = new Spawner();
+                spawner->SetActive(true);
+                spawner->m_TypeToSpawn = Enemy::NORMAL;
                 spawner->SetPos(it->second);
                 spawner->SetScale(Vector3(15, 15, 5));
                 spawner->SetMesh(meshList[GEO_PLAYER2]);
