@@ -142,11 +142,39 @@ void SceneBase::Init()
 	meshList[GEO_DOOR]->textureID = LoadTGA("Image//Door.tga");
 
 	meshList[GEO_PLAYER1] = MeshBuilder::GenerateTile("player", Color(0, 1, 0), 1.f);
-    meshList[GEO_PLAYER1]->textureID = LoadTGA("Image//Sword.tga");
+    meshList[GEO_PLAYER1]->textureID = LoadTGA("Image//Sword 2.tga");
 	meshList[GEO_PLAYER2] = MeshBuilder::GenerateTile("player 2", Color(0, 1, 0), 1.f);
 	meshList[GEO_PLAYER2]->textureID = LoadTGA("Image//Staff.tga");
-
+	meshList[GEO_ARMORENEMY] = MeshBuilder::GenerateTile("Armor Enemy", Color(0, 1, 0), 1.f);
+	meshList[GEO_ARMORENEMY]->textureID = LoadTGA("Image//ArmorEnemy.tga");
+	meshList[GEO_SPECTRE] = MeshBuilder::GenerateTile("GEO_SPECTRE", Color(0, 1, 0), 1.f);
+	meshList[GEO_SPECTRE]->textureID = LoadTGA("Image//Spectre.tga");
     meshList[GEO_RAY] = MeshBuilder::GenerateLine("line", Color(0, 0, 1), 1.f);
+
+	meshList[GEO_SWORD_PROJECTILE_LAH] = MeshBuilder::GenerateTile("GEO_SWORD_PROJECTILE_LAH", Color(0, 1, 0), 1.f);
+	meshList[GEO_SWORD_PROJECTILE_LAH]->textureID = LoadTGA("Image//MeleeProjectile.tga");
+
+	meshList[GEO_PLAYER1_WALK] = MeshBuilder::GenerateSpriteAnimation("Player 1 walk", 1, 3);
+	meshList[GEO_PLAYER1_WALK]->textureID = LoadTGA("Image//Sword_Idle.tga");
+
+	meshList[GEO_PLAYER1_ATTACK] = MeshBuilder::GenerateSpriteAnimation("GEO_PLAYER1_ATTACK", 1, 3);
+	meshList[GEO_PLAYER1_ATTACK]->textureID = LoadTGA("Image//Sword_Attacking.tga");
+
+
+
+	SpriteAnimation *player1walk = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER1_WALK]);
+	if (player1walk)
+	{
+		player1walk->m_anim = new Animation();
+		player1walk->m_anim->Set(0, 2, 1, 0.8f, true);
+	}
+
+	SpriteAnimation *player1attack = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER1_ATTACK]);
+	if (player1attack)
+	{
+		player1attack->m_anim = new Animation();
+		player1attack->m_anim->Set(0, 2, 1, 0.8f, true);
+	}
 
     bLightEnabled = false;
 }

@@ -49,11 +49,13 @@ void SceneGame::Init()
 	m_player1->controllerID = 0;
 	m_player1->SetPos(Vector3(32, 32, 0));
 	m_player1->SetScale(Vector3(32, 32, 1));
+	m_player1->SetMesh(meshList[GEO_PLAYER1]);
 	m_player2 = new Player();
 	m_player2->Init();
 	m_player2->controllerID = 1;
 	m_player2->SetPos(Vector3(32, 32, 0));
 	m_player2->SetScale(Vector3(32, 32, 1));
+	m_player2->SetMesh(meshList[GEO_PLAYER2]);
 
     // Enemy
     //Enemy* enemy = new Enemy();
@@ -100,7 +102,33 @@ void SceneGame::Update(const double dt)
     m_player1->Update(dt, m_currLevel->m_TerrainMap, m_currLevel->m_SpawnMap);
     m_player2->Update(dt, m_currLevel->m_TerrainMap, m_currLevel->m_SpawnMap);
 
-    for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+	if (Application::GetLeftStickPos(0).Length() > 0.1)
+	{
+		SpriteAnimation *sa = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER1_WALK]);
+		if (sa)
+		{
+			sa->m_anim->animActive = true;
+			sa->Update(dt);
+			m_player1->SetMesh(meshList[GEO_PLAYER1_WALK]);
+		}
+	}
+	else
+	{
+		m_player1->SetMesh(meshList[GEO_PLAYER1]);
+	}
+
+	if (Application::IsButtonPressed(0, Application::R2))
+	{
+		SpriteAnimation *sa = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER1_ATTACK]);
+		if (sa)
+		{
+			sa->m_anim->animActive = true;
+			sa->Update(dt);
+			m_player1->SetMesh(meshList[GEO_PLAYER1_ATTACK]);
+		}
+	}
+
+	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
     {
         GameObject *go = (GameObject *)*it;
         if (go->GetActive())
@@ -311,7 +339,7 @@ void SceneGame::RenderGO(GameObject *go)
                                           modelStack.PushMatrix();
                                           modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
                                           modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-                                          RenderMesh(meshList[GEO_PLAYER1], false);
+                                          RenderMesh(meshList[GEO_SWORD_PROJECTILE_LAH], false);
                                           modelStack.PopMatrix();
                                           break;
     }
@@ -350,11 +378,11 @@ void SceneGame::RenderGO(GameObject *go)
 
 void SceneGame::RenderBackground()
 {
-    modelStack.PushMatrix();
-    modelStack.Translate(m_worldWidth * 0.5f, m_worldHeight * 0.5f, 0);
-    modelStack.Scale(m_worldWidth, m_worldHeight, 1.f);
-    RenderMesh(meshList[GEO_BACKGROUND], false);
-    modelStack.PopMatrix();
+    //modelStack.PushMatrix();
+    //modelStack.Translate(m_worldWidth * 0.5f, m_worldHeight * 0.5f, 0);
+    //modelStack.Scale(m_worldWidth, m_worldHeight, 1.f);
+    //RenderMesh(meshList[GEO_BACKGROUND], false);
+    //modelStack.PopMatrix();
 }
 
 void SceneGame::RenderPlayer()
@@ -366,10 +394,10 @@ void SceneGame::RenderPlayer()
     modelStack.PushMatrix();
 	modelStack.Translate(m_player1->GetPos().x, m_player1->GetPos().y, m_player1->GetPos().z);
 	modelStack.Translate(m_player1->GetScale().x * 0.5, m_player1->GetScale().y * 0.5, m_player1->GetScale().z);
-	modelStack.Rotate(-angle1, 0, 0, 1);
+	modelStack.Rotate(-angle1 - 90, 0, 0, 1);
 	modelStack.Translate(-m_player1->GetScale().x * 0.5, -m_player1->GetScale().y * 0.5, m_player1->GetScale().z);
     modelStack.Scale(m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize());
-    RenderMesh(meshList[GEO_PLAYER1], false);
+    RenderMesh(m_player1->GetMesh(), false);
     modelStack.PopMatrix();
 	dir = Application::GetRightStickPos(1);
 	static float angle2 = 0;
@@ -473,10 +501,10 @@ void SceneGame::RenderPause()
     RenderMesh(meshList[GEO_BUTTON_NORMAL], false);
     modelStack.PopMatrix();
 
-    RenderTextOnScreen(meshList[GEO_MENUTEXT], "PAUSE", Color(1, 0, 1), 3, 34, 50);
+    //RenderTextOnScreen(meshList[GEO_MENUTEXT], "PAUSE", Color(1, 0, 1), 3, 34, 50);
 
-    RenderTextOnScreen(meshList[GEO_MENUTEXT], "RESUME", Color(1, 0, 1), 3, 32, 40.5f);
-    RenderTextOnScreen(meshList[GEO_MENUTEXT], "QUIT", Color(1, 0, 1), 3, 35, 31.5f);
+    //RenderTextOnScreen(meshList[GEO_MENUTEXT], "RESUME", Color(1, 0, 1), 3, 32, 40.5f);
+    //RenderTextOnScreen(meshList[GEO_MENUTEXT], "QUIT", Color(1, 0, 1), 3, 35, 31.5f);
 }
 
 void SceneGame::RenderLevelTransition()
@@ -519,25 +547,25 @@ void SceneGame::RenderLevelTransition()
     RenderMesh(meshList[GEO_BUTTON_NORMAL], false);
     modelStack.PopMatrix();
 
-    if (m_lives == 0) {     //player lost
-        RenderTextOnScreen(meshList[GEO_MENUTEXT], "YOU DIED", Color(1, 0, 1), 3, 31, 50);
-    }
-    else {      //player beat the level
-        if (levelCount == 3) {
-            RenderTextOnScreen(meshList[GEO_MENUTEXT], "YOU WIN!", Color(1, 0, 1), 3, 31, 50);
-        }
-        else {
-            RenderTextOnScreen(meshList[GEO_MENUTEXT], "LEVEL COMPLETE", Color(1, 0, 1), 3, 22, 50);
-        }
-    }
+    //if (m_lives == 0) {     //player lost
+    //    RenderTextOnScreen(meshList[GEO_MENUTEXT], "YOU DIED", Color(1, 0, 1), 3, 31, 50);
+    //}
+    //else {      //player beat the level
+    //    if (levelCount == 3) {
+    //        RenderTextOnScreen(meshList[GEO_MENUTEXT], "YOU WIN!", Color(1, 0, 1), 3, 31, 50);
+    //    }
+    //    else {
+    //        RenderTextOnScreen(meshList[GEO_MENUTEXT], "LEVEL COMPLETE", Color(1, 0, 1), 3, 22, 50);
+    //    }
+    //}
 
-    if (m_lives == 0 || levelCount < 3) {
-        RenderTextOnScreen(meshList[GEO_MENUTEXT], "CONTINUE", Color(1, 0, 1), 3, 29, 40.5f);
-    }
-    else {
-        RenderTextOnScreen(meshList[GEO_MENUTEXT], "MAIN MENU", Color(1, 0, 1), 2, 31.5f, 41.f);
-    }
-    RenderTextOnScreen(meshList[GEO_MENUTEXT], "QUIT", Color(1, 0, 1), 3, 35, 31.5f);
+    //if (m_lives == 0 || levelCount < 3) {
+    //    RenderTextOnScreen(meshList[GEO_MENUTEXT], "CONTINUE", Color(1, 0, 1), 3, 29, 40.5f);
+    //}
+    //else {
+    //    RenderTextOnScreen(meshList[GEO_MENUTEXT], "MAIN MENU", Color(1, 0, 1), 2, 31.5f, 41.f);
+    //}
+    //RenderTextOnScreen(meshList[GEO_MENUTEXT], "QUIT", Color(1, 0, 1), 3, 35, 31.5f);
 
     // Level
     std::stringstream ss;
@@ -670,7 +698,7 @@ void SceneGame::SpawnObjects(CMap *map)
                     enemy->SetScale(Vector3(32, 32, 5));
                     enemy->SetTarget(m_player1->GetPos());
                     enemy->SetEnemyType(Enemy::MELEE);
-                    enemy->SetMesh(meshList[GEO_PLAYER1]);
+                    enemy->SetMesh(meshList[GEO_ARMORENEMY]);
                     enemy->SetType(GameObject::ENEMY);
                     m_goList.push_back(enemy);
                     break;
@@ -681,10 +709,10 @@ void SceneGame::SpawnObjects(CMap *map)
                     Enemy* enemy = new Enemy();
                     enemy->SetActive(true);
                     enemy->SetPos(it->second);
-                    enemy->SetScale(Vector3(32, 23, 5));
+                    enemy->SetScale(Vector3(32, 32, 5));
                     enemy->SetTarget(m_player1->GetPos());
                     enemy->SetEnemyType(Enemy::RANGED);
-                    enemy->SetMesh(meshList[GEO_PLAYER1]);
+					enemy->SetMesh(meshList[GEO_ARMORENEMY]);
                     enemy->SetType(GameObject::ENEMY);
                     m_goList.push_back(enemy);
                     break;

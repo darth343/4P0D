@@ -108,7 +108,7 @@ void Player::MovePlayer(double dt, CMap* m_cMap, CMap* spawnMap)
                 && !spawnMap->theMap[nextTile.y][nextTile.x].CheckCollide()
                 && !spawnMap->theMap[nextTile.y][nextTile.x + 1].CheckCollide())
 			{
-				m_pos.y = nextPosition.y;
+				m_pos.y = nextPosition.y;// +m_cMap->GetTileSize() * 0.1;;
 			}
 		}
 
