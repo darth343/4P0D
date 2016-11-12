@@ -24,6 +24,7 @@
     <ClCompile Include="Source\Utility.cpp" />
     <ClCompile Include="Source\WaveData.cpp" />
     <ClCompile Include="Source\Pathfinder.cpp" />
+    <ClCompile Include="Source\EnemySpawner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Application.h" />
@@ -57,5 +58,7 @@
     <ClInclude Include="Source\Pathfinder.h" />
     <ClInclude Include="Source\Map.h" />
     <ClInclude Include="Source\Level.h" />
+    <ClInclude Include="Source\AABB.h" />
+    <ClInclude Include="Source\EnemySpawner.h" />
   </ItemGroup>
 </Project>

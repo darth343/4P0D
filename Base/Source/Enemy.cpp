@@ -5,6 +5,7 @@ Enemy::Enemy()
 : m_attackDelay(0)
 , m_hp(1)
 , speed(100)
+, findTargetDelay(-1)
 {}
 
 Enemy::~Enemy()
@@ -79,11 +80,24 @@ void Enemy::MoveToPlayer(double dt, Player* thePlayer, CMap* m_cMap)
 }
 
 
-void Enemy::Update(double dt, Player* thePlayer, CMap* m_cMap)
+void Enemy::Update(double dt, Player* thePlayer, Player* otherPlay, CMap* m_cMap)
 {
     if (m_hp <= 0)
         m_active = false;
-	MoveToPlayer(dt, thePlayer, m_cMap);
+
+    Player* temp = thePlayer;
+
+    findTargetDelay -= dt;
+    if (findTargetDelay < 0)
+    {
+        if ((thePlayer->GetPos() - m_pos).LengthSquared() >= (otherPlay->GetPos() - m_pos).LengthSquared())
+            temp = thePlayer;
+        else
+            temp = otherPlay;
+
+        findTargetDelay = 1;
+    }
+        MoveToPlayer(dt, temp, m_cMap);
 
     //Vector3 dir = (m_target - this->m_pos).Normalized();
     //m_pos = m_pos + dir * 0.3;

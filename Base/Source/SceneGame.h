@@ -10,6 +10,7 @@
 #include "Projectile.h"
 #include "Door.h"
 #include "Level.h"
+#include "EnemySpawner.h"
 
 using namespace irrklang;
 

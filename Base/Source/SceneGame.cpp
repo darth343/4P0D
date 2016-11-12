@@ -108,9 +108,9 @@ void SceneGame::Update(const double dt)
         if (go->GetActive())
         {
             go->Update(dt);
-            if (go->GetType() == GameObject::ENEMY)
+            if (go->GetType() == GameObject::SPAWNER)
             {
-                dynamic_cast<Enemy*>(go)->Update(dt, m_player1, m_currLevel->m_TerrainMap);
+                dynamic_cast<Spawner*>(go)->Update(dt, m_player1, m_player2, m_currLevel->m_TerrainMap);
             }
             else if (go->GetType() == GameObject::DOOR)
             {
@@ -318,7 +318,10 @@ void SceneGame::RenderGO(GameObject *go)
                                           modelStack.PushMatrix();
                                           modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
                                           modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-                                          RenderMesh(go->GetMesh(), false);
+                                          if (dynamic_cast<Enemy*>(go)->GetEnemyType() == Enemy::MELEE)
+                                            RenderMesh(meshList[GEO_PLAYER1], false);
+                                          else
+                                              RenderMesh(meshList[GEO_PLAYER2], false);
                                           modelStack.PopMatrix();
                                           break;
     }
@@ -574,15 +577,25 @@ void SceneGame::Render()
             RenderGO(go);
             m_renderCount += 0.1f;
 
-            if (go->GetType() == GameObject::ENEMY)
+            if (go->GetType() == GameObject::SPAWNER)
             {
-                for (std::vector<Projectile*>::iterator it = dynamic_cast<Enemy*>(go)->m_ProjectileList.begin(); it != dynamic_cast<Enemy*>(go)->m_ProjectileList.end(); ++it)
+                for (std::vector<Enemy*>::iterator it2 = dynamic_cast<Spawner*>(go)->m_enemyList.begin(); it2 != dynamic_cast<Spawner*>(go)->m_enemyList.end(); ++it2)
                 {
-                    Projectile *go = (Projectile *)*it;
-                    if (go->GetActive())
+                    Enemy *go2 = (Enemy *)*it2;
+                    if (!go2->GetActive())
+                        continue;
+
+                    RenderGO(go2);
+                    m_renderCount += 0.1f;
+
+                    for(std::vector<Projectile*>::iterator it3 = dynamic_cast<Enemy*>(go2)->m_ProjectileList.begin(); it3 != dynamic_cast<Enemy*>(go2)->m_ProjectileList.end(); ++it3)
                     {
-                        RenderGO(go);
-                        m_renderCount += 0.1f;
+                        Projectile *go3 = (Projectile *)*it3;
+                        if (go3->GetActive())
+                        {
+                            RenderGO(go3);
+                            m_renderCount += 0.1f;
+                        }
                     }
                 }
             }
@@ -647,29 +660,48 @@ void SceneGame::SpawnObjects(CMap *map)
         {
         case 5: // Melee Monster
         {
-                    Enemy* enemy = new Enemy();
-                    enemy->SetActive(true);
-                    enemy->SetPos(it->second);
-                    enemy->SetScale(Vector3(15, 15, 5));
-                    enemy->SetTarget(m_player1->GetPos());
-                    enemy->SetEnemyType(Enemy::MELEE);
-                    enemy->SetMesh(meshList[GEO_PLAYER1]);
-                    enemy->SetType(GameObject::ENEMY);
-                    m_goList.push_back(enemy);
+                    //Enemy* enemy = new Enemy();
+                    //enemy->SetActive(true);
+                    //enemy->SetPos(it->second);
+                    //enemy->SetScale(Vector3(15, 15, 5));
+                    //enemy->SetTarget(m_player1->GetPos());
+                    //enemy->SetEnemyType(Enemy::MELEE);
+                    //enemy->SetMesh(meshList[GEO_PLAYER1]);
+                    //enemy->SetType(GameObject::ENEMY);
+                    //m_goList.push_back(enemy);
+
+                    Spawner* spawner = new Spawner();
+                    spawner->SetActive(true);
+                    spawner->m_TypeToSpawn = Enemy::MELEE;
+                    spawner->SetPos(it->second);
+                    spawner->SetScale(Vector3(15, 15, 5));
+                    spawner->SetMesh(meshList[GEO_PLAYER1]);
+                    spawner->SetType(GameObject::SPAWNER);
+                    m_goList.push_back(spawner);
+
                     break;
         }
 
         case 6: // Ranged Monster
         {
-                    Enemy* enemy = new Enemy();
-                    enemy->SetActive(true);
-                    enemy->SetPos(it->second);
-                    enemy->SetScale(Vector3(15, 15, 5));
-                    enemy->SetTarget(m_player1->GetPos());
-                    enemy->SetEnemyType(Enemy::RANGED);
-                    enemy->SetMesh(meshList[GEO_PLAYER1]);
-                    enemy->SetType(GameObject::ENEMY);
-                    m_goList.push_back(enemy);
+                    //Enemy* enemy = new Enemy();
+                    //enemy->SetActive(true);
+                    //enemy->SetPos(it->second);
+                    //enemy->SetScale(Vector3(15, 15, 5));
+                    //enemy->SetTarget(m_player1->GetPos());
+                    //enemy->SetEnemyType(Enemy::RANGED);
+                    //enemy->SetMesh(meshList[GEO_PLAYER1]);
+                    //enemy->SetType(GameObject::ENEMY);
+                    //m_goList.push_back(enemy);
+
+                    Spawner* spawner = new Spawner();
+                    spawner->SetActive(true);
+                    spawner->m_TypeToSpawn = Enemy::RANGED;
+                    spawner->SetPos(it->second);
+                    spawner->SetScale(Vector3(15, 15, 5));
+                    spawner->SetMesh(meshList[GEO_PLAYER2]);
+                    spawner->SetType(GameObject::SPAWNER);
+                    m_goList.push_back(spawner);
                     break;
         }
 
