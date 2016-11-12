@@ -382,11 +382,14 @@ void SceneGame::RenderUI()
         modelStack.Scale(32, 32, 32);
         RenderMesh(meshList[GEO_GREYHEART], false);
         modelStack.PopMatrix();
-        modelStack.PushMatrix();
-        modelStack.Translate(25 + i * 32, 540, 1);
-        modelStack.Scale(32, 32, 32);
-        RenderMesh(meshList[GEO_REDHEART], false);
-        modelStack.PopMatrix();
+        if (i <= m_player1->GetHP())
+        {
+            modelStack.PushMatrix();
+            modelStack.Translate(25 + i * 32, 540, 1);
+            modelStack.Scale(32, 32, 32);
+            RenderMesh(meshList[GEO_REDHEART], false);
+            modelStack.PopMatrix();
+        }
     }
     for (int i = 0; i < 5; i++)
     {
@@ -395,11 +398,14 @@ void SceneGame::RenderUI()
         modelStack.Scale(32, 32, 32);
         RenderMesh(meshList[GEO_GREYHEART], false);
         modelStack.PopMatrix();
-        modelStack.PushMatrix();
-        modelStack.Translate(644 + i * 32, 540, 1);
-        modelStack.Scale(32, 32, 32);
-        RenderMesh(meshList[GEO_REDHEART], false);
-        modelStack.PopMatrix();
+        if (i <= m_player2->GetHP())
+        {
+            modelStack.PushMatrix();
+            modelStack.Translate(644 + i * 32, 540, 1);
+            modelStack.Scale(32, 32, 32);
+            RenderMesh(meshList[GEO_REDHEART], false);
+            modelStack.PopMatrix();
+        }
     }
     ostringstream ss;
     ss << setfill('0') << setw(8) << m_player1->points;
