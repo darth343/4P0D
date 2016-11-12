@@ -19,6 +19,8 @@ const unsigned char FPS = 60; // FPS of this game
 const unsigned int frameTime = 1000 / FPS; // time for each frame
 int m_width, m_height;
 
+SceneManager Application::sceneManager;
+
 //Define an error callback
 static void error_callback(int error, const char* description)
 {
@@ -187,12 +189,12 @@ void Application::Run()
 {
     sceneManager.AddScene("Menu", new SceneMenu());
     sceneManager.AddScene("Game", new SceneGame());
-	sceneManager.ChangeScene("Game");
+	sceneManager.ChangeScene("Menu");
 
     //Main Loop
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	
-    while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
+    while (!glfwWindowShouldClose(m_window) && !sceneManager.b_toExit && !IsKeyPressed(VK_ESCAPE))
 	{
 		sceneManager.Update(m_timer.getElapsedTime());
 		sceneManager.Render();
@@ -218,24 +220,36 @@ void Application::Exit()
 	glfwTerminate();
 }
 
+void Application::StopAllSounds()
+{
+    m_soundEngine->stopAllSounds();
+}
+
 void Application::PlayMenuBGM()
 {
     if (playMusic) {
-        m_soundEngine->play2D("Sound//BGM_menu.XM", true);
+        m_soundEngine->play2D("Sound//MainMenu BGM.mp3", true);
     }
 }
 
 void Application::PlayGameBGM()
 {
     if (playMusic) {
-        m_soundEngine->play2D("Sound//BGM_game.wav", true);
+        m_soundEngine->play2D("Sound//Dungeon BGM.mp3", true);
+    }
+}
+
+void Application::PlayButtonToggleSE()
+{
+    if (playSound) {
+        m_soundEngine->play2D("Sound//button_toggle.wav");
     }
 }
 
 void Application::PlayButtonPressSE()
 {
     if (playSound) {
-        m_soundEngine->play2D("Sound//SE_button press.mp3");
+        m_soundEngine->play2D("Sound//button_select.wav");
     }
 }
 

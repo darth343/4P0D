@@ -12,6 +12,9 @@ class SceneManager
     Scene* m_currScene;
 
 public:
+    std::string toChangeScene;
+    bool b_toExit;
+
     SceneManager();
     ~SceneManager();
 

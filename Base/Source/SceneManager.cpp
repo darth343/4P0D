@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include "Application.h"
 
 SceneManager::SceneManager()
 {
@@ -14,6 +15,9 @@ SceneManager::~SceneManager()
     }
 
     m_sceneList.clear();
+
+    toChangeScene = "";
+    b_toExit = false;
 }
 
 void SceneManager::AddScene(std::string sceneName, Scene* scene)
@@ -23,6 +27,8 @@ void SceneManager::AddScene(std::string sceneName, Scene* scene)
 
 void SceneManager::ChangeScene(std::string sceneName)
 {
+    Application::GetInstance().StopAllSounds();
+
     std::map<std::string, Scene*>::iterator it = m_sceneList.find(sceneName);
     m_currScene = it->second;
     m_currScene->Init();
@@ -31,6 +37,12 @@ void SceneManager::ChangeScene(std::string sceneName)
 void SceneManager::Update(double dt)
 {
     m_currScene->Update(dt);
+
+    if (toChangeScene != "")
+    {
+        ChangeScene(toChangeScene);
+        toChangeScene = "";
+    }
 }
 
 void SceneManager::Render()
