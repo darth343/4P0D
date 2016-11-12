@@ -107,8 +107,8 @@ bool CMap::LoadFile(const string mapName)
                     Vector3 tempSpawn;
                     tempSpawn.Set(x * theTileSize, y * theTileSize, 1);
 
-                    // 5 == Melee Monster
-                    // 6 == Ranged Monster
+                    // 51.. == Melee Monster
+                    // 61.. == Ranged Monster
                     // 97 == P1 Spawn
                     // 98 == P2 Spawn
                     // 99 == Exit

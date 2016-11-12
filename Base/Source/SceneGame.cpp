@@ -258,7 +258,7 @@ void SceneGame::Interactions(GameObject* go1, GameObject* go2)
         if (go2->GetType() == GameObject::SWITCH)
             dynamic_cast<Switch*>(go2)->InteractionResponse(go1);
 
-        if (go2->GetType() == GameObject::ENEMY)
+        if (go2->GetType() == GameObject::ENEMY && dynamic_cast<Enemy*>(go2)->GetEnemyType() == Enemy::MELEE)
         {
             dynamic_cast<Enemy*>(go2)->TakeDamage(dynamic_cast<Projectile*>(go1)->GetDmg());
             go1->SetActive(false);
@@ -270,7 +270,7 @@ void SceneGame::Interactions(GameObject* go1, GameObject* go2)
     {
         if (go2->GetType() == GameObject::SWITCH)
             dynamic_cast<Switch*>(go2)->InteractionResponse(go1);
-        if (go2->GetType() == GameObject::ENEMY)
+        if (go2->GetType() == GameObject::ENEMY && dynamic_cast<Enemy*>(go2)->GetEnemyType() == Enemy::RANGED)
         {
             dynamic_cast<Enemy*>(go2)->TakeDamage(dynamic_cast<Projectile*>(go1)->GetDmg());
             go1->SetActive(false);
@@ -769,6 +769,36 @@ void SceneGame::SpawnObjects(CMap *map)
             m_goList.push_back(door);
             break;
         }
+        }
+
+        if (it->first > 50 && it->first < 70)
+        {
+            int spawnType = it->first / 10 % 10; // Spawn type: 5 == Melee, 6 == Ranged
+            int spawnerNum = it->first % 10;  // SpawnerNum
+
+            if (spawnType = 5)
+            {
+                Spawner* spawner = new Spawner();
+                spawner->SetActive(true);
+                spawner->m_TypeToSpawn = Enemy::MELEE;
+                spawner->SetPos(it->second);
+                spawner->SetScale(Vector3(15, 15, 5));
+                spawner->SetMesh(meshList[GEO_PLAYER1]);
+                spawner->SetType(GameObject::SPAWNER);
+                m_goList.push_back(spawner);
+            }
+            else
+            {
+                Spawner* spawner = new Spawner();
+                spawner->SetActive(true);
+                spawner->m_TypeToSpawn = Enemy::RANGED;
+                spawner->SetPos(it->second);
+                spawner->SetScale(Vector3(15, 15, 5));
+                spawner->SetMesh(meshList[GEO_PLAYER2]);
+                spawner->SetType(GameObject::SPAWNER);
+                m_goList.push_back(spawner);
+            }
+
         }
 
         if (it->first > 1000)
