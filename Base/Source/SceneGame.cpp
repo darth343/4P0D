@@ -121,9 +121,13 @@ void SceneGame::Update(const double dt)
     for (std::vector<GameObject*>::size_type i = 0; i < m_goList.size(); ++i)
     {
         GameObject* go = m_goList[i];
+		if (!go->GetActive())
+			continue;
         for (std::vector<GameObject*>::size_type i2 = 0; i2 < m_goList.size(); ++i2)
         {
             GameObject *go2 = m_goList[i2];
+			if (!go2->GetActive())
+				continue;
             if (go->CheckCollisionWith(go2))
             {
                 Interactions(go, go2);
@@ -135,9 +139,13 @@ void SceneGame::Update(const double dt)
     for (std::vector<Projectile*>::size_type i = 0; i < m_player1->m_ProjectileList.size(); ++i)
     {
         Projectile* go = m_player1->m_ProjectileList[i];
+		if (!go->GetActive())
+			continue;
         for (std::vector<GameObject*>::size_type i2 = 0; i2 < m_goList.size(); ++i2)
         {
             GameObject *go2 = m_goList[i2];
+			if (!go2->GetActive())
+				continue;
             if (go->CheckCollisionWith(go2))
             {
                 Interactions(go, go2);
@@ -226,7 +234,6 @@ void SceneGame::Interactions(GameObject* go1, GameObject* go2)
     {
         if (go2->GetType() == GameObject::SWITCH)
             dynamic_cast<Switch*>(go2)->InteractionResponse(go1);
-
         if (go2->GetType() == GameObject::ENEMY)
         {
             dynamic_cast<Enemy*>(go2)->TakeDamage(dynamic_cast<Projectile*>(go1)->GetDmg());
@@ -319,25 +326,25 @@ void SceneGame::RenderGO(GameObject *go)
                                           break;
     }
 
-    case GameObject::DOOR:
-    {
-                              modelStack.PushMatrix();
-                              modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
-                              modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-                              RenderMesh(go->GetMesh(), false);
-                              modelStack.PopMatrix();
-                              break;
-    }
+    //case GameObject::DOOR:
+    //{
+    //                          modelStack.PushMatrix();
+    //                          modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+    //                          modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
+    //                          RenderMesh(go->GetMesh(), false);
+    //                          modelStack.PopMatrix();
+    //                          break;
+    //}
 
-    case GameObject::SWITCH:
-    {
-                              modelStack.PushMatrix();
-                              modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
-                              modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-                              RenderMesh(go->GetMesh(), false);
-                              modelStack.PopMatrix();
-                              break;
-    }
+    //case GameObject::SWITCH:
+    //{
+    //                          modelStack.PushMatrix();
+    //                          modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+    //                          modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
+    //                          RenderMesh(go->GetMesh(), false);
+    //                          modelStack.PopMatrix();
+    //                          break;
+    //}
     }
 }
 
@@ -352,14 +359,27 @@ void SceneGame::RenderBackground()
 
 void SceneGame::RenderPlayer()
 {
+	Vector3 dir = Application::GetRightStickPos(0);
+	static float angle1 = 0;
+	if (!dir.IsZero())
+	angle1 = Math::RadianToDegree(atan2(dir.y, dir.x));
     modelStack.PushMatrix();
-    modelStack.Translate(m_player1->GetPos().x, m_player1->GetPos().y, m_player1->GetPos().z);
+	modelStack.Translate(m_player1->GetPos().x, m_player1->GetPos().y, m_player1->GetPos().z);
+	modelStack.Translate(m_player1->GetScale().x * 0.5, m_player1->GetScale().y * 0.5, m_player1->GetScale().z);
+	modelStack.Rotate(-angle1, 0, 0, 1);
+	modelStack.Translate(-m_player1->GetScale().x * 0.5, -m_player1->GetScale().y * 0.5, m_player1->GetScale().z);
     modelStack.Scale(m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize());
     RenderMesh(meshList[GEO_PLAYER1], false);
     modelStack.PopMatrix();
-
+	dir = Application::GetRightStickPos(1);
+	static float angle2 = 0;
+	if (!dir.IsZero())
+	angle2 = Math::RadianToDegree(atan2(dir.y, dir.x));
 	modelStack.PushMatrix();
     modelStack.Translate(m_player2->GetPos().x, m_player2->GetPos().y, m_player2->GetPos().z);
+	modelStack.Translate(m_player2->GetScale().x * 0.5, m_player2->GetScale().y * 0.5, m_player2->GetScale().z);
+	modelStack.Rotate(-angle2-90, 0, 0, 1);
+	modelStack.Translate(-m_player2->GetScale().x * 0.5, -m_player2->GetScale().y * 0.5, m_player2->GetScale().z);
     modelStack.Scale(m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize());
     RenderMesh(meshList[GEO_PLAYER2], false);
 	modelStack.PopMatrix();
@@ -371,7 +391,7 @@ void SceneGame::RenderRayTracing()
     float angle = Math::RadianToDegree(atan2(dir.y, dir.x));
 
     // Render ray
-    glLineWidth(3.f);
+    glLineWidth(2.f);
 
 	if (!dir.IsZero())
 	{
@@ -556,7 +576,8 @@ void SceneGame::Render()
     // Render game background
     RenderBackground();
 	glDisable(GL_DEPTH_TEST);
-    RenderTileMap(m_currLevel->m_TerrainMap);
+	RenderTileMap(m_currLevel->m_TerrainMap);
+	RenderTileMap(m_currLevel->m_SpawnMap);
 
     // Render Player
     RenderPlayer();
@@ -646,7 +667,7 @@ void SceneGame::SpawnObjects(CMap *map)
                     Enemy* enemy = new Enemy();
                     enemy->SetActive(true);
                     enemy->SetPos(it->second);
-                    enemy->SetScale(Vector3(5, 5, 5));
+                    enemy->SetScale(Vector3(32, 32, 5));
                     enemy->SetTarget(m_player1->GetPos());
                     enemy->SetEnemyType(Enemy::MELEE);
                     enemy->SetMesh(meshList[GEO_PLAYER1]);
@@ -660,7 +681,7 @@ void SceneGame::SpawnObjects(CMap *map)
                     Enemy* enemy = new Enemy();
                     enemy->SetActive(true);
                     enemy->SetPos(it->second);
-                    enemy->SetScale(Vector3(5, 5, 5));
+                    enemy->SetScale(Vector3(32, 23, 5));
                     enemy->SetTarget(m_player1->GetPos());
                     enemy->SetEnemyType(Enemy::RANGED);
                     enemy->SetMesh(meshList[GEO_PLAYER1]);

@@ -158,6 +158,8 @@ void Player::MovePlayer(double dt, CMap* m_cMap, CMap* spawnMap)
 			{
 				if(m_cMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel > 0)
 					m_cMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel--;
+				if (spawnMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel > 0)
+					spawnMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel--;
 				++xstart;
 				if (xstart + currTile.x > m_cMap->GetNumOfTiles_Width() - 1)
 					break;
@@ -181,7 +183,7 @@ void Player::Attack()
 				  temp->SetDmg(1);
 				  temp->SetLifetime(0.1);
 				  temp->SetPos(this->m_pos);
-				  temp->SetScale(Vector3(5, 5, 1));
+				  temp->SetScale(Vector3(25, 25, 1));
 				  temp->SetType(GameObject::PROJECTILE_MELEE);
 
 				  Vector3 dir = Application::GetRightStickPos(controllerID);
@@ -198,14 +200,14 @@ void Player::Attack()
 				   Projectile* temp = new Projectile();
 				   temp->SetActive(true);
 				   temp->SetDmg(1);
-				   temp->SetLifetime(0.5);
-				   temp->SetPos(this->m_pos + m_scale * 0.5);
-				   temp->SetScale(Vector3(5, 5, 1));
+				   temp->SetLifetime(10.f);
+				   temp->SetPos(this->m_pos);
+				   temp->SetScale(Vector3(25, 25, 1));
 				   temp->SetType(GameObject::PROJECTILE_RANGED);
 
 				   Vector3 dir = Application::GetRightStickPos(controllerID);
 				   dir.y *= -1;
-				   temp->SetVelocity(dir);
+				   temp->SetVelocity(dir * 5);
 
 				   m_ProjectileList.push_back(temp);
 				   break;

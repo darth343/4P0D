@@ -45,7 +45,7 @@ public:
 				{
 				case ParticleObject_TYPE::P_SMOKE:
 				{
-													 particle->scale.Set(20, 20, 20);
+					particle->scale.Set(20, 20, 20);
 					particle->vel.Set(0, 0, 0);
 					particle->bounce = true;
 					break;

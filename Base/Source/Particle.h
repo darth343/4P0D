@@ -12,7 +12,7 @@ enum ParticleObject_TYPE
 class ParticleObject
 {
 public:
-	ParticleObject(ParticleObject_TYPE = P_WATER);
+	ParticleObject(ParticleObject_TYPE = P_SMOKE);
 	~ParticleObject();
 
 	ParticleObject_TYPE type;

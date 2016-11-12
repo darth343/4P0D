@@ -128,12 +128,15 @@ void SceneBase::Init()
 	meshList[GEO_WALL] = MeshBuilder::GenerateTile("wall", Color(0, 0, 0), 1.f);
 	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall.tga");
 
+	meshList[GEO_DOOR] = MeshBuilder::GenerateTile("door", Color(0, 0, 0), 1.f);
+	meshList[GEO_DOOR]->textureID = LoadTGA("Image//Door.tga");
+
 	meshList[GEO_PLAYER1] = MeshBuilder::GenerateTile("player", Color(0, 1, 0), 1.f);
     meshList[GEO_PLAYER1]->textureID = LoadTGA("Image//Sword.tga");
 	meshList[GEO_PLAYER2] = MeshBuilder::GenerateTile("player 2", Color(0, 1, 0), 1.f);
 	meshList[GEO_PLAYER2]->textureID = LoadTGA("Image//Staff.tga");
 
-    meshList[GEO_RAY] = MeshBuilder::GenerateLine("line", Color(1, 0, 0), 1.f);
+    meshList[GEO_RAY] = MeshBuilder::GenerateLine("line", Color(0, 0, 1), 1.f);
 
     bLightEnabled = false;
 }
@@ -267,10 +270,19 @@ void SceneBase::RenderTileMap(CMap* map)
 			{
 				RenderMesh(meshList[GEO_WALL], false, opacity);
 			}
+			if (map->theMap[y][x].BlockID / 100 % 10 == 2 && map->theMap[y][x].active)
+			{
+				RenderMesh(meshList[GEO_PLAYER1], false, opacity);
+			}
+			if (map->theMap[y][x].BlockID / 100 % 10 == 1 && map->theMap[y][x].active)
+			{
+				RenderMesh(meshList[GEO_DOOR], false, opacity);
+			}
 			modelStack.PopMatrix();
 		}
 	}
 }
+
 void SceneBase::RenderFogMap(CMap* map)
 {
 	for (int y = 0; y < map->theNumOfTiles_Height; ++y)
