@@ -1000,7 +1000,7 @@ void SceneGame::RenderParticles(ParticleObject* particle)
         break;
     }
 
-    case ParticleObject_TYPE::P_SMOKE:
+    case ParticleObject_TYPE::P_SILVER_BLOOD:
     {
         glBlendFunc(GL_ONE, GL_ONE);
         modelStack.PushMatrix();

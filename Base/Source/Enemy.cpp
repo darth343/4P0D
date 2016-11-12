@@ -244,7 +244,7 @@ void Enemy::Attack()
                   temp->SetActive(true);
                   temp->SetDmg(1);
                   temp->SetLifetime(0.3);
-                  temp->SetPos(this->m_pos);
+                  temp->SetPos(this->m_pos + m_scale * 0.5);
                   temp->SetScale(Vector3(5, 5, 1));
                   temp->SetType(GameObject::PROJECTILE_MELEE);
 
@@ -266,7 +266,7 @@ void Enemy::Attack()
                    temp->SetActive(true);
                    temp->SetDmg(1);
                    temp->SetLifetime(1);
-                   temp->SetPos(this->m_pos);
+                   temp->SetPos(this->m_pos + m_scale * 0.5);
                    temp->SetScale(Vector3(5, 5, 1));
                    temp->SetType(GameObject::PROJECTILE_RANGED);
 
