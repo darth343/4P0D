@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include <string>
 #include "AABB.h"
+#include "Map.h"
 
 class GameObject
 {
@@ -59,6 +60,8 @@ public:
 
     void UpdateAABB();
     bool CheckCollisionWithAABB(GameObject* otherGo);
+
+	bool CheckCollisionWithMap(CMap* m_cMap, CMap* spawnMap);
 
 protected:
     GameObject();

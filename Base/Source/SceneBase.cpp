@@ -130,7 +130,7 @@ void SceneBase::Init()
     meshList[GEO_MENU_HIGHLIGHT]->textureID = LoadTGA("Image//Sword.tga");
 
     meshList[GEO_MENU_HIGHLIGHT2] = MeshBuilder::GenerateQuad("menu button highlight 2", Color(0, 0, 0), 1.f);
-    meshList[GEO_MENU_HIGHLIGHT2]->textureID = LoadTGA("Image//Staff.tga");
+    meshList[GEO_MENU_HIGHLIGHT2]->textureID = LoadTGA("Image//Staff_Menu.tga");
 
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateTile("floor", Color(0, 0, 0), 1.f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//Ground.tga");
@@ -149,7 +149,8 @@ void SceneBase::Init()
 	meshList[GEO_ARMORENEMY]->textureID = LoadTGA("Image//ArmorEnemy.tga");
 	meshList[GEO_SPECTRE] = MeshBuilder::GenerateTile("GEO_SPECTRE", Color(0, 1, 0), 1.f);
 	meshList[GEO_SPECTRE]->textureID = LoadTGA("Image//Spectre.tga");
-    meshList[GEO_RAY] = MeshBuilder::GenerateLine("line", Color(0, 0, 1), 1.f);
+	meshList[GEO_RAYRED] = MeshBuilder::GenerateLine("line", Color(1, 0, 0), 1.f);
+	meshList[GEO_RAYBLUE] = MeshBuilder::GenerateLine("line", Color(0, 0, 1), 1.f);
 
 	meshList[GEO_SWORD_PROJECTILE_LAH] = MeshBuilder::GenerateTile("GEO_SWORD_PROJECTILE_LAH", Color(0, 1, 0), 1.f);
 	meshList[GEO_SWORD_PROJECTILE_LAH]->textureID = LoadTGA("Image//MeleeProjectile.tga");
@@ -208,8 +209,6 @@ void SceneBase::Init()
 
     meshList[GEO_DOOR] = MeshBuilder::GenerateTile("door", Color(0, 1, 0), 1.f);
     meshList[GEO_DOOR]->textureID = LoadTGA("Image//Door.tga");
-
-    meshList[GEO_RAY] = MeshBuilder::GenerateLine("line", Color(1, 0, 0), 1.f);
 
     bLightEnabled = false;
 }

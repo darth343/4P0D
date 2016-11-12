@@ -13,6 +13,8 @@ SceneGame::~SceneGame()
 
 void SceneGame::Init()
 {
+	Application::GetInstance().PlayGameBGM();
+
     SceneBase::Init();
 
 	//m_cmap = new CMap();
@@ -274,6 +276,10 @@ void SceneGame::Update(const double dt)
             {
                 Interactions(go, go2);
             }
+			else if (go->CheckCollisionWithMap(m_currLevel->m_TerrainMap, m_currLevel->m_SpawnMap))
+			{
+				go->SetActive(false);
+			}
         }
     }
 
@@ -445,7 +451,7 @@ void SceneGame::RenderGO(GameObject *go)
     case GameObject::PROJECTILE_MELEE:
     {
                                           modelStack.PushMatrix();
-                                          modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+										  modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
                                           float angle = Math::RadianToDegree(atan2(go->GetVelocity().y, go->GetVelocity().x));
                                           modelStack.Rotate(angle - 90, 0, 0, 1);
                                           modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
@@ -501,10 +507,9 @@ void SceneGame::RenderBackground()
 
 void SceneGame::RenderPlayer()
 {
-	Vector3 dir = Application::GetRightStickPos(0);
 	static float angle1 = 0;
-	if (!dir.IsZero())
-	angle1 = Math::RadianToDegree(atan2(dir.y, dir.x));
+	if (!m_player1->m_dir.IsZero())
+	angle1 = Math::RadianToDegree(atan2(m_player1->m_dir.y, m_player1->m_dir.x));
     modelStack.PushMatrix();
 	modelStack.Translate(m_player1->GetPos().x, m_player1->GetPos().y, m_player1->GetPos().z);
 	modelStack.Translate(m_player1->GetScale().x * 0.5, m_player1->GetScale().y * 0.5, m_player1->GetScale().z);
@@ -513,10 +518,10 @@ void SceneGame::RenderPlayer()
     modelStack.Scale(m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize());
     RenderMesh(m_player1->GetMesh(), false);
     modelStack.PopMatrix();
-	dir = Application::GetRightStickPos(1);
+	
 	static float angle2 = 0;
-	if (!dir.IsZero())
-	angle2 = Math::RadianToDegree(atan2(dir.y, dir.x));
+	if (!m_player2->m_dir.IsZero())
+	angle2 = Math::RadianToDegree(atan2(m_player2->m_dir.y, m_player2->m_dir.x));
 	modelStack.PushMatrix();
     modelStack.Translate(m_player2->GetPos().x, m_player2->GetPos().y, m_player2->GetPos().z);
 	modelStack.Translate(m_player2->GetScale().x * 0.5, m_player2->GetScale().y * 0.5, m_player2->GetScale().z);
@@ -537,11 +542,13 @@ void SceneGame::RenderRayTracing()
 
 	if (!dir.IsZero())
 	{
+		m_player1->m_dir = dir.Normalized();
+
 		modelStack.PushMatrix();
 		modelStack.Translate(m_player1->GetPos().x + m_player1->GetScale().x * 0.5, m_player1->GetPos().y + m_player1->GetScale().y * 0.5, m_player1->GetPos().z);
 		modelStack.Rotate(-angle, 0, 0, 1);
 		modelStack.Scale(500, 1, 1);
-		RenderMesh(meshList[GEO_RAY], false);
+		RenderMesh(meshList[GEO_RAYBLUE], false);
 		modelStack.PopMatrix();
 	}
 
@@ -550,11 +557,13 @@ void SceneGame::RenderRayTracing()
 	angle = Math::RadianToDegree(atan2(dir.y, dir.x));
 	if (!dir.IsZero())
 	{
+		m_player2->m_dir = dir.Normalized();
+
 		modelStack.PushMatrix();
 		modelStack.Translate(m_player2->GetPos().x + m_player2->GetScale().x * 0.5, m_player2->GetPos().y + m_player2->GetScale().y * 0.5, m_player2->GetPos().z);
 		modelStack.Rotate(-angle, 0, 0, 1);
 		modelStack.Scale(500, 1, 1);
-		RenderMesh(meshList[GEO_RAY], false);
+		RenderMesh(meshList[GEO_RAYRED], false);
 		modelStack.PopMatrix();
 	}
     glLineWidth(1.f);

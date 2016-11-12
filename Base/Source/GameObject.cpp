@@ -89,6 +89,48 @@ bool GameObject::CheckCollisionWithAABB(GameObject* otherGo)
     return false;
 }
 
+bool GameObject::CheckCollisionWithMap(CMap* m_cMap, CMap* spawnMap)
+{
+	Vector3 nextTile = m_pos * (1.f / m_cMap->GetTileSize());
+	Vector3 halfNextTile = (m_pos + Vector3((m_cMap->GetTileSize() / 2), (m_cMap->GetTileSize() / 2), 0.f)) * (1.f / m_cMap->GetTileSize());
+
+	if (nextTile.y > 0)
+	{
+		if (m_cMap->theMap[nextTile.y][halfNextTile.x].CheckCollide()
+			|| spawnMap->theMap[nextTile.y][halfNextTile.x].CheckCollide())
+		{
+			return true;
+		}
+	}
+	else if (nextTile.y < 0)
+	{
+		if (m_cMap->theMap[nextTile.y + 2][nextTile.x].CheckCollide()
+			|| spawnMap->theMap[nextTile.y + 2][nextTile.x].CheckCollide())
+		{
+			return true;
+		}
+	}
+
+	if (nextTile.x > 0)
+	{
+		if (m_cMap->theMap[halfNextTile.y][nextTile.x].CheckCollide()
+			|| spawnMap->theMap[halfNextTile.y][nextTile.x].CheckCollide())
+		{
+			return true;
+		}
+	}
+	else if (nextTile.x < 0)
+	{
+		if (m_cMap->theMap[nextTile.y][nextTile.x].CheckCollide()
+			|| spawnMap->theMap[nextTile.y][nextTile.x].CheckCollide())
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void GameObject::SetActive(bool status)
 {
     m_active = status;

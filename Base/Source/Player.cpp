@@ -10,6 +10,7 @@ Player::Player()
 , m_attackType(RANGED)
 , m_attackDelay(0)
 , m_hp(5)
+, m_dir(1, 0, 0)
 {
 }
 
@@ -94,25 +95,23 @@ void Player::MovePlayer(double dt, CMap* m_cMap, CMap* spawnMap)
 {
 	Vector3 leftstick = Application::GetLeftStickPos(controllerID);
 	Vector3 nextPosition = m_pos + leftstick * playerSpeed * dt;
-	Vector3 nextTile = nextPosition * (1.f / m_cMap->GetTileSize());
+	Vector3 nextTile = m_pos * (1.f / m_cMap->GetTileSize());
+	Vector3 halfNextTile = (m_pos + Vector3((m_cMap->GetTileSize() / 2), (m_cMap->GetTileSize() / 2), 0.f)) * (1.f / m_cMap->GetTileSize());
+
 	if (!leftstick.IsZero())
 	{
 		if (leftstick.y > 0)
 		{
-            if (!m_cMap->theMap[nextTile.y + 1][nextTile.x].CheckCollide()
-                && !m_cMap->theMap[nextTile.y + 1][nextTile.x + 1].CheckCollide()
-                && !spawnMap->theMap[nextTile.y + 1][nextTile.x].CheckCollide()
-                && !spawnMap->theMap[nextTile.y + 1][nextTile.x + 1].CheckCollide())
+			if (!m_cMap->theMap[nextTile.y + 1][halfNextTile.x].CheckCollide()
+				&& !spawnMap->theMap[nextTile.y + 1][halfNextTile.x].CheckCollide())
 			{
 				m_pos.y = nextPosition.y;
 			}
 		}
 		else if (leftstick.y < 0)
 		{
-            if (!m_cMap->theMap[nextTile.y][nextTile.x].CheckCollide()
-                && !m_cMap->theMap[nextTile.y][nextTile.x + 1].CheckCollide()
-                && !spawnMap->theMap[nextTile.y][nextTile.x].CheckCollide()
-                && !spawnMap->theMap[nextTile.y][nextTile.x + 1].CheckCollide())
+			if (!m_cMap->theMap[nextTile.y][halfNextTile.x].CheckCollide()
+				&& !spawnMap->theMap[nextTile.y][halfNextTile.x].CheckCollide())
 			{
 				m_pos.y = nextPosition.y;// +m_cMap->GetTileSize() * 0.1;;
 			}
@@ -120,20 +119,16 @@ void Player::MovePlayer(double dt, CMap* m_cMap, CMap* spawnMap)
 
 		if (leftstick.x > 0)
 		{
-            if (!m_cMap->theMap[nextTile.y][nextTile.x + 1].CheckCollide()
-                && !m_cMap->theMap[nextTile.y + 1][nextTile.x + 1].CheckCollide()
-                && !spawnMap->theMap[nextTile.y][nextTile.x + 1].CheckCollide()
-                && !spawnMap->theMap[nextTile.y + 1][nextTile.x + 1].CheckCollide())
+            if (!m_cMap->theMap[halfNextTile.y][nextTile.x + 1].CheckCollide()
+				&& !spawnMap->theMap[halfNextTile.y][nextTile.x + 1].CheckCollide())
 			{
 				m_pos.x = nextPosition.x;
 			}
 		}
 		else if (leftstick.x < 0)
 		{
-            if (!m_cMap->theMap[nextTile.y][nextTile.x].CheckCollide()
-                && !m_cMap->theMap[nextTile.y + 1][nextTile.x].CheckCollide()
-                && !spawnMap->theMap[nextTile.y][nextTile.x].CheckCollide()
-                && !spawnMap->theMap[nextTile.y + 1][nextTile.x].CheckCollide())
+			if (!m_cMap->theMap[halfNextTile.y][nextTile.x].CheckCollide()
+				&& !spawnMap->theMap[halfNextTile.y][nextTile.x].CheckCollide())
 			{
 				m_pos.x = nextPosition.x;
 			}
@@ -187,13 +182,13 @@ void Player::Attack()
 				  Projectile* temp = new Projectile();
 				  temp->SetActive(true);
 				  temp->SetDmg(1);
-				  temp->SetLifetime(0.1);
+				  temp->SetLifetime(0.2);
 				  temp->SetPos(this->m_pos);
 				  temp->SetScale(Vector3(25, 25, 1));
                   temp->SetPos(this->m_pos + m_scale * 0.5);
 				  temp->SetType(GameObject::PROJECTILE_MELEE);
 
-				  Vector3 dir = Application::GetRightStickPos(controllerID);
+				  Vector3 dir = m_dir;
 				  dir.y *= -1;
 				  temp->SetVelocity(dir);
 
@@ -210,7 +205,7 @@ void Player::Attack()
 				   temp->SetScale(Vector3(10, 10, 1));
 				   temp->SetPos(this->m_pos + m_scale * 0.5);
 				   temp->SetType(GameObject::PROJECTILE_RANGED);
-				   Vector3 dir = Application::GetRightStickPos(controllerID);
+				   Vector3 dir = m_dir;
 				   dir.y *= -1;
 				   temp->SetVelocity(dir * 5);
 
