@@ -65,14 +65,17 @@ public:
 	static int GetWindowHeight();
 
     // Game Scenes
-    SceneManager sceneManager;
+    static SceneManager sceneManager;
 
     // Sound
     ISoundEngine* m_soundEngine;
     bool playSound;
     bool playMusic;
+    void StopAllSounds();
+
     void PlayMenuBGM();
     void PlayGameBGM();
+    void PlayButtonToggleSE();
     void PlayButtonPressSE();
     void PlayBulletFireSE();
     void PlayPickupSE();

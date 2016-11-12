@@ -15,13 +15,6 @@ class SceneMenu : public SceneBase
         MENU_TOTAL
     };
 
-    enum HELP_MODE
-    {
-        HELP_STORY,
-        HELP_CONTROLS,
-        HELP_TOTAL
-    };
-
 public:
     SceneMenu();
     ~SceneMenu();
@@ -33,24 +26,27 @@ public:
 
 protected:
     MENU_MODE mode;
-    HELP_MODE help_mode;
-    bool button_highlighted[MENU_TOTAL];
-
-    bool bLButtonState;
+    unsigned int button_index;   // which button being highlighted
+    double d_timeCount;     // for key input
+    double d_bufferTime;    // for key input
 
     float m_worldHeight;
     float m_worldWidth;
-    
+
+    // Update
+    void UpdateMainMenu();
+    void CheckBackButton();
+    float m_background_translation;
+    float m_highlighter_translation;
+    bool b_translateHighlighter;
+
     // Render
+    void RenderBackground();
+    void RenderHighlight();
+
     void RenderMainMenu();
     void RenderInstructions();
-    void RenderStory();
-    void RenderControls();
     void RenderOptions();
-
-    void CheckBackButton();
-    void RenderBackButton();
-    void CheckHelpToggleButton();
 };
 
 #endif

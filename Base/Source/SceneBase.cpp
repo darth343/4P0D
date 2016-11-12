@@ -111,16 +111,26 @@ void SceneBase::Init()
     meshList[GEO_BUTTON_HIGHLIGHTED] = MeshBuilder::GenerateQuad("button highlighted", Color(0, 0, 1), 1.f);
     meshList[GEO_BUTTON_HIGHLIGHTED]->textureID = LoadTGA("Image//button_highlighted.tga");
 
-    meshList[GEO_MENUTEXT] = MeshBuilder::GenerateText("text", 16, 16);
-    meshList[GEO_MENUTEXT]->textureID = LoadTGA("Image//Fonts/playbill.tga");
-    meshList[GEO_MENUTEXT]->material.kAmbient.Set(1, 0, 0);
+    meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
+    meshList[GEO_TEXT]->textureID = LoadTGA("Image//Fonts/Font_Dungeon.tga");
+    meshList[GEO_TEXT]->LoadFontData("Image//Fonts/FontData_Dungeon.csv");
+    meshList[GEO_TEXT]->material.kAmbient.Set(1, 0, 0);
 
     meshList[GEO_CALIBRITEXT] = MeshBuilder::GenerateText("text", 16, 16);
     meshList[GEO_CALIBRITEXT]->textureID = LoadTGA("Image//Fonts/calibri.tga");
     meshList[GEO_CALIBRITEXT]->material.kAmbient.Set(1, 0, 0);
 
-    meshList[GEO_BACKGROUND] = MeshBuilder::GenerateQuad("background", Color(0, 0, 0), 1.f);
-    meshList[GEO_BACKGROUND]->textureID = LoadTGA("Image//background.tga");
+    meshList[GEO_MENU_FRONT] = MeshBuilder::GenerateQuad("menu front", Color(1, 1, 1), 1.f);
+    meshList[GEO_MENU_FRONT]->textureID = LoadTGA("Image//menu_front.tga");
+
+    meshList[GEO_MENU_BACKGROUND] = MeshBuilder::GenerateQuad("menu background", Color(0, 0, 0), 1.f);
+    meshList[GEO_MENU_BACKGROUND]->textureID = LoadTGA("Image//menu_background.tga");
+
+    meshList[GEO_MENU_HIGHLIGHT] = MeshBuilder::GenerateQuad("menu button highlight", Color(0, 0, 0), 1.f);
+    meshList[GEO_MENU_HIGHLIGHT]->textureID = LoadTGA("Image//Sword.tga");
+
+    meshList[GEO_MENU_HIGHLIGHT2] = MeshBuilder::GenerateQuad("menu button highlight 2", Color(0, 0, 0), 1.f);
+    meshList[GEO_MENU_HIGHLIGHT2]->textureID = LoadTGA("Image//Staff.tga");
 
 	meshList[GEO_FLOOR] = MeshBuilder::GenerateTile("floor", Color(0, 0, 0), 1.f);
 	meshList[GEO_FLOOR]->textureID = LoadTGA("Image//Ground.tga");

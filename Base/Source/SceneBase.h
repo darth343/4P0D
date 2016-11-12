@@ -50,12 +50,15 @@ public:
         GEO_LOGO,
         GEO_BUTTON_NORMAL,
         GEO_BUTTON_HIGHLIGHTED,
-        GEO_MENUTEXT,
+        GEO_TEXT,
+        GEO_MENU_FRONT,
+        GEO_MENU_BACKGROUND,
+        GEO_MENU_HIGHLIGHT,
+        GEO_MENU_HIGHLIGHT2,
 
         GEO_CALIBRITEXT,
 
         // gameplay
-        GEO_BACKGROUND,
 		GEO_FLOOR,
 		GEO_WALL,
 		GEO_DOOR,
