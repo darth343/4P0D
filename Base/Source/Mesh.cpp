@@ -1,7 +1,10 @@
-
 #include "Mesh.h"
 #include "GL\glew.h"
 #include "Vertex.h"
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 Mesh::Mesh(const std::string &meshName)
 	: name(meshName)
@@ -91,4 +94,46 @@ void Mesh::Render(unsigned offset, unsigned count)
 	{
 		glDisableVertexAttribArray(3);
 	}
+}
+
+bool Mesh::LoadFontData(const char *file_path)
+{
+    std::ifstream fileStream(file_path, std::ios::binary);
+    if (!fileStream.is_open())
+    {
+        std::cout << "Impossible to open " << file_path << ". Are you in the right directory?\n";
+
+        for (int i = 0; i < 256; ++i)
+        {
+            fontSize[i] = 0;
+        }
+
+        return false;
+    }
+
+    std::string line;
+    int allocateCount = 0;
+    while (!fileStream.eof())
+    {
+        std::getline(fileStream, line);
+        std::stringstream dataStream(line);
+        std::string data;
+        std::getline(dataStream, data, ',');
+
+        if (data == "#") {  //a comment in the file
+            continue;
+        }
+
+        std::getline(dataStream, data);
+
+        fontSize[allocateCount] = std::stoi(data);
+        ++allocateCount;
+        if (allocateCount >= 256) {
+            break;
+        }
+    }
+
+    fileStream.close();
+
+    return true;
 }

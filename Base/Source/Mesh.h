@@ -27,6 +27,10 @@ public:
 
 	Material material;
 	unsigned textureID;
+
+    // Font Data
+    int fontSize[256];
+    bool LoadFontData(const char *file_path);
 };
 
 #endif
