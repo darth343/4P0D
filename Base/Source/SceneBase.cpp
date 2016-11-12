@@ -143,6 +143,9 @@ void SceneBase::Init()
 	meshList[GEO_PLAYER2] = MeshBuilder::GenerateTile("player 2", Color(0, 1, 0), 1.f);
 	meshList[GEO_PLAYER2]->textureID = LoadTGA("Image//Staff.tga");
 
+    meshList[GEO_DOOR] = MeshBuilder::GenerateTile("door", Color(0, 1, 0), 1.f);
+    meshList[GEO_DOOR]->textureID = LoadTGA("Image//Door.tga");
+
     meshList[GEO_RAY] = MeshBuilder::GenerateLine("line", Color(1, 0, 0), 1.f);
 
     bLightEnabled = false;

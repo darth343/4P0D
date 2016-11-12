@@ -10,6 +10,13 @@ public:
     Door();
     ~Door();
 
+    enum DOOR_TYPE
+    {
+        UNLOCKABLE,
+        EXIT,
+    };
+
+    DOOR_TYPE m_doorType;
     Switch* m_switch;
 
     void Init();

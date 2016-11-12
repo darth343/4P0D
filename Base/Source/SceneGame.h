@@ -38,6 +38,7 @@ public:
 
     // Collision
     bool CheckCollision(GameObject *go, GameObject *go2);
+    bool CheckCollisionWithPlayer(Player* player, GameObject *go2);
     void PlayerGetHit();
     void ResetPlayer();
 

@@ -52,7 +52,7 @@ void SceneGame::Init()
     m_player1->m_attackType = Player::MELEE;
 	m_player2 = new Player();
 	m_player2->Init();
-	m_player2->controllerID = 1;
+	m_player2->controllerID = 0;
 	m_player2->SetPos(Vector3(32, 32, 0));
 	m_player2->SetScale(Vector3(32, 32, 1));
     m_player2->m_attackType = Player::RANGED;
@@ -123,6 +123,16 @@ void SceneGame::Update(const double dt)
     for (std::vector<GameObject*>::size_type i = 0; i < m_goList.size(); ++i)
     {
         GameObject* go = m_goList[i];
+        if (go->GetType() == GameObject::DOOR)
+        {
+            if (dynamic_cast<Door*>(go)->m_doorType == Door::UNLOCKABLE)
+                continue;
+
+            if (CheckCollisionWithPlayer(m_player1, go) /*&& CheckCollisionWithPlayer(m_player2, go)*/)
+            {
+                GoNextLevel();
+            }
+        }
         for (std::vector<GameObject*>::size_type i2 = 0; i2 < m_goList.size(); ++i2)
         {
             GameObject *go2 = m_goList[i2];
@@ -136,11 +146,30 @@ void SceneGame::Update(const double dt)
     // Loop for player projectiles
     for (std::vector<Projectile*>::size_type i = 0; i < m_player1->m_ProjectileList.size(); ++i)
     {
+        if (!m_player1->m_ProjectileList[i]->GetActive())
+            continue;
+
         Projectile* go = m_player1->m_ProjectileList[i];
         for (std::vector<GameObject*>::size_type i2 = 0; i2 < m_goList.size(); ++i2)
         {
             GameObject *go2 = m_goList[i2];
-            if (go->CheckCollisionWith(go2))
+            if (!go2->GetActive())
+                continue;
+
+            if (go2->GetType() == GameObject::SPAWNER)
+            {
+                for (std::vector<GameObject*>::size_type i3 = 0; i3 < dynamic_cast<Spawner*>(go2)->m_enemyList.size(); ++i3)
+                {
+                    if (!dynamic_cast<Spawner*>(go2)->m_enemyList[i3]->GetActive())
+                        continue;
+
+                    if (go->CheckCollisionWith(dynamic_cast<Spawner*>(go2)->m_enemyList[i3]))
+                    {
+                        dynamic_cast<Spawner*>(go2)->m_enemyList[i3]->SetActive(false);
+                    }
+                }
+            }
+            else if (go->CheckCollisionWith(go2))
             {
                 Interactions(go, go2);
             }
@@ -284,6 +313,17 @@ bool SceneGame::CheckCollision(GameObject *go, GameObject *go2)
     //    return true;
     //}
     //return false;
+    return false;
+}
+
+bool SceneGame::CheckCollisionWithPlayer(Player* player, GameObject *go2)
+{
+    float distSquare = (player->GetPos() - go2->GetPos()).LengthSquared();
+    float combinedRadiusSquare = (player->GetScale().x + go2->GetScale().x) * (player->GetScale().y + go2->GetScale().y);
+
+    if (distSquare <= combinedRadiusSquare) {
+        return true;
+    }
     return false;
 }
 
@@ -705,6 +745,30 @@ void SceneGame::SpawnObjects(CMap *map)
                     break;
         }
 
+        case 97: // P1
+        {
+                     m_player1->SetPos(it->second);
+                     break;
+        }
+
+        case 98: // P2
+        {
+                     m_player2->SetPos(it->second);
+                     break;
+        }
+
+        case 99: // Exit door
+        {
+            Door* door = new Door();
+            door->SetActive(true);
+            door->SetPos(it->second);
+            door->SetScale(Vector3(map->GetTileSize(), map->GetTileSize(), 5));
+            door->SetMesh(meshList[GEO_DOOR]);
+            door->SetType(GameObject::DOOR);
+            door->m_doorType = Door::EXIT;
+            m_goList.push_back(door);
+            break;
+        }
         }
 
         if (it->first > 1000)
@@ -720,7 +784,7 @@ void SceneGame::SpawnObjects(CMap *map)
                 door->SetActive(true);
                 door->SetPos(it->second);
                 door->SetScale(Vector3(map->GetTileSize(), map->GetTileSize(), 5));
-                door->SetMesh(meshList[GEO_PLAYER1]);
+                door->SetMesh(meshList[GEO_DOOR]);
                 door->SetType(GameObject::DOOR);
 
                 typedef std::map<int, Vector3>::iterator it_type;
@@ -760,9 +824,12 @@ void SceneGame::GoNextLevel()
 {
     Level::LEVELS temp = static_cast<Level::LEVELS>(m_currLevel->m_LevelNum + 1);
 
+    m_goList.clear();
+
     if (m_currLevel)
         delete m_currLevel;
     
     m_currLevel = new Level();
     m_currLevel->Init(Application::GetWindowHeight(), Application::GetWindowWidth(), 32, temp);
+    SpawnObjects(m_currLevel->m_SpawnMap);
 }

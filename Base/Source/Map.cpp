@@ -109,6 +109,9 @@ bool CMap::LoadFile(const string mapName)
 
                     // 5 == Melee Monster
                     // 6 == Ranged Monster
+                    // 97 == P1 Spawn
+                    // 98 == P2 Spawn
+                    // 99 == Exit
                     // > 100 == Door/Switch pair
 
                     if (ID >= 5)
