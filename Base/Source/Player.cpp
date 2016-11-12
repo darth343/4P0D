@@ -9,6 +9,7 @@ Player::Player()
 , playerSpeed(120)
 , m_attackType(RANGED)
 , m_attackDelay(0)
+, m_hp(5)
 {
 }
 
@@ -84,6 +85,11 @@ Vector3 Player::GetCursorPos()
     return m_cursorPos;
 }
 
+void Player::TakeDamage(int i)
+{
+    m_hp -= i;
+}
+
 void Player::MovePlayer(double dt, CMap* m_cMap, CMap* spawnMap)
 {
 	Vector3 leftstick = Application::GetLeftStickPos(controllerID);
@@ -108,7 +114,7 @@ void Player::MovePlayer(double dt, CMap* m_cMap, CMap* spawnMap)
                 && !spawnMap->theMap[nextTile.y][nextTile.x].CheckCollide()
                 && !spawnMap->theMap[nextTile.y][nextTile.x + 1].CheckCollide())
 			{
-				m_pos.y = nextPosition.y;
+				m_pos.y = nextPosition.y;// +m_cMap->GetTileSize() * 0.1;;
 			}
 		}
 
@@ -158,6 +164,8 @@ void Player::MovePlayer(double dt, CMap* m_cMap, CMap* spawnMap)
 			{
 				if(m_cMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel > 0)
 					m_cMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel--;
+				if (spawnMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel > 0)
+					spawnMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel--;
 				++xstart;
 				if (xstart + currTile.x > m_cMap->GetNumOfTiles_Width() - 1)
 					break;
@@ -179,8 +187,9 @@ void Player::Attack()
 				  Projectile* temp = new Projectile();
 				  temp->SetActive(true);
 				  temp->SetDmg(1);
-				  temp->SetLifetime(1);
-				  temp->SetScale(Vector3(15, 50, 1));
+				  temp->SetLifetime(0.1);
+				  temp->SetPos(this->m_pos);
+				  temp->SetScale(Vector3(25, 25, 1));
                   temp->SetPos(this->m_pos + m_scale * 0.5);
 				  temp->SetType(GameObject::PROJECTILE_MELEE);
 
@@ -197,14 +206,13 @@ void Player::Attack()
 				   Projectile* temp = new Projectile();
 				   temp->SetActive(true);
 				   temp->SetDmg(1);
-				   temp->SetLifetime(2);
-                   temp->SetScale(Vector3(30, 30, 1));
-                   temp->SetPos(this->m_pos + m_scale * 0.5);
+				   temp->SetLifetime(10.f);
+				   temp->SetScale(Vector3(10, 10, 1));
+				   temp->SetPos(this->m_pos + m_scale * 0.5);
 				   temp->SetType(GameObject::PROJECTILE_RANGED);
-
 				   Vector3 dir = Application::GetRightStickPos(controllerID);
 				   dir.y *= -1;
-				   temp->SetVelocity(dir);
+				   temp->SetVelocity(dir * 5);
 
 				   m_ProjectileList.push_back(temp);
 				   break;

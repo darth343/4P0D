@@ -43,34 +43,37 @@ public:
 
 				switch (particle->type)
 				{
-				case ParticleObject_TYPE::P_WATER:
+				case ParticleObject_TYPE::P_SMOKE:
 				{
-					particle->scale.Set(90, 90, 90);
+					particle->scale.Set(20, 20, 20);
 					particle->vel.Set(0, 0, 0);
 					particle->bounce = true;
 					break;
 				}
 
-				case ParticleObject_TYPE::P_LILY:
-				{
-					particle->scale.Set(20, 20, 20);
-					particle->vel.Set(0, 0, 0);
-					break;
-				}
+                case ParticleObject_TYPE::P_NORMAL_BLOOD:
+                {
+                    particle->scale.Set(20, 20, 20);
+                    particle->vel = Vector3(Math::RandFloatMinMax(-5, 5), Math::RandFloatMinMax(-5, 5), 0);
+                    particle->bounce = true;
+                    break;
+                }
 
-				case ParticleObject_TYPE::P_SPARK:
-				{
-					particle->scale.Set(20, 20, 20);
-					particle->vel.Set(Math::RandFloatMinMax(-1, 1), Math::RandFloatMinMax(-2, 2), Math::RandFloatMinMax(-1, 1));
-					break;
-				}
+                case ParticleObject_TYPE::P_GREEN_BLOOD:
+                {
+                    particle->scale.Set(20, 20, 20);
+                    particle->vel = Vector3(Math::RandFloatMinMax(-5, 5), Math::RandFloatMinMax(-5, 5), 0);
+                    particle->bounce = true;
+                    break;
+                }
 
-				case ParticleObject_TYPE::P_PORTAL:
-				{
-					particle->scale.Set(30, 30, 30);
-					particle->vel.SetZero();
-					break;
-				}
+                case ParticleObject_TYPE::P_SILVER_BLOOD:
+                {
+                    particle->scale.Set(20, 20, 20);
+                    particle->vel = Vector3(Math::RandFloatMinMax(-5, 5), Math::RandFloatMinMax(-5, 5), 0);
+                    particle->bounce = true;
+                    break;
+                }
 				}
 
 				particle->rotationSpeed = Math::RandFloatMinMax(20.f, 40.f);
@@ -109,6 +112,8 @@ public:
     {
         m_ParticleCount -= amt;
     }
+
+    double m_lifetime;
 
 private:
     Vector3 m_Pos;

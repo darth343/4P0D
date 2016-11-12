@@ -11,6 +11,7 @@
 #include "Door.h"
 #include "Level.h"
 #include "EnemySpawner.h"
+#include "Emitter.h"
 
 using namespace irrklang;
 
@@ -65,6 +66,8 @@ public:
     GameObject* FetchGO();
 
     void GoNextLevel();
+    void RenderParticles(ParticleObject* particle);
+    
 protected:
 	CMap* m_cmap;
     CMap* m_spawnmap;

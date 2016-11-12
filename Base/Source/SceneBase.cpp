@@ -138,10 +138,73 @@ void SceneBase::Init()
 	meshList[GEO_WALL] = MeshBuilder::GenerateTile("wall", Color(0, 0, 0), 1.f);
 	meshList[GEO_WALL]->textureID = LoadTGA("Image//Wall.tga");
 
+	meshList[GEO_DOOR] = MeshBuilder::GenerateTile("door", Color(0, 0, 0), 1.f);
+	meshList[GEO_DOOR]->textureID = LoadTGA("Image//Door.tga");
+
 	meshList[GEO_PLAYER1] = MeshBuilder::GenerateTile("player", Color(0, 1, 0), 1.f);
-    meshList[GEO_PLAYER1]->textureID = LoadTGA("Image//Sword.tga");
+    meshList[GEO_PLAYER1]->textureID = LoadTGA("Image//Sword 2.tga");
 	meshList[GEO_PLAYER2] = MeshBuilder::GenerateTile("player 2", Color(0, 1, 0), 1.f);
 	meshList[GEO_PLAYER2]->textureID = LoadTGA("Image//Staff.tga");
+	meshList[GEO_ARMORENEMY] = MeshBuilder::GenerateTile("Armor Enemy", Color(0, 1, 0), 1.f);
+	meshList[GEO_ARMORENEMY]->textureID = LoadTGA("Image//ArmorEnemy.tga");
+	meshList[GEO_SPECTRE] = MeshBuilder::GenerateTile("GEO_SPECTRE", Color(0, 1, 0), 1.f);
+	meshList[GEO_SPECTRE]->textureID = LoadTGA("Image//Spectre.tga");
+    meshList[GEO_RAY] = MeshBuilder::GenerateLine("line", Color(0, 0, 1), 1.f);
+
+	meshList[GEO_SWORD_PROJECTILE_LAH] = MeshBuilder::GenerateTile("GEO_SWORD_PROJECTILE_LAH", Color(0, 1, 0), 1.f);
+	meshList[GEO_SWORD_PROJECTILE_LAH]->textureID = LoadTGA("Image//MeleeProjectile.tga");
+
+	meshList[GEO_RANGE_PROJECTILE] = MeshBuilder::GenerateTile("GEO_RANGE_PROJECTILE", Color(0, 1, 0), 1.f);
+	meshList[GEO_RANGE_PROJECTILE]->textureID = LoadTGA("Image//Projectile1.tga");
+
+	meshList[GEO_PLAYER1_WALK] = MeshBuilder::GenerateSpriteAnimation("Player 1 walk", 1, 3);
+	meshList[GEO_PLAYER1_WALK]->textureID = LoadTGA("Image//Sword_Idle.tga");
+
+	meshList[GEO_PLAYER1_ATTACK] = MeshBuilder::GenerateSpriteAnimation("GEO_PLAYER1_ATTACK", 1, 3);
+	meshList[GEO_PLAYER1_ATTACK]->textureID = LoadTGA("Image//Sword_Attacking.tga");
+
+	meshList[GEO_PLAYER2_WALK] = MeshBuilder::GenerateSpriteAnimation("GEO_PLAYER2_WALK", 1, 3);
+	meshList[GEO_PLAYER2_WALK]->textureID = LoadTGA("Image//Staff_Idle.tga");
+					   
+	meshList[GEO_PLAYER2_ATTACK] = MeshBuilder::GenerateSpriteAnimation("GEO_PLAYER2_ATTACK", 1, 3);
+	meshList[GEO_PLAYER2_ATTACK]->textureID = LoadTGA("Image//Staff_Attack.tga");
+
+    meshList[GEO_RED_BLOOD] = MeshBuilder::GenerateSpriteAnimation("GEO_RED_BLOOD", 1, 3);
+    meshList[GEO_RED_BLOOD]->textureID = LoadTGA("Image//ArmoredBlood.tga");
+
+    meshList[GEO_GREEN_BLOOD] = MeshBuilder::GenerateSpriteAnimation("GEO_GREEN_BLOOD", 1, 3);
+    meshList[GEO_GREEN_BLOOD]->textureID = LoadTGA("Image//SlimeBlood.tga");
+
+    meshList[GEO_SILVER_BLOOD] = MeshBuilder::GenerateSpriteAnimation("GEO_SILVER_BLOOD", 1, 3);
+    meshList[GEO_SILVER_BLOOD]->textureID = LoadTGA("Image//GhostSmoke.tga");
+
+	SpriteAnimation *player1walk = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER1_WALK]);
+	if (player1walk)
+	{
+		player1walk->m_anim = new Animation();
+		player1walk->m_anim->Set(0, 2, 1, 0.8f, true);
+	}
+
+	SpriteAnimation *player1attack = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER1_ATTACK]);
+	if (player1attack)
+	{
+		player1attack->m_anim = new Animation();
+		player1attack->m_anim->Set(0, 2, 1, 0.2f, true);
+	}
+
+	SpriteAnimation *player2walk = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER2_WALK]);
+	if (player2walk)
+	{
+		player2walk->m_anim = new Animation();
+		player2walk->m_anim->Set(0, 2, 1, 0.8f, true);
+	}
+
+	SpriteAnimation *player2attack = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER2_ATTACK]);
+	if (player2attack)
+	{
+		player2attack->m_anim = new Animation();
+		player2attack->m_anim->Set(0, 2, 1, 0.2f, true);
+	}
 
     meshList[GEO_DOOR] = MeshBuilder::GenerateTile("door", Color(0, 1, 0), 1.f);
     meshList[GEO_DOOR]->textureID = LoadTGA("Image//Door.tga");
@@ -280,10 +343,19 @@ void SceneBase::RenderTileMap(CMap* map)
 			{
 				RenderMesh(meshList[GEO_WALL], false, opacity);
 			}
+			if (map->theMap[y][x].BlockID / 100 % 10 == 2 && map->theMap[y][x].active)
+			{
+				RenderMesh(meshList[GEO_PLAYER1], false, opacity);
+			}
+			if (map->theMap[y][x].BlockID / 100 % 10 == 1 && map->theMap[y][x].active)
+			{
+				RenderMesh(meshList[GEO_DOOR], false, opacity);
+			}
 			modelStack.PopMatrix();
 		}
 	}
 }
+
 void SceneBase::RenderFogMap(CMap* map)
 {
 	for (int y = 0; y < map->theNumOfTiles_Height; ++y)

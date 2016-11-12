@@ -28,6 +28,7 @@ void Spawner::Update(double dt, Player* thePlayer, Player* otherPlay, CMap* m_cM
 void Spawner::Spawn()
 {
     Enemy* enemy = new Enemy();
+    enemy->Init();
     enemy->SetActive(true);
     enemy->SetPos(m_pos + Vector3(Math::RandIntMinMax(-25, 25), Math::RandIntMinMax(-25, 25), 0));
     enemy->SetScale(Vector3(50, 50, 5));

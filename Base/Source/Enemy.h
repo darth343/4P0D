@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Map.h"
 #include <vector>
+#include "Emitter.h"
 
 class Enemy : public GameObject
 {
@@ -38,6 +39,8 @@ public:
     void TakeDamage(int dmg);
 
     std::vector<Projectile*> m_ProjectileList;
+
+    Emitter* m_Emitter;
 
 private:
 	static Vector3 prevPlayerTile;

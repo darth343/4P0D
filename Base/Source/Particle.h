@@ -5,17 +5,17 @@
 
 enum ParticleObject_TYPE
 {
-	P_WATER = 0,
-    P_LILY,
-    P_SPARK,
-	P_PORTAL,
+	P_SMOKE,
+    P_SILVER_BLOOD,
+    P_GREEN_BLOOD,
+    P_NORMAL_BLOOD,
 	P_TOTAL
 };
 
 class ParticleObject
 {
 public:
-	ParticleObject(ParticleObject_TYPE = P_WATER);
+	ParticleObject(ParticleObject_TYPE = P_SMOKE);
 	~ParticleObject();
 
 	ParticleObject_TYPE type;
@@ -26,6 +26,7 @@ public:
 	float rotationSpeed;
 	bool bounce;
 
+    double m_lifetime;
 	bool active;
 
 };

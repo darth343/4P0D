@@ -9,10 +9,15 @@ Enemy::Enemy()
 {}
 
 Enemy::~Enemy()
-{}
+{
+    if (m_Emitter)
+        delete m_Emitter;
+}
 
 void Enemy::Init()
 {
+    m_Emitter = new Emitter();
+    m_Emitter->m_lifetime = 0.15;
 }
 
 void Enemy::MoveTo(double dt, Tile nextTile, int TileSize)
@@ -82,9 +87,71 @@ void Enemy::MoveToPlayer(double dt, Player* thePlayer, CMap* m_cMap)
 
 void Enemy::Update(double dt, Player* thePlayer, Player* otherPlay, CMap* m_cMap)
 {
-    if (m_hp <= 0)
-        m_active = false;
+    m_Emitter->SetEmitterPosition(m_pos);
+    if (m_enemyType == MELEE)
+        m_Emitter->SetParticleType(ParticleObject_TYPE::P_NORMAL_BLOOD);
+    else
+        m_Emitter->SetParticleType(ParticleObject_TYPE::P_SILVER_BLOOD);
 
+    m_Emitter->SetMaxParticle(10);
+    m_Emitter->SetSpawnLocation(m_pos - Vector3(10, 10, 1), m_pos + Vector3(10, 10, 1));  
+    m_Emitter->SetParticleSpawnRate(3);
+
+
+    if (m_hp <= 0)
+    {
+        if (m_Emitter->m_lifetime >= 0)
+        {
+            m_Emitter->SpawnParticle();
+            std::vector<ParticleObject*>tempVec = m_Emitter->GetParticles();
+
+            std::vector<ParticleObject*>::iterator it;
+            std::vector<ParticleObject*>::iterator end = tempVec.end();
+            for (it = tempVec.begin(); it != end; ++it)
+            {
+                ParticleObject* particle = (ParticleObject*)*it;
+
+                particle->m_lifetime -= dt;
+
+                if (particle->m_lifetime <= 0)
+                {
+                    particle = false;
+                    continue;
+                }
+                if (particle->active)
+                {
+                    switch (particle->type)
+                    {
+                    case P_NORMAL_BLOOD:
+                    {
+                                           particle->pos += particle->vel * (float)dt * 100.f;
+                                           particle->rotation += particle->rotationSpeed * (float)dt;
+                                           break;
+                    }
+                    case P_GREEN_BLOOD:
+                    {
+                                          particle->pos += particle->vel * (float)dt * 100.f;
+                                          particle->rotation += particle->rotationSpeed * (float)dt;
+                                          break;
+                    }
+
+                    case P_SILVER_BLOOD:
+                    {
+                                           particle->pos += particle->vel * (float)dt * 100.f;
+                                           particle->rotation += particle->rotationSpeed * (float)dt;
+                                           break;
+                    }
+
+                    }
+                }
+            }
+            m_Emitter->m_lifetime -= dt;
+        }
+        else
+        {
+            m_active = false;
+        }
+    }
     Player* temp = NULL;
 
     findTargetDelay -= dt;

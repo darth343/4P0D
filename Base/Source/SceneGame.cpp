@@ -49,12 +49,14 @@ void SceneGame::Init()
 	m_player1->controllerID = 0;
 	m_player1->SetPos(Vector3(32, 32, 0));
 	m_player1->SetScale(Vector3(32, 32, 1));
+	m_player1->SetMesh(meshList[GEO_PLAYER1]);
     m_player1->m_attackType = Player::MELEE;
 	m_player2 = new Player();
 	m_player2->Init();
-	m_player2->controllerID = 0;
+	m_player2->controllerID = 1;
 	m_player2->SetPos(Vector3(32, 32, 0));
 	m_player2->SetScale(Vector3(32, 32, 1));
+	m_player2->SetMesh(meshList[GEO_PLAYER2]);
     m_player2->m_attackType = Player::RANGED;
 
     // Enemy
@@ -102,7 +104,59 @@ void SceneGame::Update(const double dt)
     m_player1->Update(dt, m_currLevel->m_TerrainMap, m_currLevel->m_SpawnMap);
     m_player2->Update(dt, m_currLevel->m_TerrainMap, m_currLevel->m_SpawnMap);
 
-    for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
+	if (Application::GetLeftStickPos(0).Length() > 0.1)
+	{
+		SpriteAnimation *sa = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER1_WALK]);
+		if (sa)
+		{
+			sa->m_anim->animActive = true;
+			sa->Update(dt);
+			m_player1->SetMesh(meshList[GEO_PLAYER1_WALK]);
+		}
+	}
+	else
+	{
+		m_player1->SetMesh(meshList[GEO_PLAYER1]);
+	}
+
+	if (Application::IsButtonPressed(0, Application::R2))
+	{
+		SpriteAnimation *sa = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER1_ATTACK]);
+		if (sa)
+		{
+			sa->m_anim->animActive = true;
+			sa->Update(dt);
+			m_player1->SetMesh(meshList[GEO_PLAYER1_ATTACK]);
+		}
+	}
+
+	if (Application::GetLeftStickPos(1).Length() > 0.1)
+	{
+		SpriteAnimation *sa = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER2_WALK]);
+		if (sa)
+		{
+			sa->m_anim->animActive = true;
+			sa->Update(dt);
+			m_player2->SetMesh(meshList[GEO_PLAYER2_WALK]);
+		}
+	}
+	else
+	{
+		m_player2->SetMesh(meshList[GEO_PLAYER2]);
+	}
+
+	if (Application::IsButtonPressed(1, Application::R2))
+	{
+		SpriteAnimation *sa = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER2_ATTACK]);
+		if (sa)
+		{
+			sa->m_anim->animActive = true;
+			sa->Update(dt);
+			m_player2->SetMesh(meshList[GEO_PLAYER2_ATTACK]);
+		}
+	}
+
+	for (std::vector<GameObject *>::iterator it = m_goList.begin(); it != m_goList.end(); ++it)
     {
         GameObject *go = (GameObject *)*it;
         if (go->GetActive())
@@ -123,19 +177,50 @@ void SceneGame::Update(const double dt)
     for (std::vector<GameObject*>::size_type i = 0; i < m_goList.size(); ++i)
     {
         GameObject* go = m_goList[i];
+		if (!go->GetActive())
+			continue;
         if (go->GetType() == GameObject::DOOR)
         {
             if (dynamic_cast<Door*>(go)->m_doorType == Door::UNLOCKABLE)
                 continue;
 
-            if (CheckCollisionWithPlayer(m_player1, go) /*&& CheckCollisionWithPlayer(m_player2, go)*/)
+            if (CheckCollisionWithPlayer(m_player1, go) && CheckCollisionWithPlayer(m_player2, go))
             {
                 GoNextLevel();
+            }
+        }
+
+        if (go->GetType() == GameObject::SPAWNER)
+        {
+            for (std::vector<GameObject*>::size_type i2 = 0; i2 < dynamic_cast<Spawner*>(go)->m_enemyList.size(); ++i2)
+            {
+                if (!dynamic_cast<Spawner*>(go)->m_enemyList[i2]->GetActive())
+                    continue;
+
+                for (std::vector<Projectile*>::size_type i3 = 0; i3 < dynamic_cast<Spawner*>(go)->m_enemyList[i2]->m_ProjectileList.size(); ++i3)
+                {
+                    if (!dynamic_cast<Spawner*>(go)->m_enemyList[i2]->m_ProjectileList[i3]->GetActive())
+                        continue;
+
+                    if (CheckCollisionWithPlayer(m_player1, dynamic_cast<Spawner*>(go)->m_enemyList[i2]->m_ProjectileList[i3]))
+                    {
+                        dynamic_cast<Spawner*>(go)->m_enemyList[i2]->m_ProjectileList[i3]->SetActive(false);
+                        m_player1->TakeDamage(1);
+                    }
+
+                    if (CheckCollisionWithPlayer(m_player2, dynamic_cast<Spawner*>(go)->m_enemyList[i2]->m_ProjectileList[i3]))
+                    {
+                        dynamic_cast<Spawner*>(go)->m_enemyList[i2]->m_ProjectileList[i3]->SetActive(false);
+                        m_player2->TakeDamage(1);
+                    }
+                }
             }
         }
         for (std::vector<GameObject*>::size_type i2 = 0; i2 < m_goList.size(); ++i2)
         {
             GameObject *go2 = m_goList[i2];
+			if (!go2->GetActive())
+				continue;
             if (go->CheckCollisionWith(go2))
             {
                 Interactions(go, go2);
@@ -150,6 +235,8 @@ void SceneGame::Update(const double dt)
             continue;
 
         Projectile* go = m_player1->m_ProjectileList[i];
+		if (!go->GetActive())
+			continue;
         for (std::vector<GameObject*>::size_type i2 = 0; i2 < m_goList.size(); ++i2)
         {
             GameObject *go2 = m_goList[i2];
@@ -165,8 +252,22 @@ void SceneGame::Update(const double dt)
 
                     if (go->CheckCollisionWith(dynamic_cast<Spawner*>(go2)->m_enemyList[i3]))
                     {
-                        dynamic_cast<Spawner*>(go2)->m_enemyList[i3]->SetActive(false);
+
+                        if (go->GetType() == GameObject::PROJECTILE_MELEE && dynamic_cast<Spawner*>(go2)->m_enemyList[i3]->GetEnemyType() == Enemy::MELEE)
+                        {
+                            dynamic_cast<Spawner*>(go2)->m_enemyList[i3]->TakeDamage(dynamic_cast<Projectile*>(go)->GetDmg());
+                            go->SetActive(false);
+                        }
+
+                        if (go->GetType() == GameObject::PROJECTILE_RANGED && dynamic_cast<Spawner*>(go2)->m_enemyList[i3]->GetEnemyType() == Enemy::RANGED)
+                        {
+                            dynamic_cast<Spawner*>(go2)->m_enemyList[i3]->TakeDamage(dynamic_cast<Projectile*>(go)->GetDmg());
+                            go->SetActive(false);
+                        }
                     }
+    
+                        //dynamic_cast<Spawner*>(go2)->m_enemyList[i3]->SetActive(false);
+                   
                 }
             }
             else if (go->CheckCollisionWith(go2))
@@ -331,24 +432,24 @@ void SceneGame::RenderGO(GameObject *go)
 {
     switch (go->GetType())
     {
-    case GameObject::PROJECTILE_RANGED:
-    {
-        modelStack.PushMatrix();
-        modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
-        modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-        RenderMesh(meshList[GEO_PLAYER1], false);
-        modelStack.PopMatrix();
-        break;
-    }
+		case GameObject::PROJECTILE_RANGED:
+		{
+			modelStack.PushMatrix();
+			modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+			modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
+			RenderMesh(meshList[GEO_RANGE_PROJECTILE], false);
+			modelStack.PopMatrix();
+			break;
+		}
 
     case GameObject::PROJECTILE_MELEE:
     {
                                           modelStack.PushMatrix();
                                           modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
                                           float angle = Math::RadianToDegree(atan2(go->GetVelocity().y, go->GetVelocity().x));
-                                          modelStack.Rotate(angle, 0, 0, 1);
+                                          modelStack.Rotate(angle - 90, 0, 0, 1);
                                           modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-                                          RenderMesh(meshList[GEO_PLAYER1], false);
+                                          RenderMesh(meshList[GEO_SWORD_PROJECTILE_LAH], false);
                                           modelStack.PopMatrix();
                                           break;
     }
@@ -366,49 +467,63 @@ void SceneGame::RenderGO(GameObject *go)
                                           break;
     }
 
-    case GameObject::DOOR:
-    {
-                              modelStack.PushMatrix();
-                              modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
-                              modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-                              RenderMesh(go->GetMesh(), false);
-                              modelStack.PopMatrix();
-                              break;
-    }
+    //case GameObject::DOOR:
+    //{
+    //                          modelStack.PushMatrix();
+    //                          modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+    //                          modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
+    //                          RenderMesh(go->GetMesh(), false);
+    //                          modelStack.PopMatrix();
+    //                          break;
+    //}
 
-    case GameObject::SWITCH:
-    {
-                              modelStack.PushMatrix();
-                              modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
-                              modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
-                              RenderMesh(go->GetMesh(), false);
-                              modelStack.PopMatrix();
-                              break;
-    }
+    //case GameObject::SWITCH:
+    //{
+    //                          modelStack.PushMatrix();
+    //                          modelStack.Translate(go->GetPos().x, go->GetPos().y, go->GetPos().z);
+    //                          modelStack.Scale(go->GetScale().x, go->GetScale().y, go->GetScale().z);
+    //                          RenderMesh(go->GetMesh(), false);
+    //                          modelStack.PopMatrix();
+    //                          break;
+    //}
     }
 }
 
 void SceneGame::RenderBackground()
 {
-    modelStack.PushMatrix();
-    modelStack.Translate(m_worldWidth * 0.5f, m_worldHeight * 0.5f, 0);
-    modelStack.Scale(m_worldWidth, m_worldHeight, 1.f);
+    //modelStack.PushMatrix();
+    //modelStack.Translate(m_worldWidth * 0.5f, m_worldHeight * 0.5f, 0);
+    //modelStack.Scale(m_worldWidth, m_worldHeight, 1.f);
     //RenderMesh(meshList[GEO_BACKGROUND], false);
-    modelStack.PopMatrix();
+    //modelStack.PopMatrix();
+
 }
 
 void SceneGame::RenderPlayer()
 {
+	Vector3 dir = Application::GetRightStickPos(0);
+	static float angle1 = 0;
+	if (!dir.IsZero())
+	angle1 = Math::RadianToDegree(atan2(dir.y, dir.x));
     modelStack.PushMatrix();
-    modelStack.Translate(m_player1->GetPos().x, m_player1->GetPos().y, m_player1->GetPos().z);
+	modelStack.Translate(m_player1->GetPos().x, m_player1->GetPos().y, m_player1->GetPos().z);
+	modelStack.Translate(m_player1->GetScale().x * 0.5, m_player1->GetScale().y * 0.5, m_player1->GetScale().z);
+	modelStack.Rotate(-angle1 - 90, 0, 0, 1);
+	modelStack.Translate(-m_player1->GetScale().x * 0.5, -m_player1->GetScale().y * 0.5, m_player1->GetScale().z);
     modelStack.Scale(m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize());
-    RenderMesh(meshList[GEO_PLAYER1], false);
+    RenderMesh(m_player1->GetMesh(), false);
     modelStack.PopMatrix();
-
+	dir = Application::GetRightStickPos(1);
+	static float angle2 = 0;
+	if (!dir.IsZero())
+	angle2 = Math::RadianToDegree(atan2(dir.y, dir.x));
 	modelStack.PushMatrix();
     modelStack.Translate(m_player2->GetPos().x, m_player2->GetPos().y, m_player2->GetPos().z);
+	modelStack.Translate(m_player2->GetScale().x * 0.5, m_player2->GetScale().y * 0.5, m_player2->GetScale().z);
+	modelStack.Rotate(-angle2-90, 0, 0, 1);
+	modelStack.Translate(-m_player2->GetScale().x * 0.5, -m_player2->GetScale().y * 0.5, m_player2->GetScale().z);
     modelStack.Scale(m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize(), m_currLevel->m_TerrainMap->GetTileSize());
-    RenderMesh(meshList[GEO_PLAYER2], false);
+    RenderMesh(m_player2->GetMesh(), false);
 	modelStack.PopMatrix();
 }
 
@@ -418,7 +533,7 @@ void SceneGame::RenderRayTracing()
     float angle = Math::RadianToDegree(atan2(dir.y, dir.x));
 
     // Render ray
-    glLineWidth(3.f);
+    glLineWidth(2.f);
 
 	if (!dir.IsZero())
 	{
@@ -603,7 +718,8 @@ void SceneGame::Render()
     // Render game background
     RenderBackground();
 	glDisable(GL_DEPTH_TEST);
-    RenderTileMap(m_currLevel->m_TerrainMap);
+	RenderTileMap(m_currLevel->m_TerrainMap);
+	RenderTileMap(m_currLevel->m_SpawnMap);
 
     // Render Player
     RenderPlayer();
@@ -626,6 +742,12 @@ void SceneGame::Render()
                         continue;
 
                     RenderGO(go2);
+
+                    for (int i = 0; i < go2->m_Emitter->GetParticles().size(); ++i)
+                    {
+                        RenderParticles(go2->m_Emitter->GetParticles()[i]);
+                    }
+           
                     m_renderCount += 0.1f;
 
                     for(std::vector<Projectile*>::iterator it3 = dynamic_cast<Enemy*>(go2)->m_ProjectileList.begin(); it3 != dynamic_cast<Enemy*>(go2)->m_ProjectileList.end(); ++it3)
@@ -862,4 +984,32 @@ void SceneGame::GoNextLevel()
     m_currLevel = new Level();
     m_currLevel->Init(Application::GetWindowHeight(), Application::GetWindowWidth(), 32, temp);
     SpawnObjects(m_currLevel->m_SpawnMap);
+}
+
+void SceneGame::RenderParticles(ParticleObject* particle)
+{
+    switch (particle->type)
+    {
+    case ParticleObject_TYPE::P_NORMAL_BLOOD:
+    {
+        modelStack.PushMatrix();
+        modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
+        modelStack.Scale(particle->scale.x, particle->scale.y, particle->scale.z);
+        RenderMesh(meshList[GEO_RED_BLOOD], false);
+        modelStack.PopMatrix();
+        break;
+    }
+
+    case ParticleObject_TYPE::P_SMOKE:
+    {
+        glBlendFunc(GL_ONE, GL_ONE);
+        modelStack.PushMatrix();
+        modelStack.Translate(particle->pos.x, particle->pos.y, particle->pos.z);
+        modelStack.Scale(particle->scale.x, particle->scale.y, particle->scale.z);
+        RenderMesh(meshList[GEO_SILVER_BLOOD], false);
+        modelStack.PopMatrix();
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        break;
+    }
+    }
 }

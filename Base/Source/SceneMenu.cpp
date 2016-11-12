@@ -94,7 +94,7 @@ void SceneMenu::UpdateMainMenu()
     else if (d_timeCount > d_bufferTime)
     {
         // Toggle up
-        if (Application::IsKeyPressed(VK_UP))
+        if (Application::IsButtonPressed(0, Application::DPAD_UP))
         {
             if (button_index > 0)
             {
@@ -105,7 +105,7 @@ void SceneMenu::UpdateMainMenu()
         }
 
         // Toggle down
-        else if (Application::IsKeyPressed(VK_DOWN))
+		else if (Application::IsButtonPressed(0, Application::DPAD_DOWN))
         {
             if (button_index < MENU_TOTAL - 1)
             {
@@ -116,7 +116,7 @@ void SceneMenu::UpdateMainMenu()
         }
 
         // Select
-        else if (Application::IsKeyPressed(VK_RETURN))
+		else if (Application::IsButtonPressed(0, Application::CROSS))
         {
             Application::GetInstance().PlayButtonPressSE();
             b_translateHighlighter = true;
@@ -287,7 +287,7 @@ void SceneMenu::CheckBackButton()
     else if (d_timeCount > d_bufferTime)
     {
         // Select
-        if (Application::IsKeyPressed(VK_RETURN))
+        if (Application::IsButtonPressed(0, Application::CIRCLE))
         {
             Application::GetInstance().PlayButtonPressSE();
             b_translateHighlighter = true;

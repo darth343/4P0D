@@ -11,6 +11,7 @@
 #include <vector>
 #include "Map.h"
 #include "Player.h"
+#include "SpriteAnimation.h"
 
 class SceneBase : public Scene
 {
@@ -61,12 +62,24 @@ public:
         // gameplay
 		GEO_FLOOR,
 		GEO_WALL,
+		GEO_DOOR,
 		GEO_PLAYER1,
 		GEO_PLAYER2,
+		GEO_SPECTRE,
+		GEO_ARMORENEMY,
+		GEO_PLAYER1_WALK,
+		GEO_PLAYER2_WALK,
+		GEO_SWORD_PROJECTILE_LAH,
+		GEO_RANGE_PROJECTILE,
+		GEO_PLAYER1_ATTACK,
+		GEO_PLAYER2_ATTACK,
         GEO_RAY,
-        GEO_DOOR,
         GEO_MELEE_SWITCH,
         GEO_RANGED_SWITCH,
+
+        GEO_RED_BLOOD,
+        GEO_SILVER_BLOOD,
+        GEO_GREEN_BLOOD,
 		NUM_GEOMETRY,
 	};
 public:

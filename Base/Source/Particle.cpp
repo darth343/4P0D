@@ -7,7 +7,8 @@ scale(1,1,1),
 rotation(0),
 rotationSpeed(0),
 active(false),
-bounce(false)
+bounce(false),
+m_lifetime(0.2)
 {}
 
 ParticleObject::~ParticleObject()

@@ -41,6 +41,8 @@ public:
 
     void Attack();
 
+    void TakeDamage(int i);
+
     static std::vector<Projectile*> m_ProjectileList;
     int controllerID;
     ATTACK_TYPE m_attackType;
