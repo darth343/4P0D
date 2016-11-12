@@ -2,6 +2,7 @@
 #include "GL\glew.h"
 #include "Application.h"
 #include <sstream>
+#include <iomanip>
 
 SceneGame::SceneGame()
 {
@@ -258,12 +259,14 @@ void SceneGame::Update(const double dt)
                         if (go->GetType() == GameObject::PROJECTILE_MELEE && dynamic_cast<Spawner*>(go2)->m_enemyList[i3]->GetEnemyType() == Enemy::MELEE)
                         {
                             dynamic_cast<Spawner*>(go2)->m_enemyList[i3]->TakeDamage(dynamic_cast<Projectile*>(go)->GetDmg());
+                            m_player1->points += 10;
                             go->SetActive(false);
                         }
 
                         if (go->GetType() == GameObject::PROJECTILE_RANGED && dynamic_cast<Spawner*>(go2)->m_enemyList[i3]->GetEnemyType() == Enemy::RANGED)
                         {
                             dynamic_cast<Spawner*>(go2)->m_enemyList[i3]->TakeDamage(dynamic_cast<Projectile*>(go)->GetDmg());
+                            m_player1->points += 20;
                             go->SetActive(false);
                         }
                     }
@@ -355,6 +358,54 @@ void SceneGame::GameUpdate(double dt)
 {
 
 }
+
+void SceneGame::RenderUI()
+{
+    float offset = 40;
+    static float x = 0;
+    static float y = 0;
+    if (Application::IsKeyPressed(VK_UP))
+        y += 0.3;
+    if (Application::IsKeyPressed(VK_DOWN))
+        y -= 0.3;
+    if (Application::IsKeyPressed(VK_RIGHT))
+        x += 0.3;
+    if (Application::IsKeyPressed(VK_LEFT))
+        x -= 0.3;
+    std::cout << x << " " << y << endl;
+    RenderTextOnScreen(meshList[GEO_TEXT], "Player 1 ", Color(1, 1, 1), 3, 1.2, 55);
+    RenderTextOnScreen(meshList[GEO_TEXT], "Player 2 ", Color(1, 1, 1), 3, 57, 55);
+    for (int i = 0; i < 5; i++)
+    {
+        modelStack.PushMatrix();
+        modelStack.Translate(25 + i * 32, 540, 0);
+        modelStack.Scale(32, 32, 32);
+        RenderMesh(meshList[GEO_GREYHEART], false);
+        modelStack.PopMatrix();
+        modelStack.PushMatrix();
+        modelStack.Translate(25 + i * 32, 540, 1);
+        modelStack.Scale(32, 32, 32);
+        RenderMesh(meshList[GEO_REDHEART], false);
+        modelStack.PopMatrix();
+    }
+    for (int i = 0; i < 5; i++)
+    {
+        modelStack.PushMatrix();
+        modelStack.Translate(644 + i * 32, 540, 0);
+        modelStack.Scale(32, 32, 32);
+        RenderMesh(meshList[GEO_GREYHEART], false);
+        modelStack.PopMatrix();
+        modelStack.PushMatrix();
+        modelStack.Translate(644 + i * 32, 540, 1);
+        modelStack.Scale(32, 32, 32);
+        RenderMesh(meshList[GEO_REDHEART], false);
+        modelStack.PopMatrix();
+    }
+    ostringstream ss;
+    ss << setfill('0') << setw(8) << m_player1->points;
+    RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(1, 1, 1), 3, 30, 51);
+}
+
 
 void SceneGame::Interactions(GameObject* go1, GameObject* go2)
 {
@@ -785,7 +836,9 @@ void SceneGame::Render()
     }
 
     RenderRayTracing();
+    RenderUI();
 	glEnable(GL_DEPTH_TEST);
+
     //On screen information
     //RenderInfoOnScreen();
 

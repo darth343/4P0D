@@ -48,7 +48,9 @@ public:
     static std::vector<Projectile*> m_ProjectileList;
     int controllerID;
     ATTACK_TYPE m_attackType;
-
+    static int points;
+    static std::vector<Tile*> TilesToUpdateList;
+    static bool recoverFog;
 private:
 	Vector3 prevHeroTile;
     Mesh* m_mesh;

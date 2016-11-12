@@ -3,6 +3,9 @@
 #include "Application.h"
 
 std::vector<Projectile*> Player::m_ProjectileList;
+std::vector<Tile*> Player::TilesToUpdateList;
+bool Player::recoverFog = false;
+int Player::points = 0;
 
 Player::Player()
 : controllerID(0)
@@ -161,6 +164,22 @@ void Player::MovePlayer(double dt, CMap* m_cMap, CMap* spawnMap)
 					m_cMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel--;
 				if (spawnMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel > 0)
 					spawnMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel--;
+                if (recoverFog && m_cMap->theMap[currTile.y + ystart][currTile.x + xstart].OpacityLevel < 2 & controllerID == 0)
+                {
+                    bool inList = false;
+                    for (int i = 0; i < TilesToUpdateList.size(); i++)
+                    {
+                        if (TilesToUpdateList[i] == &m_cMap->theMap[currTile.y + ystart][currTile.x + xstart])
+                        {
+                            inList = true;
+                        }
+                    }
+                    if (!inList)
+                    {
+                        TilesToUpdateList.push_back(&m_cMap->theMap[currTile.y + ystart][currTile.x + xstart]);
+                        TilesToUpdateList.push_back(&spawnMap->theMap[currTile.y + ystart][currTile.x + xstart]);
+                    }
+                }
 				++xstart;
 				if (xstart + currTile.x > m_cMap->GetNumOfTiles_Width() - 1)
 					break;
@@ -170,6 +189,25 @@ void Player::MovePlayer(double dt, CMap* m_cMap, CMap* spawnMap)
 				break;
 		}
 	}
+    if (recoverFog && controllerID == 0)
+    {
+        for (int i = 0; i < TilesToUpdateList.size(); i++)
+        {
+            if ((currTile - TilesToUpdateList[i]->Pos).Length() < 5)
+                continue;
+            TilesToUpdateList[i]->timer += dt;
+             if (TilesToUpdateList[i]->timer > 0.5f)
+            {
+                TilesToUpdateList[i]->timer = 0;
+                TilesToUpdateList[i]->OpacityLevel += 1;
+                if (TilesToUpdateList[i]->OpacityLevel >= 5)
+                {
+                    TilesToUpdateList[i]->OpacityLevel = 5;
+                    TilesToUpdateList.erase(TilesToUpdateList.begin() + i);
+                }
+            }
+        }
+    }
 	prevHeroTile = currTile;
 }
 

@@ -77,10 +77,11 @@ public:
 		GEO_RAYBLUE,
         GEO_MELEE_SWITCH,
         GEO_RANGED_SWITCH,
-
         GEO_RED_BLOOD,
         GEO_SILVER_BLOOD,
         GEO_GREEN_BLOOD,
+        GEO_GREYHEART,
+        GEO_REDHEART,
 		NUM_GEOMETRY,
 	};
 public:

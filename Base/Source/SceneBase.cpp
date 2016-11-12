@@ -169,7 +169,6 @@ void SceneBase::Init()
 					   
 	meshList[GEO_PLAYER2_ATTACK] = MeshBuilder::GenerateSpriteAnimation("GEO_PLAYER2_ATTACK", 1, 3);
 	meshList[GEO_PLAYER2_ATTACK]->textureID = LoadTGA("Image//Staff_Attack.tga");
-
     meshList[GEO_RED_BLOOD] = MeshBuilder::GenerateSpriteAnimation("GEO_RED_BLOOD", 1, 3);
     meshList[GEO_RED_BLOOD]->textureID = LoadTGA("Image//ArmoredBlood.tga");
 
@@ -178,7 +177,10 @@ void SceneBase::Init()
 
     meshList[GEO_SILVER_BLOOD] = MeshBuilder::GenerateSpriteAnimation("GEO_SILVER_BLOOD", 1, 3);
     meshList[GEO_SILVER_BLOOD]->textureID = LoadTGA("Image//GhostSmoke.tga");
-
+    meshList[GEO_GREYHEART] = MeshBuilder::GenerateQuad("GREY HEART", Color(1,0, 0), 1.f);
+    meshList[GEO_GREYHEART]->textureID = LoadTGA("Image//GreyHeart.tga");
+    meshList[GEO_REDHEART] = MeshBuilder::GenerateQuad("GEO_REDHEART", Color(1, 0, 0), 1.f);
+    meshList[GEO_REDHEART]->textureID = LoadTGA("Image//RedHeart.tga");
 	SpriteAnimation *player1walk = dynamic_cast<SpriteAnimation*>(meshList[GEO_PLAYER1_WALK]);
 	if (player1walk)
 	{

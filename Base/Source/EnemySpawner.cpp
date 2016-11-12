@@ -14,16 +14,16 @@ void Spawner::Update(double dt, Player* thePlayer, Player* otherPlay, CMap* m_cM
 {
     m_spawnTimer -= dt;
 
-    for (int i = 0; i < m_enemyList.size(); ++i)
-    {
-        if (!m_enemyList[i]->GetActive())
-            delete m_enemyList[i];
-    }
+    //for (int i = 0; i < m_enemyList.size(); ++i)
+    //{
+    //    if (!m_enemyList[i]->GetActive())
+    //        delete m_enemyList[i];
+    //}
 
-    if (m_spawnTimer <= 0 && m_enemyList.size() < 3)
+    if (m_spawnTimer <= 0 /*&& m_enemyList.size() < 3*/)
     {
         Spawn();
-        m_spawnTimer = 10;
+        m_spawnTimer = 5;
     }
 
     for (int i = 0; i < m_enemyList.size(); ++i)

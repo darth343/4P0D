@@ -3,13 +3,17 @@
 Pathfinder::Pathfinder()
 : initializedStartandEnd(false)
 , found(false)
+, start(NULL)
+, end(NULL)
 {
 }
 
 Pathfinder::~Pathfinder()
 {
 	ClearLists();
+    if (start)
 	delete start;
+    if (end)
 	delete end;
 }
 

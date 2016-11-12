@@ -116,7 +116,7 @@ void SceneMenu::UpdateMainMenu()
         }
 
         // Select
-		else if (Application::IsButtonPressed(0, Application::CROSS))
+		else if (Application::IsButtonPressed(0, Application::CROSS) || Application::IsKeyPressed(VK_RETURN))
         {
             Application::GetInstance().PlayButtonPressSE();
             b_translateHighlighter = true;

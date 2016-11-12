@@ -62,7 +62,7 @@ public:
     void RenderPlayer();
     void RenderRayTracing();
     void RenderInfoOnScreen();
-
+    void RenderUI();
     GameObject* FetchGO();
 
     void GoNextLevel();

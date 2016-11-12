@@ -8,7 +8,8 @@ public:
 	Tile(Vector3 pos, int ID):
 		Pos(pos),
 		BlockID(ID),
-		OpacityLevel(5)
+		OpacityLevel(5),
+        timer(0.f)
 	{};
 	Tile(){};
 	~Tile(){};
@@ -24,6 +25,7 @@ public:
         else 
             return false;
     }
+    float timer;
 	int BlockID;
 	Vector3 Pos;
 	bool shouldCollide;
